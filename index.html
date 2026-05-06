@@ -2756,25 +2756,25 @@ body:not(.searched) .figma-value-card:hover {
             <img class="brand-wordmark-img" src="assets/brand/paradiso-wordmark-brush-white.png" alt="Paradiso" decoding="async" loading="eager" />
             <svg class="logo-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <defs>
-                    <clipPath id="p39clip"><circle cx="60" cy="60" r="54"/></clipPath>
-                    <linearGradient id="p39sky" x1="0" y1="0" x2="0" y2="1">
+                    <clipPath id="pdsclip"><circle cx="60" cy="60" r="54"/></clipPath>
+                    <linearGradient id="pdssky" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stop-color="var(--color-surface)"/>
                         <stop offset="60%" stop-color="var(--color-accent-soft)"/>
                         <stop offset="100%" stop-color="var(--color-accent)"/>
                     </linearGradient>
-                    <linearGradient id="p39sea" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="pdssea" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stop-color="var(--color-primary)"/>
                         <stop offset="100%" stop-color="var(--color-primary-ink)"/>
                     </linearGradient>
                 </defs>
-                <g clip-path="url(#p39clip)">
-                    <rect x="0" y="0" width="120" height="72" fill="url(#p39sky)"/>
+                <g clip-path="url(#pdsclip)">
+                    <rect x="0" y="0" width="120" height="72" fill="url(#pdssky)"/>
                     <g class="rocket-flyer">
                         <circle cx="60" cy="62" r="18" fill="var(--color-surface)"/>
                         <circle cx="60" cy="62" r="18" fill="var(--color-accent)" opacity="0.85"/>
                     </g>
                     <path d="M -4,78 L 22,54 L 40,70 L 58,44 L 82,72 L 102,58 L 128,78 L 128,120 L -4,120 Z" fill="var(--color-primary-ink)" opacity="0.35"/>
-                    <rect x="0" y="72" width="120" height="48" fill="url(#p39sea)"/>
+                    <rect x="0" y="72" width="120" height="48" fill="url(#pdssea)"/>
                     <g class="exhaust" stroke="var(--color-surface)" stroke-width="1.2" fill="none" opacity="0.55" stroke-linecap="round">
                         <path d="M 10,84 Q 30,80 50,84 T 90,84 T 130,84"/>
                         <path d="M 0,94 Q 22,90 44,94 T 86,94 T 130,94"/>
@@ -2788,7 +2788,7 @@ body:not(.searched) .figma-value-card:hover {
                     <span class="al" data-i="0" data-tgt="4"><span class="src">P</span><span class="tgt">p</span></span><span class="al" data-i="1" data-tgt="2"><span class="src">a</span><span class="tgt">a</span></span><span class="al" data-i="2" data-tgt="6"><span class="src">r</span><span class="tgt">r</span></span><span class="al" data-i="3" data-tgt="7"><span class="src">a</span><span class="tgt">a</span></span><span class="al" data-i="4" data-tgt="0"><span class="src">d</span><span class="tgt">D</span></span><span class="al" data-i="5" data-tgt="1"><span class="src">i</span><span class="tgt">i</span></span><span class="al" data-i="6" data-tgt="3"><span class="src">s</span><span class="tgt">s</span></span><span class="al" data-i="7" data-tgt="5"><span class="src">o</span><span class="tgt">o</span></span>
                     <em class="logo-39 l39">39</em>
                 </h1>
-                <span class="logo-sub">대한민국 39가지 체류자격, 하나의 플랫폼으로</span>
+                <span class="logo-sub">비자·체류 정보 안내 플랫폼</span>
             </div>
         </div>
 
@@ -2803,24 +2803,28 @@ body:not(.searched) .figma-value-card:hover {
         <div class="qa-main" id="qaMain" aria-label="자주 사용하는 행정 도구">
             <button class="hero-action-btn" data-action="open-jobcode-modal">
                 <span class="hero-action-icon">💼</span>
-                <span class="hero-action-label">취업신고용 업종/직종 코드 찾기</span>
+                <span class="hero-action-label">취업신고용 업종·직종 코드</span>
             </button>
             <button class="hero-action-btn" data-action="open-jurisdiction-modal">
                 <span class="hero-action-icon">🏛</span>
                 <span class="hero-action-label">관할 출입국관서 조회</span>
             </button>
+            <a class="hero-action-btn" href="ai.html" aria-label="Paradiso.ai로 이동">
+                <span class="hero-action-icon">✦</span>
+                <span class="hero-action-label">Paradiso.ai</span>
+            </a>
         </div>
 
         <section id="visaManualSection" class="visa-manual-section in-hero">
             <div class="visa-track-selector" data-reveal="fade-up">
                 <div class="visa-track-card" onclick="startPreEntryTrack()" tabindex="0" role="button" aria-label="입국 전 사증 발급 트랙">
                     <div class="visa-track-icon">✈️</div>
-                    <h3 class="visa-track-title">입국 전</h3>
+                    <h3 class="visa-track-title">입국 전 — 재외공관 사증 발급</h3>
                     <p class="visa-track-desc">해외에서 재외공관을 통한 사증(비자) 신규 발급 절차</p>
                 </div>
                 <div class="visa-track-card" onclick="startInKoreaTrack()" tabindex="0" role="button" aria-label="입국 후 체류 관리 트랙">
                     <div class="visa-track-icon">🏛</div>
-                    <h3 class="visa-track-title">입국 후</h3>
+                    <h3 class="visa-track-title">입국 후 — 외국인 등록·체류 연장</h3>
                     <p class="visa-track-desc">외국인등록, 체류기간 연장, 자격 변경 등 국내 체류 민원</p>
                 </div>
             </div>
