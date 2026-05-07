@@ -7,7 +7,7 @@ python3 -m json.tool visa_data.json > /tmp/visa_data_check.json
 echo "[2/3] Running git diff --check..."
 git diff --check
 
-echo "[3/3] Scanning key user-facing files for Paradiso 39 regressions..."
+echo "[3/3] Scanning key user-facing files for forbidden branding strings..."
 KEY_FILES=(
   "index.html"
   "ai.html"
@@ -15,9 +15,32 @@ KEY_FILES=(
   "moonshot_backend_fastapi.py"
 )
 
-if rg -n -e "Paradiso 39" -e "PARADISO 39" -e "paradiso 39" -e "Paradiso39" -e "PARADISO39" -e "paradiso39" "${KEY_FILES[@]}"; then
-  echo "ERROR: Found Paradiso 39 regression string(s) in key user-facing files." >&2
-  exit 1
+FORBIDDEN_REGEX='Moonshot|moonshot|Paradiso 39|PARADISO 39|paradiso 39|Paradiso39|PARADISO39|paradiso39|P/39|p39'
+
+EXISTING_FILES=()
+for file in "${KEY_FILES[@]}"; do
+  if [[ -f "$file" ]]; then
+    EXISTING_FILES+=("$file")
+  else
+    echo "INFO: Skipping missing optional file: $file"
+  fi
+done
+
+if [[ ${#EXISTING_FILES[@]} -eq 0 ]]; then
+  echo "WARNING: No key files found to scan."
+else
+  if command -v rg >/dev/null 2>&1; then
+    if rg -n -i -e "$FORBIDDEN_REGEX" "${EXISTING_FILES[@]}"; then
+      echo "ERROR: Found forbidden branding string(s) in key user-facing files." >&2
+      exit 1
+    fi
+  else
+    echo "INFO: ripgrep (rg) not found; using grep fallback."
+    if grep -RniE "$FORBIDDEN_REGEX" "${EXISTING_FILES[@]}"; then
+      echo "ERROR: Found forbidden branding string(s) in key user-facing files." >&2
+      exit 1
+    fi
+  fi
 fi
 
-echo "Success: repository validation passed. JSON is valid, git diff check is clean, and no Paradiso 39 regressions were found in key user-facing files."
+echo "Success: repository validation passed. JSON is valid, git diff check is clean, and no forbidden branding strings were found in existing key user-facing files."
