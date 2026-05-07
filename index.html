@@ -2727,6 +2727,28 @@ body:not(.searched) .figma-value-card:hover {
   }
 }
 
+
+/* UI stability refinements: keep decorations behind content and prevent scroll jank */
+body:not(.searched) .qa-main { align-items: stretch; }
+body:not(.searched) .hero-action-label { line-height: 1.45; word-break: keep-all; }
+body:not(.searched) .hero-ai-secondary { width: 100%; max-width: 680px; margin-top: 0.85rem; text-align: center; }
+body:not(.searched) .hero-ai-link { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.58rem 0.9rem; border-radius: 999px; font-size: 0.82rem; color: rgba(255,255,255,.78); text-decoration: none; border: 1px solid rgba(255,255,255,.20); background: rgba(0,0,0,.14); }
+body:not(.searched) .hero-ai-link:hover { color: #fff; border-color: rgba(255,255,255,.34); background: rgba(0,0,0,.24); }
+
+body:not(.searched) .hero-container::before { transform: none; animation: none; background-repeat: no-repeat, no-repeat, no-repeat, no-repeat; }
+.brand-hero, .figma-footer-hero, .footer-hero-img, .hobby-2 { position: relative; overflow: hidden; }
+.brand-hero::before, .hobby-2::after, .footer-hero-img::before, .figma-footer-hero-overlay, .anagram-svg { pointer-events: none; }
+.brand-hero > *, .figma-footer-hero > *, .footer-hero-img > *, .about-me > * { position: relative; z-index: 2; }
+
+@media (max-width: 980px) {
+  body:not(.searched) .qa-main { grid-template-columns: 1fr; }
+  body:not(.searched) .visa-track-selector { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  body:not(.searched) .hero-container { padding-left: 1rem; padding-right: 1rem; }
+  .brand-hero, .about-me, .figma-start-section, .figma-footer-section { padding-left: 1rem; padding-right: 1rem; }
+}
+
 </style>
 </head>
 <body class="landing" data-theme="light">
@@ -2756,25 +2778,25 @@ body:not(.searched) .figma-value-card:hover {
             <img class="brand-wordmark-img" src="assets/brand/paradiso-wordmark-brush-white.png" alt="Paradiso" decoding="async" loading="eager" />
             <svg class="logo-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <defs>
-                    <clipPath id="p39clip"><circle cx="60" cy="60" r="54"/></clipPath>
-                    <linearGradient id="p39sky" x1="0" y1="0" x2="0" y2="1">
+                    <clipPath id="pdsclip"><circle cx="60" cy="60" r="54"/></clipPath>
+                    <linearGradient id="pdssky" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stop-color="var(--color-surface)"/>
                         <stop offset="60%" stop-color="var(--color-accent-soft)"/>
                         <stop offset="100%" stop-color="var(--color-accent)"/>
                     </linearGradient>
-                    <linearGradient id="p39sea" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="pdssea" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stop-color="var(--color-primary)"/>
                         <stop offset="100%" stop-color="var(--color-primary-ink)"/>
                     </linearGradient>
                 </defs>
-                <g clip-path="url(#p39clip)">
-                    <rect x="0" y="0" width="120" height="72" fill="url(#p39sky)"/>
+                <g clip-path="url(#pdsclip)">
+                    <rect x="0" y="0" width="120" height="72" fill="url(#pdssky)"/>
                     <g class="rocket-flyer">
                         <circle cx="60" cy="62" r="18" fill="var(--color-surface)"/>
                         <circle cx="60" cy="62" r="18" fill="var(--color-accent)" opacity="0.85"/>
                     </g>
                     <path d="M -4,78 L 22,54 L 40,70 L 58,44 L 82,72 L 102,58 L 128,78 L 128,120 L -4,120 Z" fill="var(--color-primary-ink)" opacity="0.35"/>
-                    <rect x="0" y="72" width="120" height="48" fill="url(#p39sea)"/>
+                    <rect x="0" y="72" width="120" height="48" fill="url(#pdssea)"/>
                     <g class="exhaust" stroke="var(--color-surface)" stroke-width="1.2" fill="none" opacity="0.55" stroke-linecap="round">
                         <path d="M 10,84 Q 30,80 50,84 T 90,84 T 130,84"/>
                         <path d="M 0,94 Q 22,90 44,94 T 86,94 T 130,94"/>
@@ -2788,7 +2810,7 @@ body:not(.searched) .figma-value-card:hover {
                     <span class="al" data-i="0" data-tgt="4"><span class="src">P</span><span class="tgt">p</span></span><span class="al" data-i="1" data-tgt="2"><span class="src">a</span><span class="tgt">a</span></span><span class="al" data-i="2" data-tgt="6"><span class="src">r</span><span class="tgt">r</span></span><span class="al" data-i="3" data-tgt="7"><span class="src">a</span><span class="tgt">a</span></span><span class="al" data-i="4" data-tgt="0"><span class="src">d</span><span class="tgt">D</span></span><span class="al" data-i="5" data-tgt="1"><span class="src">i</span><span class="tgt">i</span></span><span class="al" data-i="6" data-tgt="3"><span class="src">s</span><span class="tgt">s</span></span><span class="al" data-i="7" data-tgt="5"><span class="src">o</span><span class="tgt">o</span></span>
                     <em class="logo-39 l39">39</em>
                 </h1>
-                <span class="logo-sub">대한민국 39가지 체류자격, 하나의 플랫폼으로</span>
+                <span class="logo-sub">비자·체류 정보 안내 플랫폼</span>
             </div>
         </div>
 
@@ -2803,7 +2825,7 @@ body:not(.searched) .figma-value-card:hover {
         <div class="qa-main" id="qaMain" aria-label="자주 사용하는 행정 도구">
             <button class="hero-action-btn" data-action="open-jobcode-modal">
                 <span class="hero-action-icon">💼</span>
-                <span class="hero-action-label">취업신고용 업종/직종 코드 찾기</span>
+                <span class="hero-action-label">취업신고용 업종·직종 코드</span>
             </button>
             <button class="hero-action-btn" data-action="open-jurisdiction-modal">
                 <span class="hero-action-icon">🏛</span>
@@ -2815,12 +2837,12 @@ body:not(.searched) .figma-value-card:hover {
             <div class="visa-track-selector" data-reveal="fade-up">
                 <div class="visa-track-card" onclick="startPreEntryTrack()" tabindex="0" role="button" aria-label="입국 전 사증 발급 트랙">
                     <div class="visa-track-icon">✈️</div>
-                    <h3 class="visa-track-title">입국 전</h3>
+                    <h3 class="visa-track-title">입국 전 — 재외공관 사증 발급</h3>
                     <p class="visa-track-desc">해외에서 재외공관을 통한 사증(비자) 신규 발급 절차</p>
                 </div>
                 <div class="visa-track-card" onclick="startInKoreaTrack()" tabindex="0" role="button" aria-label="입국 후 체류 관리 트랙">
                     <div class="visa-track-icon">🏛</div>
-                    <h3 class="visa-track-title">입국 후</h3>
+                    <h3 class="visa-track-title">입국 후 — 외국인 등록·체류 연장</h3>
                     <p class="visa-track-desc">외국인등록, 체류기간 연장, 자격 변경 등 국내 체류 민원</p>
                 </div>
             </div>
@@ -2852,6 +2874,9 @@ body:not(.searched) .figma-value-card:hover {
             <h2 class="landing-hints-title" id="landingHintsTitle">추천 키워드</h2>
             <div class="landing-hints" id="landingHints" aria-label="빠른 추천 검색어"></div>
         </section>
+        <div class="hero-ai-secondary" aria-label="선택형 AI 도우미">
+            <a href="ai.html" class="hero-ai-link"><span aria-hidden="true">✦</span> AI로 더 자세히 묻기 <strong>Paradiso.ai</strong></a>
+        </div>
     </div>
     <button type="button" class="scroll-cue" id="scrollCue" data-action="scroll-to-brand" aria-label="아래로 스크롤">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
