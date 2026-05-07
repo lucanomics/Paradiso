@@ -773,7 +773,363 @@
       "doc_passport",
       "doc_purpose"
     ],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "nameKo": "단기방문",
+    "nameEn": "Short-Term Visit",
+    "manualDomains": [
+      "visa_issuance",
+      "stay_sojourn"
+    ],
+    "activityScope": "사증발급신청서, 여권, 표준규격사진 1매, 목적 입증, 왕복항공권, 숙소, 일정표, 재정능력.",
+    "stayPeriodCap": "90일 이내",
+    "subcodes": [
+      {
+        "code": "C-3-1",
+        "name": "단기일반(친족)",
+        "addReq": "초청장, 신분증/등본, 친족관계.",
+        "addReqDocs": [
+          "doc_invitation",
+          "doc_basic",
+          "doc_fam_rel"
+        ],
+        "note": "",
+        "nameKo": "단기일반(친족)",
+        "summary": "초청장, 신분증/등본, 친족관계.",
+        "eligibility": [
+          "초청장, 신분증/등본, 친족관계."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "C-3-2",
+        "name": "단체관광",
+        "addReq": "지정 여행사 확인서.",
+        "addReqDocs": [
+          "doc_guarantee"
+        ],
+        "note": "",
+        "nameKo": "단체관광",
+        "summary": "지정 여행사 확인서.",
+        "eligibility": [
+          "지정 여행사 확인서."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "C-3-3",
+        "name": "의료관광",
+        "addReq": "지정 의료기관 초청서, 재정능력.",
+        "addReqDocs": [
+          "doc_invitation",
+          "doc_finance"
+        ],
+        "note": "",
+        "nameKo": "의료관광",
+        "summary": "지정 의료기관 초청서, 재정능력.",
+        "eligibility": [
+          "지정 의료기관 초청서, 재정능력."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "C-3-4",
+        "name": "일반상용",
+        "addReq": "거래처 초청장, 재직증명서.",
+        "addReqDocs": [
+          "doc_invitation",
+          "doc_career"
+        ],
+        "note": "",
+        "nameKo": "일반상용",
+        "summary": "거래처 초청장, 재직증명서.",
+        "eligibility": [
+          "거래처 초청장, 재직증명서."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "C-3-5",
+        "name": "협정단기상용",
+        "addReq": "협정 입증.",
+        "addReqDocs": [
+          "doc_purpose"
+        ],
+        "note": "",
+        "nameKo": "협정단기상용",
+        "summary": "협정 입증.",
+        "eligibility": [
+          "협정 입증."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "C-3-6",
+        "name": "단기상용",
+        "addReq": "거래관계 입증.",
+        "addReqDocs": [
+          "doc_purpose"
+        ],
+        "note": "",
+        "nameKo": "단기상용",
+        "summary": "거래관계 입증.",
+        "eligibility": [
+          "거래관계 입증."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "C-3-8",
+        "name": "동포방문",
+        "addReq": "동포 입증, 친족관계.",
+        "addReqDocs": [
+          "doc_f4_proof",
+          "doc_fam_rel"
+        ],
+        "note": "",
+        "nameKo": "동포방문",
+        "summary": "동포 입증, 친족관계.",
+        "eligibility": [
+          "동포 입증, 친족관계."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "C-3-9",
+        "name": "일반관광",
+        "addReq": "은행예금 잔고증명서.",
+        "addReqDocs": [
+          "doc_bank_bal"
+        ],
+        "note": "",
+        "nameKo": "일반관광",
+        "summary": "은행예금 잔고증명서.",
+        "eligibility": [
+          "은행예금 잔고증명서."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "C-3-10",
+        "name": "순수환승",
+        "addReq": "제3국행 항공권.",
+        "addReqDocs": [
+          "doc_flight"
+        ],
+        "note": "",
+        "nameKo": "순수환승",
+        "summary": "제3국행 항공권.",
+        "eligibility": [
+          "제3국행 항공권."
+        ],
+        "manualRefs": []
+      }
+    ],
+    "procedures": {
+      "visaIssuance": {
+        "available": true,
+        "summary": "사증발급신청서, 여권, 표준규격사진 1매, 목적 입증, 왕복항공권, 숙소, 일정표, 재정능력.",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [
+            "doc_app_form",
+            "doc_passport",
+            "doc_photo",
+            "doc_purpose",
+            "doc_flight",
+            "doc_accom",
+            "doc_schedule",
+            "doc_finance"
+          ],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "사증민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "extension": {
+        "available": true,
+        "summary": "원칙 불가. 시행규칙 제32조 제한적 연장.",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [
+            "doc_app_form",
+            "doc_passport",
+            "doc_purpose"
+          ],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "단기체류 연장 가능 여부와 제출서류는 세부 자격과 사유별로 매뉴얼 확인이 필요합니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "statusChange": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "단기체류에서 장기체류로의 변경은 대표 데이터에서 확정하지 않습니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "statusGrant": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "registration": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "activitiesOutsideStatus": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "workplaceChange": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "reentry": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      }
+    },
+    "commonWarnings": [
+      "서류는 심사 과정에서 가감될 수 있습니다.",
+      "국내 발급 서류는 별도 규정이 없으면 발급일로부터 3개월 이내 자료를 원칙으로 확인합니다.",
+      "이미 제출되어 기록에 보관 중인 서류는 생략될 수 있습니다.",
+      "공동이용 가능한 행정정보는 제출 생략 가능하나, 동의하지 않으면 제출이 필요할 수 있습니다.",
+      "건강진단서 등 일부 서류는 밀봉 제출이 요구될 수 있습니다.",
+      "체류허가 신청자는 국내 체류 중이어야 합니다."
+    ],
+    "manualRefs": [
+      {
+        "manualName": "사증민원",
+        "manualVersion": "2026.5",
+        "pageRange": "매뉴얼 확인 필요",
+        "confidence": "needs_review",
+        "needsManualReview": true
+      },
+      {
+        "manualName": "체류민원",
+        "manualVersion": "2026.5",
+        "pageRange": "매뉴얼 확인 필요",
+        "confidence": "needs_review",
+        "needsManualReview": true
+      }
+    ],
+    "sourceManualStatus": {
+      "visaManualVersion": "2026.5",
+      "stayManualVersion": "2026.5",
+      "verified": false,
+      "needsManualReview": true,
+      "reviewNotes": [
+        "C-3 representative hierarchy uses existing data; C-3-1 through C-3-10 labels still need 2026.5 manual page verification."
+      ]
+    }
   },
   {
     "code": "C-4",
@@ -984,7 +1340,382 @@
       "doc_address",
       "doc_bank_bal"
     ],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "nameKo": "유학",
+    "nameEn": "Study Abroad",
+    "manualDomains": [
+      "visa_issuance",
+      "stay_sojourn"
+    ],
+    "activityScope": "표준입학허가서, 최종학력(아포스티유), 재정입증, 결핵진단서(고위험국).",
+    "stayPeriodCap": "2년, 연장가능",
+    "subcodes": [
+      {
+        "code": "D-2-1",
+        "name": "전문학사유학",
+        "addReq": "전문대 입학허가서.",
+        "addReqDocs": [
+          "doc_enroll"
+        ],
+        "note": "체류 상한: 입학 후 3년(3년제는 4년).",
+        "nameKo": "전문학사유학",
+        "summary": "체류 상한: 입학 후 3년(3년제는 4년).",
+        "eligibility": [
+          "전문대 입학허가서."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "D-2-2",
+        "name": "학사유학",
+        "addReq": "4년제 입학허가서.",
+        "addReqDocs": [
+          "doc_enroll"
+        ],
+        "note": "가장 일반적. 체류 상한: 입학 후 6년.",
+        "nameKo": "학사유학",
+        "summary": "가장 일반적. 체류 상한: 입학 후 6년.",
+        "eligibility": [
+          "4년제 입학허가서."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "D-2-3",
+        "name": "석사유학",
+        "addReq": "석사 입학허가서.",
+        "addReqDocs": [
+          "doc_enroll"
+        ],
+        "note": "체류 상한: 입학 후 5년(3년제는 6년).",
+        "nameKo": "석사유학",
+        "summary": "체류 상한: 입학 후 5년(3년제는 6년).",
+        "eligibility": [
+          "석사 입학허가서."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "D-2-4",
+        "name": "박사유학",
+        "addReq": "박사 입학허가서.",
+        "addReqDocs": [
+          "doc_enroll"
+        ],
+        "note": "체류 상한: 입학 후 8년(2년제는 7년).",
+        "nameKo": "박사유학",
+        "summary": "체류 상한: 입학 후 8년(2년제는 7년).",
+        "eligibility": [
+          "박사 입학허가서."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "D-2-5",
+        "name": "연구유학",
+        "addReq": "연구과정 증명.",
+        "addReqDocs": [
+          "doc_enroll"
+        ],
+        "note": "1회 부여 상한 1년. 총 2년 초과 불가.",
+        "nameKo": "연구유학",
+        "summary": "1회 부여 상한 1년. 총 2년 초과 불가.",
+        "eligibility": [
+          "연구과정 증명."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "D-2-6",
+        "name": "교환학생",
+        "addReq": "교환 협정서, 본교 재학증명.",
+        "addReqDocs": [
+          "doc_purpose",
+          "doc_enroll"
+        ],
+        "note": "과정 종료일+1개월 범위 내 1월말/7월말 조정.",
+        "nameKo": "교환학생",
+        "summary": "과정 종료일+1개월 범위 내 1월말/7월말 조정.",
+        "eligibility": [
+          "교환 협정서, 본교 재학증명."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "D-2-7",
+        "name": "일-학습연계 유학",
+        "addReq": "일-학습연계 프로그램 입증.",
+        "addReqDocs": [
+          "doc_purpose"
+        ],
+        "note": "",
+        "nameKo": "일-학습연계 유학",
+        "summary": "일-학습연계 프로그램 입증.",
+        "eligibility": [
+          "일-학습연계 프로그램 입증."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "D-2-8",
+        "name": "방문학생",
+        "addReq": "방문학생 입학허가서.",
+        "addReqDocs": [
+          "doc_enroll"
+        ],
+        "note": "과정 종료일+1개월 범위. 시간제취업은 입국 6개월 경과 후.",
+        "nameKo": "방문학생",
+        "summary": "과정 종료일+1개월 범위. 시간제취업은 입국 6개월 경과 후.",
+        "eligibility": [
+          "방문학생 입학허가서."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "D-2-R",
+        "name": "외국인등록 제출서류",
+        "addReq": "① 신청서(별지 제34호 서식), 여권 및 사본 1부, 표준규격사진 1매, 수수료(외국인등록+연장 동시 신청 시 연장 수수료 면제) ② 재학(연구생)증명서(인증대학 이상: 등록금납입증명서로 대체 가능) ③ 체류지 입증서류. 재정능력 입증서류 제출 불요.",
+        "addReqDocs": [
+          "doc_app_form",
+          "doc_passport",
+          "doc_passport_copy",
+          "doc_photo",
+          "doc_fee",
+          "doc_enroll",
+          "doc_address"
+        ],
+        "note": "체류민원 매뉴얼 2026.3월 기준.",
+        "nameKo": "외국인등록 제출서류",
+        "summary": "체류민원 매뉴얼 2026.3월 기준.",
+        "eligibility": [
+          "① 신청서(별지 제34호 서식), 여권 및 사본 1부, 표준규격사진 1매, 수수료(외국인등록+연장 동시 신청 시 연장 수수료 면제) ② 재학(연구생)증명서(인증대학 이상: 등록금납입증명서로 대체 가능) ③ 체류지 입증서류. 재정능력 입증서류 제출 불요."
+        ],
+        "manualRefs": []
+      }
+    ],
+    "procedures": {
+      "visaIssuance": {
+        "available": true,
+        "summary": "표준입학허가서, 최종학력(아포스티유), 재정입증, 결핵진단서(고위험국).",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [
+            "doc_enroll",
+            "doc_degree",
+            "doc_finance",
+            "doc_tb"
+          ],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "사증민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "extension": {
+        "available": true,
+        "summary": "[체류기간 연장] ① 신청서(별지 제34호 서식), 여권, 외국인등록증, 수수료 ② 수료증명서, 지도교수 및 유학담당자 확인서 ③ 학업 수행 입증서류(재학증명서, 성적증명서, 출석확인서 등) ④ 재정입증 서류(우수인증대학·인증대학 장관고시국가 외 생략 가능) ⑤ 체류지 입증서류(임대차계약서, 숙소제공 확인서, 만료예고 통지우편물, 공공요금 납부영수증, 기숙사비 영수증 등). [학사일정 기준] D-2-1~D-2-4, D-2-7: 3월말/9월말 기준 2년 이내 부여. D-2-5(연구유학): 1회 1년 상한, 총 2년 이내. D-2-6·D-2-8: 과정 종료일+1개월 범위 내.",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [
+            "doc_app_form",
+            "doc_passport",
+            "doc_id",
+            "doc_fee",
+            "doc_enroll",
+            "doc_prof_conf",
+            "doc_transcript",
+            "doc_attend",
+            "doc_finance",
+            "doc_address",
+            "doc_bank_bal"
+          ],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "statusChange": {
+        "available": true,
+        "summary": "체류자격 변경 전용 서류는 매뉴얼 확인 필요",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "변경 가능 여부와 전용 서류는 기존 데이터에서 확정하지 않습니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "statusGrant": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "registration": {
+        "available": true,
+        "summary": "외국인등록 절차 및 제출서류는 체류민원 매뉴얼 확인 필요",
+        "requiredDocs": {
+          "commonDocs": [
+            "doc_app_form",
+            "doc_passport",
+            "doc_photo",
+            "doc_address"
+          ],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "대표 공통서류만 표시하며 D-2 세부 등록서류는 매뉴얼 확인 필요입니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "activitiesOutsideStatus": {
+        "available": true,
+        "summary": "시간제취업 등 자격외활동은 세부 대상과 제한 확인 필요",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "D-2 세부 유형별 자격외활동 제한은 매뉴얼 확인 필요입니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "workplaceChange": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "reentry": {
+        "available": true,
+        "summary": "재입국 절차는 체류 이력과 허가 상태에 따라 확인 필요",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "대표 데이터에서 전용 구비서류를 확정하지 않습니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      }
+    },
+    "commonWarnings": [
+      "서류는 심사 과정에서 가감될 수 있습니다.",
+      "국내 발급 서류는 별도 규정이 없으면 발급일로부터 3개월 이내 자료를 원칙으로 확인합니다.",
+      "이미 제출되어 기록에 보관 중인 서류는 생략될 수 있습니다.",
+      "공동이용 가능한 행정정보는 제출 생략 가능하나, 동의하지 않으면 제출이 필요할 수 있습니다.",
+      "건강진단서 등 일부 서류는 밀봉 제출이 요구될 수 있습니다.",
+      "체류허가 신청자는 국내 체류 중이어야 합니다."
+    ],
+    "manualRefs": [
+      {
+        "manualName": "사증민원",
+        "manualVersion": "2026.5",
+        "pageRange": "매뉴얼 확인 필요",
+        "confidence": "needs_review",
+        "needsManualReview": true
+      },
+      {
+        "manualName": "체류민원",
+        "manualVersion": "2026.5",
+        "pageRange": "매뉴얼 확인 필요",
+        "confidence": "needs_review",
+        "needsManualReview": true
+      }
+    ],
+    "sourceManualStatus": {
+      "visaManualVersion": "2026.5",
+      "stayManualVersion": "2026.5",
+      "verified": false,
+      "needsManualReview": true,
+      "reviewNotes": [
+        "D-2 representative hierarchy uses existing data; D-2-1 through D-2-8 labels still need 2026.5 manual page verification."
+      ]
+    }
   },
   {
     "code": "D-3",
@@ -2921,7 +3652,316 @@
       "doc_income_tax",
       "doc_resident_reg"
     ],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "nameKo": "결혼이민",
+    "nameEn": "Marriage Migrant",
+    "manualDomains": [
+      "visa_issuance",
+      "stay_sojourn"
+    ],
+    "activityScope": "[한국인] 기본/가족/혼인증명, 등본, 소득/주거, 초청장. [외국인] 혼인/출생(공증), 범죄/건강, 한국어.",
+    "stayPeriodCap": "1~3년, 연장가능",
+    "subcodes": [
+      {
+        "code": "F-6-1",
+        "name": "국민배우자",
+        "addReq": "[정상혼인] 혼인관계증명서(상세), 기본증명서, 가족관계증명서, 주민등록등본, 소득 입증, 주거지 입증, 신원보증서, 직업신고서. [별거·이혼소송·실종 시] 혼인관계증명서(상세), 주민등록등본, 자녀 명의 가족관계증명서(자녀 있을 경우), 직업신고서, 체류지 입증서류. 별거 추가: 가출신고서·상해진단서·증거사진·보호시설입소확인서·형사판결문·주변인확인서·공인여성단체확인서 등. 이혼소송 추가: 소제기증명원 등. 실종 추가: 실종선고심판청구서·실종신고서·주변인확인서 등.",
+        "addReqDocs": [
+          "doc_mar_rel",
+          "doc_basic",
+          "doc_fam_rel",
+          "doc_inc_proof",
+          "doc_address",
+          "doc_guarantee",
+          "doc_job_report",
+          "doc_purpose"
+        ],
+        "note": "2026.3 기준 소득요건: 2026년 기준 2인 25,195,752원, 3인 32,154,216원, 4인 38,968,428원, 5인 45,340,314원, 6인 51,335,712원, 7인 57,090,900원, 8인 이상은 1인 증가당 5,755,188원 추가.",
+        "nameKo": "국민배우자",
+        "summary": "2026.3 기준 소득요건: 2026년 기준 2인 25,195,752원, 3인 32,154,216원, 4인 38,968,428원, 5인 45,340,314원, 6인 51,335,712원, 7인 57,090,900원, 8인 이상은 1인 증가당 5,755,188원 추가.",
+        "eligibility": [
+          "[정상혼인] 혼인관계증명서(상세), 기본증명서, 가족관계증명서, 주민등록등본, 소득 입증, 주거지 입증, 신원보증서, 직업신고서. [별거·이혼소송·실종 시] 혼인관계증명서(상세), 주민등록등본, 자녀 명의 가족관계증명서(자녀 있을 경우), 직업신고서, 체류지 입증서류. 별거 추가: 가출신고서·상해진단서·증거사진·보호시설입소확인서·형사판결문·주변인확인서·공인여성단체확인서 등. 이혼소송 추가: 소제기증명원 등. 실종 추가: 실종선고심판청구서·실종신고서·주변인확인서 등."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "F-6-2",
+        "name": "자녀양육자",
+        "addReq": "① 신청서(별지 제34호 서식), 여권, 수수료 ② 자녀 명의 기본증명서·가족관계증명서(자녀가 국민인 경우) ③ 자녀 양육 계속 입증서류(학비 영수증, 자녀 병원비 영수증 등) ④ 외국인 직업 신고서 ⑤ 체류지 입증서류.",
+        "addReqDocs": [
+          "doc_app_form",
+          "doc_passport",
+          "doc_fee",
+          "doc_basic",
+          "doc_fam_rel",
+          "doc_purpose",
+          "doc_job_report",
+          "doc_address"
+        ],
+        "note": "체류민원 매뉴얼 2026.3월 기준.",
+        "nameKo": "자녀양육자",
+        "summary": "체류민원 매뉴얼 2026.3월 기준.",
+        "eligibility": [
+          "① 신청서(별지 제34호 서식), 여권, 수수료 ② 자녀 명의 기본증명서·가족관계증명서(자녀가 국민인 경우) ③ 자녀 양육 계속 입증서류(학비 영수증, 자녀 병원비 영수증 등) ④ 외국인 직업 신고서 ⑤ 체류지 입증서류."
+        ],
+        "manualRefs": []
+      },
+      {
+        "code": "F-6-3",
+        "name": "혼인단절자(배우자 사망)",
+        "addReq": "① 신청서(별지 제34호 서식), 여권, 외국인등록증, 수수료 ② 배우자 사망 입증서류(사망진단서, 사망 기재 기본증명서 등) ③ 가족관계 입증서류(혼인관계증명서(상세) 등) ④ 자녀 명의 가족관계증명서(자녀 있을 경우) ⑤ 외국인 직업 신고서 ⑥ 체류지 입증서류.",
+        "addReqDocs": [
+          "doc_app_form",
+          "doc_passport",
+          "doc_id",
+          "doc_fee",
+          "doc_basic",
+          "doc_mar_rel",
+          "doc_fam_rel",
+          "doc_job_report",
+          "doc_address"
+        ],
+        "note": "제25조의2 적용. 가정폭력 피해 시 고소장·보호명령·상담소 확인서 등 추가 제출. 체류민원 매뉴얼 2026.3월 기준.",
+        "nameKo": "혼인단절자(배우자 사망)",
+        "summary": "제25조의2 적용. 가정폭력 피해 시 고소장·보호명령·상담소 확인서 등 추가 제출. 체류민원 매뉴얼 2026.3월 기준.",
+        "eligibility": [
+          "① 신청서(별지 제34호 서식), 여권, 외국인등록증, 수수료 ② 배우자 사망 입증서류(사망진단서, 사망 기재 기본증명서 등) ③ 가족관계 입증서류(혼인관계증명서(상세) 등) ④ 자녀 명의 가족관계증명서(자녀 있을 경우) ⑤ 외국인 직업 신고서 ⑥ 체류지 입증서류."
+        ],
+        "manualRefs": []
+      }
+    ],
+    "procedures": {
+      "visaIssuance": {
+        "available": true,
+        "summary": "[한국인] 기본/가족/혼인증명, 등본, 소득/주거, 초청장. [외국인] 혼인/출생(공증), 범죄/건강, 한국어.",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [
+            "doc_basic",
+            "doc_fam_rel",
+            "doc_mar_rel",
+            "doc_inc_proof",
+            "doc_address",
+            "doc_invitation",
+            "doc_crim",
+            "doc_health",
+            "doc_topik"
+          ],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "사증민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "extension": {
+        "available": true,
+        "summary": "[F-6-1 정상혼인 연장] ① 신청서(별지 제34호 서식), 여권, 외국인등록증, 표준규격사진 1매, 수수료(3만원) ② 한국인 배우자 혼인관계증명서(상세)·기본증명서·가족관계증명서·주민등록등본 ③ 소득 입증서류(소득금액증명 등) ④ 주거지 입증서류(임대차계약서 등) ⑤ 신원보증서(보증기간 남아있으면 생략 가능) ⑥ 외국인 직업 신고서 ⑦ 체류지 입증서류.",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [
+            "doc_app_form",
+            "doc_passport",
+            "doc_id",
+            "doc_photo",
+            "doc_fee",
+            "doc_mar_rel",
+            "doc_basic",
+            "doc_fam_rel",
+            "doc_inc_proof",
+            "doc_address",
+            "doc_guarantee",
+            "doc_job_report",
+            "doc_credit_report",
+            "doc_income_tax",
+            "doc_resident_reg"
+          ],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "statusChange": {
+        "available": true,
+        "summary": "체류자격 변경 전용 서류는 매뉴얼 확인 필요",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "F-6 변경 가능 여부와 전용 서류는 세부 사유별 확인이 필요합니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "statusGrant": {
+        "available": true,
+        "summary": "체류자격 부여 대상과 서류는 매뉴얼 확인 필요",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "대표 데이터에서 전용 구비서류를 확정하지 않습니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "registration": {
+        "available": true,
+        "summary": "외국인등록 절차 및 제출서류는 체류민원 매뉴얼 확인 필요",
+        "requiredDocs": {
+          "commonDocs": [
+            "doc_app_form",
+            "doc_passport",
+            "doc_photo",
+            "doc_address"
+          ],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "대표 공통서류만 표시하며 F-6 세부 등록서류는 매뉴얼 확인 필요입니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "activitiesOutsideStatus": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "workplaceChange": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "reentry": {
+        "available": true,
+        "summary": "재입국 절차는 체류 이력과 허가 상태에 따라 확인 필요",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "대표 데이터에서 전용 구비서류를 확정하지 않습니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      }
+    },
+    "commonWarnings": [
+      "서류는 심사 과정에서 가감될 수 있습니다.",
+      "국내 발급 서류는 별도 규정이 없으면 발급일로부터 3개월 이내 자료를 원칙으로 확인합니다.",
+      "이미 제출되어 기록에 보관 중인 서류는 생략될 수 있습니다.",
+      "공동이용 가능한 행정정보는 제출 생략 가능하나, 동의하지 않으면 제출이 필요할 수 있습니다.",
+      "건강진단서 등 일부 서류는 밀봉 제출이 요구될 수 있습니다.",
+      "체류허가 신청자는 국내 체류 중이어야 합니다."
+    ],
+    "manualRefs": [
+      {
+        "manualName": "사증민원",
+        "manualVersion": "2026.5",
+        "pageRange": "매뉴얼 확인 필요",
+        "confidence": "needs_review",
+        "needsManualReview": true
+      },
+      {
+        "manualName": "체류민원",
+        "manualVersion": "2026.5",
+        "pageRange": "매뉴얼 확인 필요",
+        "confidence": "needs_review",
+        "needsManualReview": true
+      }
+    ],
+    "sourceManualStatus": {
+      "visaManualVersion": "2026.5",
+      "stayManualVersion": "2026.5",
+      "verified": false,
+      "needsManualReview": true,
+      "reviewNotes": [
+        "F-6 representative hierarchy uses existing data; F-6-1 through F-6-3 details still need 2026.5 manual page verification."
+      ]
+    }
   },
   {
     "code": "G-1",
@@ -3386,7 +4426,229 @@
     ],
     "changeReqDocs": [
       "doc_purpose"
-    ]
+    ],
+    "nameKo": "K-STAR 비자트랙",
+    "nameEn": "K-STAR Visa Track",
+    "manualDomains": [
+      "visa_issuance",
+      "stay_sojourn"
+    ],
+    "activityScope": "K-STAR 지정요건 충족 여부 및 관계기관 확인 필요.",
+    "stayPeriodCap": "시범사업 기준 적용",
+    "subcodes": [],
+    "procedures": {
+      "visaIssuance": {
+        "available": true,
+        "summary": "K-STAR 지정요건 충족 여부 및 관계기관 확인 필요.",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [
+            "doc_purpose",
+            "doc_emp_recom"
+          ],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "K-STAR 세부 요건은 지정 트랙 및 관계기관 확인이 필요합니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "사증민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "extension": {
+        "available": true,
+        "summary": "시범사업 운영기준에 따른 연장 심사.",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [
+            "doc_purpose",
+            "doc_inc_proof"
+          ],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "statusChange": {
+        "available": true,
+        "summary": "체류자격 변경 전용 서류는 매뉴얼 확인 필요",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [
+            "doc_purpose"
+          ],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "대표 데이터에서 변경 가능 요건을 확정하지 않습니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "statusGrant": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "registration": {
+        "available": true,
+        "summary": "외국인등록 절차 및 제출서류는 체류민원 매뉴얼 확인 필요",
+        "requiredDocs": {
+          "commonDocs": [
+            "doc_app_form",
+            "doc_passport",
+            "doc_photo",
+            "doc_address"
+          ],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "대표 공통서류만 표시합니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "activitiesOutsideStatus": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "workplaceChange": {
+        "available": false,
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      },
+      "reentry": {
+        "available": true,
+        "summary": "재입국 절차는 체류 이력과 허가 상태에 따라 확인 필요",
+        "requiredDocs": {
+          "commonDocs": [],
+          "requiredDocs": [],
+          "additionalDocs": [],
+          "conditionalDocs": []
+        },
+        "notes": [
+          "대표 데이터에서 전용 구비서류를 확정하지 않습니다."
+        ],
+        "manualRefs": [
+          {
+            "manualName": "체류민원",
+            "manualVersion": "2026.5",
+            "pageRange": "매뉴얼 확인 필요",
+            "confidence": "needs_review",
+            "needsManualReview": true
+          }
+        ]
+      }
+    },
+    "commonWarnings": [
+      "서류는 심사 과정에서 가감될 수 있습니다.",
+      "국내 발급 서류는 별도 규정이 없으면 발급일로부터 3개월 이내 자료를 원칙으로 확인합니다.",
+      "이미 제출되어 기록에 보관 중인 서류는 생략될 수 있습니다.",
+      "공동이용 가능한 행정정보는 제출 생략 가능하나, 동의하지 않으면 제출이 필요할 수 있습니다.",
+      "건강진단서 등 일부 서류는 밀봉 제출이 요구될 수 있습니다.",
+      "체류허가 신청자는 국내 체류 중이어야 합니다."
+    ],
+    "manualRefs": [
+      {
+        "manualName": "사증민원",
+        "manualVersion": "2026.5",
+        "pageRange": "매뉴얼 확인 필요",
+        "confidence": "needs_review",
+        "needsManualReview": true
+      },
+      {
+        "manualName": "체류민원",
+        "manualVersion": "2026.5",
+        "pageRange": "매뉴얼 확인 필요",
+        "confidence": "needs_review",
+        "needsManualReview": true
+      }
+    ],
+    "sourceManualStatus": {
+      "visaManualVersion": "2026.5",
+      "stayManualVersion": "2026.5",
+      "verified": false,
+      "needsManualReview": true,
+      "reviewNotes": [
+        "K-STAR is present as a representative special-track record; full 2026.5 manual verification is deferred."
+      ]
+    }
   },
   {
     "code": "REGION-S",
