@@ -2709,11 +2709,7 @@ body:not(.searched) .brand-wordmark-img {
   box-shadow: 0 10px 28px rgba(224, 81, 62, 0.14);
 }
 .ai-fab::after {
-  content: '.ai';
-  color: var(--color-accent-deep);
-  font-size: 0.74em;
-  font-weight: 800;
-  margin-left: -0.1rem;
+  content: none;
 }
 .ai-fab:hover {
   background: color-mix(in srgb, var(--color-accent-soft) 32%, var(--bg1));
@@ -2829,6 +2825,169 @@ body:not(.searched) .figma-footer-hero { border-radius: 18px; overflow: clip; }
 @media (max-width: 768px) {
   body:not(.searched) .hero-container { padding-top: 4.2rem; }
   body:not(.searched) .brand-wordmark-img { max-width: 94vw !important; }
+}
+
+/* Review polish: simplify landing art direction and improve contrast */
+body:not(.searched) {
+  background:
+    linear-gradient(180deg, #f7f3eb 0%, #eef7f3 42%, #fff8f3 100%) !important;
+}
+body:not(.searched) #starCanvas {
+  opacity: 0 !important;
+}
+body:not(.searched) .brand-hero {
+  min-height: clamp(44rem, 92vh, 58rem);
+  padding: clamp(5rem, 10vw, 8rem) clamp(1rem, 5vw, 4rem) clamp(4rem, 8vw, 7rem) !important;
+  border-radius: 0 !important;
+  background-image:
+    linear-gradient(180deg, rgba(3, 24, 22, 0.62), rgba(3, 24, 22, 0.36) 42%, rgba(3, 24, 22, 0.68)),
+    var(--jeju-brand-field) !important;
+  background-position: center 44% !important;
+  background-size: cover !important;
+}
+body:not(.searched) .brand-hero-headline,
+body:not(.searched) .brand-hero-subtitle {
+  text-shadow: 0 4px 22px rgba(0, 0, 0, 0.42);
+}
+body:not(.searched) .brand-hero-buttons .btn-primary,
+body:not(.searched) .brand-hero-buttons .btn-secondary {
+  min-height: 56px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.48);
+  color: #fff !important;
+  background: rgba(4, 28, 25, 0.44);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.24);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+body:not(.searched) .brand-hero-buttons .btn-primary {
+  background: rgba(255, 107, 91, 0.92);
+  border-color: rgba(255,255,255,0.34);
+}
+body:not(.searched) .brand-hero-stats.figma-stat-grid {
+  background: rgba(255,255,255,0.94) !important;
+  border: 1px solid rgba(255,255,255,0.68) !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.18) !important;
+  transform: translateY(clamp(2rem, 4vw, 3.25rem));
+}
+body:not(.searched) .brand-hero-stats .stat-card {
+  background: transparent !important;
+  border-color: rgba(8, 94, 72, 0.10) !important;
+}
+body:not(.searched) .brand-hero-stats :is(.stat-label, .stat-label span) {
+  color: var(--color-primary-ink, #085E48) !important;
+}
+body:not(.searched) .brand-hero-stats .stat-num {
+  color: var(--color-accent, #FF6B5B) !important;
+}
+body:not(.searched) .brand-hero-stats .stat-code-chip {
+  background: rgba(255,255,255,0.92) !important;
+  border: 1px solid rgba(8, 94, 72, 0.14) !important;
+  color: #0b5f50 !important;
+  box-shadow: 0 2px 8px rgba(8, 94, 72, 0.06);
+}
+body:not(.searched) .figma-stat-note {
+  display: none !important;
+}
+body:not(.searched) .hero-ai-secondary {
+  display: none !important;
+}
+.ai-fab {
+  min-height: 48px;
+  max-width: min(360px, calc(100vw - 2rem));
+  padding: 0.72rem 1.05rem;
+  border: 1px solid rgba(255, 107, 91, 0.42);
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--color-primary-ink, #085E48);
+  box-shadow: 0 18px 46px rgba(8, 94, 72, 0.16);
+}
+.ai-fab strong {
+  color: var(--color-accent, #FF6B5B);
+}
+.ai-fab .fab-spark {
+  color: var(--color-accent, #FF6B5B);
+}
+body:not(.searched) .figma-anagram-section #anagram-bot .anagram-letter,
+.figma-anagram-section .anagram-letter.anagram-bot {
+  color: var(--color-accent, #FF6B5B) !important;
+  text-shadow: 0 8px 22px rgba(255, 107, 91, 0.18);
+}
+body:not(.searched) .figma-anagram-section #anagram-bot .anagram-letter.active,
+.figma-anagram-section .anagram-letter.anagram-bot.active {
+  color: var(--color-accent-deep, #E0513E) !important;
+}
+body:not(.searched) .figma-anagram-section {
+  padding-bottom: clamp(2rem, 5vw, 3rem) !important;
+}
+body:not(.searched) .figma-roadmap-section {
+  max-width: 980px;
+  margin: clamp(1rem, 4vw, 2.5rem) auto 0;
+  padding: clamp(2.5rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 3rem) !important;
+}
+body:not(.searched) .figma-roadmap-section .exp-heading {
+  margin-bottom: 0.4rem;
+}
+body:not(.searched) .figma-roadmap-note {
+  margin: 0 0 2rem;
+}
+body:not(.searched) .figma-roadmap-section .exp-row {
+  padding: 1.4rem 0;
+  align-items: start;
+}
+body:not(.searched) .figma-footer-chips .footer-chip {
+  background: rgba(255,255,255,0.90) !important;
+  border-color: rgba(255,255,255,0.72) !important;
+  color: var(--color-primary-ink, #085E48) !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.16);
+}
+body:not(.searched) .figma-footer-actions .figma-footer-btn,
+body:not(.searched) .figma-footer-actions .figma-footer-btn-secondary {
+  min-height: 56px;
+  border-radius: 999px;
+  font-weight: 900;
+}
+body:not(.searched) .figma-footer-actions .figma-footer-btn-secondary {
+  background: rgba(255,255,255,0.90);
+  color: var(--color-primary-ink, #085E48) !important;
+  border-color: rgba(255,255,255,0.66);
+}
+@media (max-width: 720px) {
+  body:not(.searched) .brand-hero {
+    min-height: auto;
+    padding-top: 5rem !important;
+  }
+  body:not(.searched) .brand-hero-stats.figma-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    transform: translateY(1.5rem);
+    padding: 1.25rem 0.8rem !important;
+  }
+  body:not(.searched) .brand-hero-stats .stat-card {
+    padding: 1.2rem 0.55rem !important;
+  }
+  body:not(.searched) .brand-hero-stats .stat-codes {
+    gap: 0.35rem;
+  }
+  body:not(.searched) .brand-hero-stats .stat-code-chip {
+    font-size: 0.72rem;
+    padding: 0.18rem 0.48rem;
+  }
+  .ai-fab {
+    right: 0.9rem;
+    bottom: 0.9rem;
+    max-width: calc(100vw - 1.8rem);
+    font-size: 0.78rem;
+  }
+  body:not(.searched) .figma-roadmap-section {
+    padding: 2rem 1rem !important;
+  }
+  body:not(.searched) .figma-footer-chips {
+    align-items: stretch;
+    width: 100%;
+  }
+  body:not(.searched) .figma-footer-chips .footer-chip {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 </style>
@@ -3035,7 +3194,6 @@ body:not(.searched) .figma-footer-hero { border-radius: 18px; overflow: clip; }
                 </div>
             </div>
         </div>
-        <p class="figma-stat-note" aria-label="카테고리 분류 안내">위 카테고리 구분은 서비스 내부 탐색을 돕기 위한 그룹핑이며, 출입국관리법령상의 공식 분류와 다를 수 있습니다.</p>
     </section>
 
     <div class="section-divider" aria-hidden="true"></div>
@@ -3109,11 +3267,7 @@ body:not(.searched) .figma-footer-hero { border-radius: 18px; overflow: clip; }
                 <ul class="philosophy-list">
                     <li><strong><span class="brand-story-paradiso">Paradiso</span></strong> — 이탈리아어 "낙원(Paradise)". 한국에서의 체류가 모두에게 머무를 만한 곳이기를 바랍니다.</li>
                     <li><strong>Diaspora (애너그램)</strong> — 'Paradiso'는 이주민을 뜻하는 영단어 'Diaspora'의 알파벳 8개를 재배열(Anagram)한 단어입니다. 고국을 떠나온 이주민들이 대한민국에서 안정적인 정주 환경을 영위할 수 있도록 돕고자 하는 지향점을 담았습니다.</li>
-</ul>
-                <div class="figma-highlight-box">
-                    <p>300만 체류 외국인 시대를 함께 준비합니다.</p>
-                </div>
-                <p class="brand-disclaimer">출입국·외국인정책본부 매뉴얼을 1차 출처로 참고하며, 최종 판단과 신청 절차는 관할 출입국·외국인관서 및 1345 외국인종합안내센터 안내를 확인하세요.</p>
+                </ul>
             </div>
         </div>
 
@@ -3387,7 +3541,7 @@ body:not(.searched) .figma-footer-hero { border-radius: 18px; overflow: clip; }
     <span class="ft-logo">Paradiso</span> v38 · ※ 본 서비스는 베타 테스트 중이며, 제공되는 정보는 법적 효력을 갖지 않습니다. 정확한 정보는 반드시 1345(외국인종합안내센터)에 확인하시기 바랍니다.
 </footer>
 
-<a href="ai.html" class="ai-fab"><span class="fab-spark" aria-hidden="true">✦</span> Paradiso AI</a>
+<a href="ai.html" class="ai-fab"><span class="fab-spark" aria-hidden="true">✦</span> AI로 더 자세히 묻기 <strong>Paradiso.ai</strong></a>
 
 <script>
 // --- UI Helpers ---
