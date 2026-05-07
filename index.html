@@ -2749,6 +2749,38 @@ body:not(.searched) .hero-container::before { transform: none; animation: none; 
   .brand-hero, .about-me, .figma-start-section, .figma-footer-section { padding-left: 1rem; padding-right: 1rem; }
 }
 
+/* Figma-index polish: landing readability + visual rhythm */
+body:not(.searched) .hero-container {
+  padding-top: clamp(5.2rem, 11vh, 8rem);
+  padding-bottom: clamp(2.8rem, 7vh, 5.2rem);
+}
+body:not(.searched) .header-inner { max-width: min(1100px, 92vw); gap: clamp(1.2rem, 2.5vw, 2rem); }
+body:not(.searched) .search-wrap,
+body:not(.searched) .hero-actions,
+body:not(.searched) .qa-main,
+body:not(.searched) #visaManualSection { max-width: min(860px, 100%); }
+body:not(.searched) .sbar {
+  background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.08));
+  border: 1px solid rgba(255,255,255,0.32);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.34);
+}
+body:not(.searched) .hero-action-btn {
+  background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+  border-color: rgba(255,255,255,0.28);
+  box-shadow: 0 8px 28px rgba(12,22,33,0.28);
+}
+body:not(.searched) .qa-main { gap: 0.7rem; }
+body:not(.searched) .qa-main .hero-action-btn { min-height: 50px; }
+body:not(.searched) .brand-feature,
+body:not(.searched) .about-me,
+body:not(.searched) .figma-start-section,
+body:not(.searched) .figma-anagram-section,
+body:not(.searched) .figma-footer-hero { border-radius: 18px; overflow: clip; }
+@media (max-width: 768px) {
+  body:not(.searched) .hero-container { padding-top: 4.2rem; }
+  body:not(.searched) .brand-wordmark-img { max-width: 94vw !important; }
+}
+
 </style>
 </head>
 <body class="landing" data-theme="light">
