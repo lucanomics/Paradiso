@@ -8,6 +8,7 @@ echo "[2/4] Validating representative manual-aware visa schema..."
 python3 - <<'PY'
 import json
 import sys
+import re
 
 with open("visa_data.json", encoding="utf-8") as f:
     visas = json.load(f)
@@ -43,6 +44,29 @@ for code in required:
         for doc_ref in iter_doc_refs((proc or {}).get("requiredDocs", [])):
             if isinstance(doc_ref, str) and doc_ref.startswith("doc_") and doc_ref not in doc_ids:
                 errors.append(f"{code}.{proc_name}: unknown doc_master id {doc_ref}")
+
+status_code_re = re.compile(r"^(?:[A-H]-\d|K-STAR$|REGION-S$)")
+for record in visas:
+    code = record.get("code")
+    if not isinstance(code, str) or not status_code_re.match(code):
+        continue
+    procedures = record.get("procedures") or {}
+    audit = record.get("manualRequiredDocAudit")
+    for proc_name in ("extension", "registration"):
+        proc = procedures.get(proc_name)
+        if not isinstance(proc, dict):
+            errors.append(f"{code}: missing procedures.{proc_name}")
+            continue
+        refs = proc.get("manualRefs")
+        docs_group = proc.get("requiredDocs")
+        if not isinstance(refs, list) or not refs:
+            errors.append(f"{code}.{proc_name}: missing manualRefs")
+        if not isinstance(docs_group, dict) or not isinstance(docs_group.get("requiredDocs"), list):
+            errors.append(f"{code}.{proc_name}: requiredDocs.requiredDocs must be a list")
+    if not isinstance(audit, dict):
+        errors.append(f"{code}: missing manualRequiredDocAudit")
+    elif audit.get("manualVersion") != "2026.5":
+        errors.append(f"{code}: manualRequiredDocAudit.manualVersion must be 2026.5")
 
 if errors:
     raise SystemExit("\\n".join(errors))
