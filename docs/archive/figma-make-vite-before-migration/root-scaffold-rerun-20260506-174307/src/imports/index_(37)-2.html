@@ -998,56 +998,6 @@ body.searched .section-divider { display: none; }
 .visa-step-header p { font-size: 0.9rem; color: var(--t3); }
 .visa-search-box { background: var(--bg2); border-radius: 12px; padding: 1.2rem; border: 1px solid var(--bd); }
 
-/* Manual-based result interface */
-.vc.manual-result { border-radius: 8px; overflow: clip; }
-.manual-result .vc-h { align-items: flex-start; gap: 0.8rem; border-radius: 0; }
-.manual-head-main { display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; min-width: 0; flex: 1; }
-.manual-title-stack { min-width: 0; }
-.manual-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; min-width: 0; }
-.manual-name-ko { font-size: 1.04rem; font-weight: 850; color: var(--t1); line-height: 1.35; word-break: keep-all; }
-.manual-name-en { margin-top: 0.15rem; font-size: 0.78rem; color: var(--t3); line-height: 1.35; }
-.manual-badges { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.5rem; }
-.manual-badge { display: inline-flex; align-items: center; min-height: 24px; padding: 0 0.55rem; border-radius: 999px; border: 1px solid var(--bd2); background: var(--bg2); color: var(--t2); font-size: 0.7rem; font-weight: 800; line-height: 1; white-space: nowrap; }
-.manual-badge.domain-visa { border-color: color-mix(in srgb, var(--ac) 28%, var(--bd)); color: var(--ac); background: color-mix(in srgb, var(--ac) 10%, transparent); }
-.manual-badge.domain-stay { border-color: color-mix(in srgb, var(--cy) 28%, var(--bd)); color: var(--hlT); background: color-mix(in srgb, var(--cy) 12%, transparent); }
-.manual-badge.review-needed { border-color: color-mix(in srgb, var(--color-warning) 35%, var(--bd)); color: #8a4b0f; background: color-mix(in srgb, var(--color-warning) 13%, transparent); }
-.manual-badge.review-ok { border-color: color-mix(in srgb, var(--color-success) 35%, var(--bd)); color: var(--color-primary-ink); background: color-mix(in srgb, var(--color-success) 12%, transparent); }
-.manual-layout { display: grid; gap: 1rem; padding: 0.2rem 1rem 1.1rem; }
-.manual-section { background: transparent; border: 1px solid var(--bd2); border-radius: 8px; padding: 0.95rem; }
-.manual-section-title { margin: 0 0 0.65rem; font-size: 0.82rem; font-weight: 900; color: var(--t1); letter-spacing: 0; }
-.manual-subcode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: 0.55rem; }
-.manual-subcode-card { border: 1px solid var(--bd2); background: var(--bg1); border-radius: 8px; padding: 0.7rem; min-width: 0; }
-.manual-subcode-card.match { border-color: var(--ac); background: color-mix(in srgb, var(--ac) 9%, var(--bg1)); box-shadow: inset 3px 0 0 var(--ac); }
-.manual-subcode-top { display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.35rem; }
-.manual-subcode-code { font-weight: 900; color: var(--ac); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.manual-subcode-name { font-size: 0.82rem; font-weight: 800; color: var(--t1); word-break: keep-all; }
-.manual-subcode-desc { font-size: 0.77rem; color: var(--t2); line-height: 1.5; word-break: keep-all; }
-.procedure-tabs { display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.25rem; scrollbar-width: thin; }
-.procedure-tab { flex: 0 0 auto; min-height: 34px; border: 1px solid var(--bd2); background: var(--bg1); color: var(--t2); border-radius: 999px; padding: 0 0.75rem; font: inherit; font-size: 0.76rem; font-weight: 850; cursor: pointer; transition: var(--btn-tr); white-space: nowrap; }
-.procedure-tab:hover:not(:disabled) { border-color: var(--ac); color: var(--ac); background: var(--acL); }
-.procedure-tab.active { background: var(--ac); border-color: var(--ac); color: #fff; }
-.procedure-tab:disabled { opacity: 0.45; cursor: not-allowed; }
-.procedure-panel { display: none; border-top: 1px dashed var(--bd2); margin-top: 0.75rem; padding-top: 0.85rem; }
-.procedure-panel.active { display: block; }
-.procedure-summary { margin-bottom: 0.75rem; color: var(--t2); font-size: 0.84rem; line-height: 1.65; }
-.doc-group-grid { display: grid; gap: 0.75rem; }
-.doc-group-title { margin: 0 0 0.45rem; color: var(--t1); font-size: 0.76rem; font-weight: 900; }
-.doc-group-empty { border: 1px dashed var(--bd2); border-radius: 8px; padding: 0.75rem; color: var(--t3); font-size: 0.8rem; background: var(--bg0); }
-.manual-warning-box, .manual-source-box { border-radius: 8px; padding: 0.9rem; font-size: 0.8rem; line-height: 1.65; }
-.manual-warning-box { border: 1px solid color-mix(in srgb, var(--color-warning) 28%, var(--bd)); background: color-mix(in srgb, var(--color-warning) 9%, var(--bg1)); color: var(--t2); }
-.manual-source-box { border: 1px solid var(--bd2); background: var(--bg0); color: var(--t2); }
-.manual-warning-box ul, .manual-source-box ul { margin: 0.35rem 0 0; padding-left: 1.1rem; }
-.manual-source-title { font-weight: 900; color: var(--t1); margin-bottom: 0.35rem; }
-.manual-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-@media (max-width: 640px) {
-    .manual-head-main { grid-template-columns: 1fr; gap: 0.5rem; }
-    .manual-result .vc-h { padding: 1rem; }
-    .manual-layout { padding: 0.1rem 0.7rem 0.9rem; }
-    .manual-section { padding: 0.8rem; }
-    .procedure-tabs { margin-left: -0.1rem; margin-right: -0.1rem; }
-    .procedure-tab { font-size: 0.72rem; padding: 0 0.65rem; }
-}
-
 /* Ambient Glow */
 body::before {
   content: '';
@@ -2537,459 +2487,6 @@ body:not(.searched) :is(
   color: var(--color-primary-ink, #132f2a) !important;
 }
 
-
-/* Phase 13: modernize searched-state header and results interface */
-body.searched .hero-container {
-  min-height: 72px !important;
-  padding: 0 !important;
-  background:
-    linear-gradient(135deg,
-      rgba(252, 250, 245, 0.94),
-      rgba(232, 244, 238, 0.90)
-    ) !important;
-  border-bottom: 1px solid rgba(8, 94, 72, 0.13) !important;
-  box-shadow:
-    0 10px 30px rgba(8, 94, 72, 0.07),
-    0 1px 0 rgba(255, 255, 255, 0.70) inset !important;
-  backdrop-filter: blur(18px) saturate(1.06) !important;
-  -webkit-backdrop-filter: blur(18px) saturate(1.06) !important;
-}
-
-body.searched .header-inner {
-  max-width: 1180px !important;
-  padding: 0.65rem 1.2rem !important;
-  gap: 1rem !important;
-}
-
-/* Hide legacy searched-state animated/text logo */
-body.searched .logo-svg,
-body.searched .logo-brand,
-body.searched .logo-sub,
-body.searched .logo-text {
-  display: none !important;
-}
-
-/* Use the brush wordmark in searched state too, with a dark civic capsule for contrast */
-body.searched .logo-area {
-  display: inline-flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-width: 132px !important;
-  height: 42px !important;
-  padding: 0.38rem 0.72rem !important;
-  border-radius: 999px !important;
-  background:
-    linear-gradient(135deg, rgba(5, 72, 58, 0.96), rgba(8, 94, 72, 0.88)) !important;
-  border: 1px solid rgba(255, 255, 255, 0.22) !important;
-  box-shadow:
-    0 10px 24px rgba(8, 94, 72, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
-}
-
-body.searched .brand-wordmark-img {
-  display: block !important;
-  height: 26px !important;
-  width: auto !important;
-  max-width: 118px !important;
-  object-fit: contain !important;
-  filter:
-    drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25))
-    drop-shadow(0 0 8px rgba(255, 255, 255, 0.12)) !important;
-}
-
-/* Refine searched-state search bar */
-body.searched .search-wrap {
-  max-width: 540px !important;
-}
-
-body.searched .sbar {
-  background:
-    linear-gradient(135deg, rgba(255,255,255,0.92), rgba(252,250,245,0.82)) !important;
-  border: 1px solid rgba(8, 94, 72, 0.15) !important;
-  border-radius: 999px !important;
-  box-shadow:
-    0 8px 24px rgba(8, 94, 72, 0.08),
-    inset 0 1px 0 rgba(255,255,255,0.82) !important;
-}
-
-body.searched .sbar:focus-within {
-  border-color: rgba(14, 163, 123, 0.52) !important;
-  box-shadow:
-    0 0 0 3px rgba(14, 163, 123, 0.16),
-    0 12px 32px rgba(8, 94, 72, 0.12) !important;
-}
-
-body.searched #q {
-  color: var(--color-primary-ink, #085E48) !important;
-}
-
-body.searched #q::placeholder {
-  color: rgba(8, 94, 72, 0.48) !important;
-}
-
-body.searched .ctrls .cb,
-body.searched .cb {
-  background: rgba(255,255,255,0.72) !important;
-  border: 1px solid rgba(8, 94, 72, 0.14) !important;
-  color: var(--color-primary-ink, #085E48) !important;
-  border-radius: 999px !important;
-  box-shadow: 0 4px 14px rgba(8, 94, 72, 0.055) !important;
-}
-
-body.searched .ctrls .cb:hover,
-body.searched .cb:hover {
-  background: rgba(232, 244, 238, 0.92) !important;
-  border-color: rgba(14, 163, 123, 0.42) !important;
-  color: var(--color-primary, #0EA37B) !important;
-}
-
-/* Make searched results feel less like the old mode */
-body.searched .results-area {
-  padding-top: 1.25rem !important;
-}
-
-body.searched .rlist {
-  gap: 0.9rem !important;
-}
-
-body.searched .card,
-body.searched .result-card,
-body.searched .r {
-  background:
-    linear-gradient(135deg, rgba(255,255,255,0.86), rgba(252,250,245,0.74)) !important;
-  border: 1px solid rgba(8, 94, 72, 0.12) !important;
-  box-shadow:
-    0 14px 38px rgba(8, 94, 72, 0.07),
-    inset 0 1px 0 rgba(255,255,255,0.68) !important;
-}
-
-@media (max-width: 720px) {
-  body.searched .hero-container {
-    min-height: auto !important;
-  }
-
-  body.searched .header-inner {
-    align-items: stretch !important;
-    gap: 0.65rem !important;
-    padding: 0.65rem 0.85rem !important;
-  }
-
-  body.searched .logo-area {
-    align-self: flex-start !important;
-    min-width: 112px !important;
-    height: 38px !important;
-  }
-
-  body.searched .brand-wordmark-img {
-    height: 23px !important;
-    max-width: 102px !important;
-  }
-
-  body.searched .search-wrap {
-    max-width: none !important;
-    width: 100% !important;
-  }
-}
-
-
-/* Phase 14: safe Figma handoff integration */
-body:not(.searched) .brand-wordmark-img {
-  height: clamp(76px, 11vw, 132px);
-  max-width: min(92vw, 760px);
-}
-
-.ai-fab {
-  border-radius: 999px;
-  border-color: color-mix(in srgb, var(--color-accent) 36%, var(--bd2));
-  background: color-mix(in srgb, var(--bg1) 90%, white);
-  color: var(--t1);
-  font-weight: 800;
-  letter-spacing: 0.01em;
-  box-shadow: 0 10px 28px rgba(224, 81, 62, 0.14);
-}
-.ai-fab::after {
-  content: none;
-}
-.ai-fab:hover {
-  background: color-mix(in srgb, var(--color-accent-soft) 32%, var(--bg1));
-  border-color: var(--color-accent);
-  color: var(--color-primary-ink);
-  transform: translateY(-2px);
-}
-
-.city-btn {
-  border-radius: 999px;
-  border-color: color-mix(in srgb, var(--ac) 28%, var(--bd));
-  background: color-mix(in srgb, var(--bg1) 85%, white);
-  color: var(--t1);
-  box-shadow: 0 8px 24px rgba(14, 163, 123, 0.10);
-}
-.city-btn:hover {
-  background: color-mix(in srgb, var(--acL) 72%, var(--bg1));
-  border-color: var(--ac);
-  transform: translateY(-1px);
-}
-
-.brand-story-paradiso {
-  font-size: clamp(1.18rem, 2.8vw, 1.62rem);
-  font-weight: 900;
-  letter-spacing: -0.015em;
-  color: color-mix(in srgb, var(--color-accent) 72%, #ff9a3c);
-}
-
-.figma-anagram-section .anagram-visual {
-  background: linear-gradient(145deg, rgba(255,255,255,0.75), color-mix(in srgb, var(--bg0) 90%, #fff));
-  border-color: color-mix(in srgb, var(--color-accent-soft) 42%, rgba(255,255,255,0.7));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 12px 34px rgba(14, 163, 123, 0.10);
-}
-.anagram-row .al {
-  text-shadow: 0 0 0 transparent;
-  transition: color 0.25s, transform 0.25s, text-shadow 0.25s, filter 0.25s;
-}
-.anagram-row.top-row .al.lit,
-.anagram-row.bot-row .al.lit {
-  filter: saturate(1.05) brightness(1.02);
-}
-.anagram-label {
-  color: color-mix(in srgb, var(--t3) 70%, var(--color-accent));
-}
-
-body:not(.searched) .figma-stat-grid .stat-card,
-body:not(.searched) .figma-value-card,
-body:not(.searched) .about-brand {
-  background: color-mix(in srgb, var(--bg1) 92%, white);
-  border-color: color-mix(in srgb, var(--ac) 16%, var(--bd2));
-}
-body:not(.searched) .figma-stat-grid .stat-card:hover,
-body:not(.searched) .figma-value-card:hover {
-  box-shadow: 0 12px 28px rgba(31, 107, 94, 0.12);
-}
-
-@media (max-width: 640px) {
-  body:not(.searched) .brand-wordmark-img {
-    height: clamp(68px, 15vw, 98px);
-    max-width: 94vw;
-  }
-}
-
-
-/* UI stability refinements: keep decorations behind content and prevent scroll jank */
-body:not(.searched) .qa-main { align-items: stretch; }
-body:not(.searched) .hero-action-label { line-height: 1.45; word-break: keep-all; }
-body:not(.searched) .hero-ai-secondary { width: 100%; max-width: 680px; margin-top: 0.85rem; text-align: center; }
-body:not(.searched) .hero-ai-link { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.58rem 0.9rem; border-radius: 999px; font-size: 0.82rem; color: rgba(255,255,255,.78); text-decoration: none; border: 1px solid rgba(255,255,255,.20); background: rgba(0,0,0,.14); }
-body:not(.searched) .hero-ai-link:hover { color: #fff; border-color: rgba(255,255,255,.34); background: rgba(0,0,0,.24); }
-
-body:not(.searched) .hero-container::before { transform: none; animation: none; background-repeat: no-repeat, no-repeat, no-repeat, no-repeat; }
-.brand-hero, .figma-footer-hero, .footer-hero-img, .hobby-2 { position: relative; overflow: hidden; }
-.brand-hero::before, .hobby-2::after, .footer-hero-img::before, .figma-footer-hero-overlay, .anagram-svg { pointer-events: none; }
-.brand-hero > *, .figma-footer-hero > *, .footer-hero-img > *, .about-me > * { position: relative; z-index: 2; }
-
-@media (max-width: 980px) {
-  body:not(.searched) .qa-main { grid-template-columns: 1fr; }
-  body:not(.searched) .visa-track-selector { grid-template-columns: 1fr; }
-}
-@media (max-width: 720px) {
-  body:not(.searched) .hero-container { padding-left: 1rem; padding-right: 1rem; }
-  .brand-hero, .about-me, .figma-start-section, .figma-footer-section { padding-left: 1rem; padding-right: 1rem; }
-}
-
-/* Figma-index polish: landing readability + visual rhythm */
-body:not(.searched) .hero-container {
-  padding-top: clamp(5.2rem, 11vh, 8rem);
-  padding-bottom: clamp(2.8rem, 7vh, 5.2rem);
-}
-body:not(.searched) .header-inner { max-width: min(1100px, 92vw); gap: clamp(1.2rem, 2.5vw, 2rem); }
-body:not(.searched) .search-wrap,
-body:not(.searched) .hero-actions,
-body:not(.searched) .qa-main,
-body:not(.searched) #visaManualSection { max-width: min(860px, 100%); }
-body:not(.searched) .sbar {
-  background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.08));
-  border: 1px solid rgba(255,255,255,0.32);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.34);
-}
-body:not(.searched) .hero-action-btn {
-  background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-  border-color: rgba(255,255,255,0.28);
-  box-shadow: 0 8px 28px rgba(12,22,33,0.28);
-}
-body:not(.searched) .qa-main { gap: 0.7rem; }
-body:not(.searched) .qa-main .hero-action-btn { min-height: 50px; }
-body:not(.searched) .brand-feature,
-body:not(.searched) .about-me,
-body:not(.searched) .figma-start-section,
-body:not(.searched) .figma-anagram-section,
-body:not(.searched) .figma-footer-hero { border-radius: 18px; overflow: clip; }
-@media (max-width: 768px) {
-  body:not(.searched) .hero-container { padding-top: 4.2rem; }
-  body:not(.searched) .brand-wordmark-img { max-width: 94vw !important; }
-}
-
-/* Review polish: simplify landing art direction and improve contrast */
-body:not(.searched) {
-  background:
-    linear-gradient(180deg, #f7f3eb 0%, #eef7f3 42%, #fff8f3 100%) !important;
-}
-body:not(.searched) #starCanvas {
-  opacity: 0 !important;
-}
-body:not(.searched) .brand-hero {
-  min-height: clamp(44rem, 92vh, 58rem);
-  padding: clamp(5rem, 10vw, 8rem) clamp(1rem, 5vw, 4rem) clamp(4rem, 8vw, 7rem) !important;
-  border-radius: 0 !important;
-  background-image:
-    linear-gradient(180deg, rgba(3, 24, 22, 0.62), rgba(3, 24, 22, 0.36) 42%, rgba(3, 24, 22, 0.68)),
-    var(--jeju-brand-field) !important;
-  background-position: center 44% !important;
-  background-size: cover !important;
-}
-body:not(.searched) .brand-hero-headline,
-body:not(.searched) .brand-hero-subtitle {
-  text-shadow: 0 4px 22px rgba(0, 0, 0, 0.42);
-}
-body:not(.searched) .brand-hero-buttons .btn-primary,
-body:not(.searched) .brand-hero-buttons .btn-secondary {
-  min-height: 56px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.48);
-  color: #fff !important;
-  background: rgba(4, 28, 25, 0.44);
-  box-shadow: 0 14px 32px rgba(0,0,0,0.24);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-body:not(.searched) .brand-hero-buttons .btn-primary {
-  background: rgba(255, 107, 91, 0.92);
-  border-color: rgba(255,255,255,0.34);
-}
-body:not(.searched) .brand-hero-stats.figma-stat-grid {
-  background: rgba(255,255,255,0.94) !important;
-  border: 1px solid rgba(255,255,255,0.68) !important;
-  box-shadow: 0 24px 70px rgba(0,0,0,0.18) !important;
-  transform: translateY(clamp(2rem, 4vw, 3.25rem));
-}
-body:not(.searched) .brand-hero-stats .stat-card {
-  background: transparent !important;
-  border-color: rgba(8, 94, 72, 0.10) !important;
-}
-body:not(.searched) .brand-hero-stats :is(.stat-label, .stat-label span) {
-  color: var(--color-primary-ink, #085E48) !important;
-}
-body:not(.searched) .brand-hero-stats .stat-num {
-  color: var(--color-accent, #FF6B5B) !important;
-}
-body:not(.searched) .brand-hero-stats .stat-code-chip {
-  background: rgba(255,255,255,0.92) !important;
-  border: 1px solid rgba(8, 94, 72, 0.14) !important;
-  color: #0b5f50 !important;
-  box-shadow: 0 2px 8px rgba(8, 94, 72, 0.06);
-}
-body:not(.searched) .figma-stat-note {
-  display: none !important;
-}
-body:not(.searched) .hero-ai-secondary {
-  display: none !important;
-}
-.ai-fab {
-  min-height: 48px;
-  max-width: min(360px, calc(100vw - 2rem));
-  padding: 0.72rem 1.05rem;
-  border: 1px solid rgba(255, 107, 91, 0.42);
-  background: rgba(255, 255, 255, 0.94);
-  color: var(--color-primary-ink, #085E48);
-  box-shadow: 0 18px 46px rgba(8, 94, 72, 0.16);
-}
-.ai-fab strong {
-  color: var(--color-accent, #FF6B5B);
-}
-.ai-fab .fab-spark {
-  color: var(--color-accent, #FF6B5B);
-}
-body:not(.searched) .figma-anagram-section #anagram-bot .anagram-letter,
-.figma-anagram-section .anagram-letter.anagram-bot {
-  color: var(--color-accent, #FF6B5B) !important;
-  text-shadow: 0 8px 22px rgba(255, 107, 91, 0.18);
-}
-body:not(.searched) .figma-anagram-section #anagram-bot .anagram-letter.active,
-.figma-anagram-section .anagram-letter.anagram-bot.active {
-  color: var(--color-accent-deep, #E0513E) !important;
-}
-body:not(.searched) .figma-anagram-section {
-  padding-bottom: clamp(2rem, 5vw, 3rem) !important;
-}
-body:not(.searched) .figma-roadmap-section {
-  max-width: 980px;
-  margin: clamp(1rem, 4vw, 2.5rem) auto 0;
-  padding: clamp(2.5rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 3rem) !important;
-}
-body:not(.searched) .figma-roadmap-section .exp-heading {
-  margin-bottom: 0.4rem;
-}
-body:not(.searched) .figma-roadmap-note {
-  margin: 0 0 2rem;
-}
-body:not(.searched) .figma-roadmap-section .exp-row {
-  padding: 1.4rem 0;
-  align-items: start;
-}
-body:not(.searched) .figma-footer-chips .footer-chip {
-  background: rgba(255,255,255,0.90) !important;
-  border-color: rgba(255,255,255,0.72) !important;
-  color: var(--color-primary-ink, #085E48) !important;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.16);
-}
-body:not(.searched) .figma-footer-actions .figma-footer-btn,
-body:not(.searched) .figma-footer-actions .figma-footer-btn-secondary {
-  min-height: 56px;
-  border-radius: 999px;
-  font-weight: 900;
-}
-body:not(.searched) .figma-footer-actions .figma-footer-btn-secondary {
-  background: rgba(255,255,255,0.90);
-  color: var(--color-primary-ink, #085E48) !important;
-  border-color: rgba(255,255,255,0.66);
-}
-@media (max-width: 720px) {
-  body:not(.searched) .brand-hero {
-    min-height: auto;
-    padding-top: 5rem !important;
-  }
-  body:not(.searched) .brand-hero-stats.figma-stat-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    transform: translateY(1.5rem);
-    padding: 1.25rem 0.8rem !important;
-  }
-  body:not(.searched) .brand-hero-stats .stat-card {
-    padding: 1.2rem 0.55rem !important;
-  }
-  body:not(.searched) .brand-hero-stats .stat-codes {
-    gap: 0.35rem;
-  }
-  body:not(.searched) .brand-hero-stats .stat-code-chip {
-    font-size: 0.72rem;
-    padding: 0.18rem 0.48rem;
-  }
-  .ai-fab {
-    right: 0.9rem;
-    bottom: 0.9rem;
-    max-width: calc(100vw - 1.8rem);
-    font-size: 0.78rem;
-  }
-  body:not(.searched) .figma-roadmap-section {
-    padding: 2rem 1rem !important;
-  }
-  body:not(.searched) .figma-footer-chips {
-    align-items: stretch;
-    width: 100%;
-  }
-  body:not(.searched) .figma-footer-chips .footer-chip {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
 </style>
 </head>
 <body class="landing" data-theme="light">
@@ -3019,25 +2516,25 @@ body:not(.searched) .figma-footer-actions .figma-footer-btn-secondary {
             <img class="brand-wordmark-img" src="assets/brand/paradiso-wordmark-brush-white.png" alt="Paradiso" decoding="async" loading="eager" />
             <svg class="logo-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <defs>
-                    <clipPath id="pdsclip"><circle cx="60" cy="60" r="54"/></clipPath>
-                    <linearGradient id="pdssky" x1="0" y1="0" x2="0" y2="1">
+                    <clipPath id="p39clip"><circle cx="60" cy="60" r="54"/></clipPath>
+                    <linearGradient id="p39sky" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stop-color="var(--color-surface)"/>
                         <stop offset="60%" stop-color="var(--color-accent-soft)"/>
                         <stop offset="100%" stop-color="var(--color-accent)"/>
                     </linearGradient>
-                    <linearGradient id="pdssea" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="p39sea" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stop-color="var(--color-primary)"/>
                         <stop offset="100%" stop-color="var(--color-primary-ink)"/>
                     </linearGradient>
                 </defs>
-                <g clip-path="url(#pdsclip)">
-                    <rect x="0" y="0" width="120" height="72" fill="url(#pdssky)"/>
+                <g clip-path="url(#p39clip)">
+                    <rect x="0" y="0" width="120" height="72" fill="url(#p39sky)"/>
                     <g class="rocket-flyer">
                         <circle cx="60" cy="62" r="18" fill="var(--color-surface)"/>
                         <circle cx="60" cy="62" r="18" fill="var(--color-accent)" opacity="0.85"/>
                     </g>
                     <path d="M -4,78 L 22,54 L 40,70 L 58,44 L 82,72 L 102,58 L 128,78 L 128,120 L -4,120 Z" fill="var(--color-primary-ink)" opacity="0.35"/>
-                    <rect x="0" y="72" width="120" height="48" fill="url(#pdssea)"/>
+                    <rect x="0" y="72" width="120" height="48" fill="url(#p39sea)"/>
                     <g class="exhaust" stroke="var(--color-surface)" stroke-width="1.2" fill="none" opacity="0.55" stroke-linecap="round">
                         <path d="M 10,84 Q 30,80 50,84 T 90,84 T 130,84"/>
                         <path d="M 0,94 Q 22,90 44,94 T 86,94 T 130,94"/>
@@ -3051,7 +2548,7 @@ body:not(.searched) .figma-footer-actions .figma-footer-btn-secondary {
                     <span class="al" data-i="0" data-tgt="4"><span class="src">P</span><span class="tgt">p</span></span><span class="al" data-i="1" data-tgt="2"><span class="src">a</span><span class="tgt">a</span></span><span class="al" data-i="2" data-tgt="6"><span class="src">r</span><span class="tgt">r</span></span><span class="al" data-i="3" data-tgt="7"><span class="src">a</span><span class="tgt">a</span></span><span class="al" data-i="4" data-tgt="0"><span class="src">d</span><span class="tgt">D</span></span><span class="al" data-i="5" data-tgt="1"><span class="src">i</span><span class="tgt">i</span></span><span class="al" data-i="6" data-tgt="3"><span class="src">s</span><span class="tgt">s</span></span><span class="al" data-i="7" data-tgt="5"><span class="src">o</span><span class="tgt">o</span></span>
                     <em class="logo-39 l39">39</em>
                 </h1>
-                <span class="logo-sub">비자·체류 정보 안내 플랫폼</span>
+                <span class="logo-sub">대한민국 39가지 체류자격, 하나의 플랫폼으로</span>
             </div>
         </div>
 
@@ -3066,7 +2563,7 @@ body:not(.searched) .figma-footer-actions .figma-footer-btn-secondary {
         <div class="qa-main" id="qaMain" aria-label="자주 사용하는 행정 도구">
             <button class="hero-action-btn" data-action="open-jobcode-modal">
                 <span class="hero-action-icon">💼</span>
-                <span class="hero-action-label">취업신고용 업종·직종 코드</span>
+                <span class="hero-action-label">취업신고용 업종/직종 코드 찾기</span>
             </button>
             <button class="hero-action-btn" data-action="open-jurisdiction-modal">
                 <span class="hero-action-icon">🏛</span>
@@ -3078,12 +2575,12 @@ body:not(.searched) .figma-footer-actions .figma-footer-btn-secondary {
             <div class="visa-track-selector" data-reveal="fade-up">
                 <div class="visa-track-card" onclick="startPreEntryTrack()" tabindex="0" role="button" aria-label="입국 전 사증 발급 트랙">
                     <div class="visa-track-icon">✈️</div>
-                    <h3 class="visa-track-title">입국 전 — 재외공관 사증 발급</h3>
+                    <h3 class="visa-track-title">입국 전</h3>
                     <p class="visa-track-desc">해외에서 재외공관을 통한 사증(비자) 신규 발급 절차</p>
                 </div>
                 <div class="visa-track-card" onclick="startInKoreaTrack()" tabindex="0" role="button" aria-label="입국 후 체류 관리 트랙">
                     <div class="visa-track-icon">🏛</div>
-                    <h3 class="visa-track-title">입국 후 — 외국인 등록·체류 연장</h3>
+                    <h3 class="visa-track-title">입국 후</h3>
                     <p class="visa-track-desc">외국인등록, 체류기간 연장, 자격 변경 등 국내 체류 민원</p>
                 </div>
             </div>
@@ -3115,9 +2612,6 @@ body:not(.searched) .figma-footer-actions .figma-footer-btn-secondary {
             <h2 class="landing-hints-title" id="landingHintsTitle">추천 키워드</h2>
             <div class="landing-hints" id="landingHints" aria-label="빠른 추천 검색어"></div>
         </section>
-        <div class="hero-ai-secondary" aria-label="선택형 AI 도우미">
-            <a href="ai.html" class="hero-ai-link"><span aria-hidden="true">✦</span> AI로 더 자세히 묻기 <strong>Paradiso.ai</strong></a>
-        </div>
     </div>
     <button type="button" class="scroll-cue" id="scrollCue" data-action="scroll-to-brand" aria-label="아래로 스크롤">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -3194,6 +2688,7 @@ body:not(.searched) .figma-footer-actions .figma-footer-btn-secondary {
                 </div>
             </div>
         </div>
+        <p class="figma-stat-note" aria-label="카테고리 분류 안내">위 카테고리 구분은 서비스 내부 탐색을 돕기 위한 그룹핑이며, 출입국관리법령상의 공식 분류와 다를 수 있습니다.</p>
     </section>
 
     <div class="section-divider" aria-hidden="true"></div>
@@ -3265,9 +2760,13 @@ body:not(.searched) .figma-footer-actions .figma-footer-btn-secondary {
             <div class="anagram-right">
                 <h3>브랜드 철학 및 어원 <span class="en-label" lang="en">— Brand Philosophy &amp; Etymology</span></h3>
                 <ul class="philosophy-list">
-                    <li><strong><span class="brand-story-paradiso">Paradiso</span></strong> — 이탈리아어 "낙원(Paradise)". 한국에서의 체류가 모두에게 머무를 만한 곳이기를 바랍니다.</li>
+                    <li><strong>Paradiso</strong> — 이탈리아어 "낙원(Paradise)". 한국에서의 체류가 모두에게 머무를 만한 곳이기를 바랍니다.</li>
                     <li><strong>Diaspora (애너그램)</strong> — 'Paradiso'는 이주민을 뜻하는 영단어 'Diaspora'의 알파벳 8개를 재배열(Anagram)한 단어입니다. 고국을 떠나온 이주민들이 대한민국에서 안정적인 정주 환경을 영위할 수 있도록 돕고자 하는 지향점을 담았습니다.</li>
-                </ul>
+</ul>
+                <div class="figma-highlight-box">
+                    <p>300만 체류 외국인 시대를 함께 준비합니다.</p>
+                </div>
+                <p class="brand-disclaimer">출입국·외국인정책본부 매뉴얼을 1차 출처로 참고하며, 최종 판단과 신청 절차는 관할 출입국·외국인관서 및 1345 외국인종합안내센터 안내를 확인하세요.</p>
             </div>
         </div>
 
@@ -3541,7 +3040,7 @@ body:not(.searched) .figma-footer-actions .figma-footer-btn-secondary {
     <span class="ft-logo">Paradiso</span> v38 · ※ 본 서비스는 베타 테스트 중이며, 제공되는 정보는 법적 효력을 갖지 않습니다. 정확한 정보는 반드시 1345(외국인종합안내센터)에 확인하시기 바랍니다.
 </footer>
 
-<a href="ai.html" class="ai-fab"><span class="fab-spark" aria-hidden="true">✦</span> AI로 더 자세히 묻기 <strong>Paradiso.ai</strong></a>
+<a href="ai.html" class="ai-fab"><span class="fab-spark" aria-hidden="true">✦</span> Paradiso AI</a>
 
 <script>
 // --- UI Helpers ---
@@ -4746,212 +4245,22 @@ function renderDocTags(docKeys, keywords, isSubCode = false, visaCode = '') {
     return `<div class="doc-req-box" style="margin-top:0; padding:0; border:none; background:transparent;">${warningHtml}<div class="doc-checklist">${tagsHtml}</div></div>`;
 }
 
-const PROCEDURE_CONFIG = [
-    { key: 'visaIssuance', label: '사증발급', oldType: 'new', oldDocs: ['initialReqDocs', 'newReqDocs'], oldText: 'newReq' },
-    { key: 'certificateOfVisaIssuance', label: '사증발급인정서', oldType: 'new', oldDocs: ['cviReqDocs'] },
-    { key: 'statusChange', label: '체류자격 변경', oldType: 'change', oldDocs: ['changeReqDocs'], oldText: 'changeReq' },
-    { key: 'extension', label: '체류기간 연장', oldType: 'ext', oldDocs: ['extensionReqDocs', 'extReqDocs'], oldText: 'extReq' },
-    { key: 'statusGrant', label: '체류자격 부여', oldType: 'new', oldDocs: ['statusGrantReqDocs'] },
-    { key: 'registration', label: '외국인등록', oldType: 'new', oldDocs: ['registrationReqDocs'] },
-    { key: 'activitiesOutsideStatus', label: '자격외활동', oldType: 'change', oldDocs: ['activitiesOutsideStatusReqDocs'] },
-    { key: 'workplaceChange', label: '근무처 변경·추가', oldType: 'change', oldDocs: ['workplaceChangeReqDocs'] },
-    { key: 'reentry', label: '재입국', oldType: 'ext', oldDocs: ['reentryReqDocs'] }
-];
-
-const COMMON_MANUAL_WARNINGS = [
-    '서류는 심사 과정에서 가감될 수 있습니다.',
-    '국내 발급 서류는 별도 규정이 없으면 발급일로부터 3개월 이내 자료를 원칙으로 확인합니다.',
-    '이미 제출되어 기록에 보관 중인 서류는 생략될 수 있습니다.',
-    '공동이용 가능한 행정정보는 제출 생략 가능하나, 동의하지 않으면 제출이 필요할 수 있습니다.',
-    '건강진단서 등 일부 서류는 밀봉 제출이 요구될 수 있습니다.',
-    '체류허가 신청자는 국내 체류 중이어야 합니다.'
-];
-
-function normalizeVisaCode(value) {
-    return String(value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-}
-
-function getVisaNameKo(v) { return v.nameKo || v.name || ''; }
-function getVisaNameEn(v) { return v.nameEn || v.name_en || ''; }
-function getVisaSubcodes(v) { return Array.isArray(v.subcodes) ? v.subcodes : (Array.isArray(v.subCodes) ? v.subCodes : []); }
-
-function getRecordSearchText(v) {
-    const subText = getVisaSubcodes(v).map(s => `${s.code || ''} ${s.nameKo || s.name || ''} ${s.nameEn || ''} ${s.summary || ''} ${(s.eligibility || []).join(' ')} ${s.addReq || ''} ${s.note || ''}`).join(' ');
-    const procedures = v.procedures ? Object.values(v.procedures).map(p => `${(p.eligibility || []).join(' ')} ${JSON.stringify(p.requiredDocs || '')} ${(p.notes || []).join(' ')}`).join(' ') : '';
-    return `${v.code || ''} ${getVisaNameKo(v)} ${getVisaNameEn(v)} ${(v.aliases || []).join(' ')} ${v.newReq || ''} ${v.extReq || ''} ${v.changeReq || ''} ${v.faq || ''} ${v.period || ''} ${subText} ${procedures}`;
-}
-
-function keywordMatchesCode(code, keywords) {
-    const normalized = normalizeVisaCode(code);
-    return keywords.some(kw => normalizeVisaCode(kw) === normalized || String(code || '').toLowerCase().includes(String(kw).toLowerCase()));
-}
-
-function getMatchingSubcodes(v, keywords) {
-    if (!keywords || !keywords.length) return [];
-    return getVisaSubcodes(v).filter(s => {
-        const text = `${s.code || ''} ${s.nameKo || s.name || ''} ${s.nameEn || ''} ${s.summary || ''} ${(s.eligibility || []).join(' ')} ${s.addReq || ''} ${s.note || ''}`.toLowerCase();
-        return keywords.some(kw => text.includes(kw) || normalizeVisaCode(s.code) === normalizeVisaCode(kw));
-    });
-}
-
-function getManualDomains(v) {
-    if (Array.isArray(v.manualDomains) && v.manualDomains.length) return v.manualDomains;
-    if (['faq', 'scn', 'nhis'].includes(v.cat)) return [];
-    const hasVisa = !!(v.newReq || v.newReqDocs || v.initialReqDocs);
-    const hasStay = !!(v.extReq || v.extReqDocs || v.extensionReqDocs || v.changeReqDocs);
-    if (hasVisa && hasStay) return ['visa_issuance', 'stay_sojourn'];
-    if (hasVisa) return ['visa_issuance'];
-    if (hasStay) return ['stay_sojourn'];
-    return ['stay_sojourn'];
-}
-
-function renderDomainBadges(v) {
-    const domains = getManualDomains(v);
-    if (domains.includes('visa_issuance') && domains.includes('stay_sojourn')) {
-        return `<span class="manual-badge domain-visa">공통/양쪽</span>`;
-    }
-    return domains.map(d => {
-        if (d === 'visa_issuance') return `<span class="manual-badge domain-visa">사증발급</span>`;
-        if (d === 'stay_sojourn') return `<span class="manual-badge domain-stay">체류민원</span>`;
-        return `<span class="manual-badge">${escapeHtml(d)}</span>`;
-    }).join('');
-}
-
-function renderReviewBadge(v) {
-    const status = v.sourceManualStatus || {};
-    if (status.verified === true && !status.needsManualReview) return `<span class="manual-badge review-ok">2026.5 매뉴얼 확인됨</span>`;
-    if (status.verified === false && status.needsManualReview === false) return `<span class="manual-badge review-needed">일부 정보 미검증</span>`;
-    return `<span class="manual-badge review-needed">2026.5 매뉴얼 확인 필요</span>`;
-}
-
-function getProcedure(v, cfg) {
-    const raw = v.procedures && v.procedures[cfg.key] ? v.procedures[cfg.key] : null;
-    const oldDocs = (cfg.oldDocs || []).flatMap(k => Array.isArray(v[k]) ? v[k] : []);
-    const legacyAvailable = oldDocs.length > 0 || !!(cfg.oldText && v[cfg.oldText]);
-    const available = raw ? raw.available !== false : legacyAvailable;
-    const docValue = raw?.requiredDocs ?? oldDocs;
-    return {
-        key: cfg.key,
-        label: cfg.label,
-        oldType: cfg.oldType,
-        available,
-        eligibility: raw?.eligibility || [],
-        notes: raw?.notes || [],
-        summary: raw?.summary || (cfg.oldText && v[cfg.oldText] ? v[cfg.oldText] : ''),
-        docs: normalizeDocGroups(docValue, raw || {}),
-        manualRefs: raw?.manualRefs || []
-    };
-}
-
-function normalizeDocGroups(docValue, raw = {}) {
-    const groups = { commonDocs: [], requiredDocs: [], additionalDocs: [], conditionalDocs: [] };
-    if (Array.isArray(docValue)) groups.requiredDocs = docValue;
-    else if (docValue && typeof docValue === 'object') {
-        groups.commonDocs = docValue.commonDocs || docValue.common || [];
-        groups.requiredDocs = docValue.requiredDocs || docValue.required || [];
-        groups.additionalDocs = docValue.additionalDocs || docValue.additional || [];
-        groups.conditionalDocs = docValue.conditionalDocs || docValue.conditional || [];
-    }
-    groups.commonDocs = raw.commonDocs || groups.commonDocs;
-    groups.additionalDocs = raw.additionalDocs || groups.additionalDocs;
-    groups.conditionalDocs = raw.conditionalDocs || groups.conditionalDocs;
-    return groups;
-}
-
-function renderDocGroup(title, docs, keywords) {
-    if (!docs || !docs.length) return '';
-    return `<div class="doc-group"><h5 class="doc-group-title">${title}</h5>${renderDocTags(docs, keywords)}</div>`;
-}
-
-function renderProcedurePanel(v, proc, keywords, isActive) {
-    const docsHtml = [
-        renderDocGroup('공통서류', proc.docs.commonDocs, keywords),
-        renderDocGroup('필수서류', proc.docs.requiredDocs, keywords),
-        renderDocGroup('추가/심사 필요 서류', proc.docs.additionalDocs, keywords),
-        renderDocGroup('조건부 서류', proc.docs.conditionalDocs, keywords)
-    ].filter(Boolean).join('');
-    const reviewFallback = `<div class="doc-group-empty">매뉴얼 확인 필요: 이 절차의 구조화된 구비서류는 아직 대표 데이터에 없습니다.</div>`;
-    const eligibilityHtml = proc.eligibility.length ? `<div class="procedure-summary"><strong>대상/요건</strong><br>${proc.eligibility.map(x => escapeHtml(x)).join('<br>')}</div>` : '';
-    const notesHtml = proc.notes.length ? `<div class="procedure-summary"><strong>유의사항</strong><br>${proc.notes.map(x => escapeHtml(x)).join('<br>')}</div>` : '';
-    const summaryHtml = proc.summary ? `<div class="procedure-summary">${hl(proc.summary, keywords)}</div>` : '';
-    return `<div class="procedure-panel${isActive ? ' active' : ''}" data-procedure-panel="${proc.key}">
-        ${eligibilityHtml}${summaryHtml}${notesHtml}
-        <div class="doc-group-grid">${docsHtml || reviewFallback}</div>
-    </div>`;
-}
-
-function renderProcedures(v, keywords) {
-    const procedures = PROCEDURE_CONFIG.map(cfg => getProcedure(v, cfg));
-    const firstActive = procedures.find(p => p.available) || procedures[0];
-    const tabs = procedures.map(p => `<button type="button" class="procedure-tab${p.key === firstActive.key ? ' active' : ''}" data-action="select-procedure" data-procedure="${p.key}" ${p.available ? '' : 'disabled'}>${p.label}</button>`).join('');
-    const panels = procedures.map(p => renderProcedurePanel(v, p, keywords, p.key === firstActive.key)).join('');
-    return `<div class="manual-section"><h4 class="manual-section-title">절차별 안내</h4><div class="procedure-tabs" role="tablist">${tabs}</div>${panels}</div>`;
-}
-
-function renderSubcodes(v, keywords, matchingSubcodes) {
-    const subs = getVisaSubcodes(v);
-    if (!subs.length) return '';
-    const matchSet = new Set((matchingSubcodes || []).map(s => s.code));
-    const cards = subs.map(s => {
-        const label = s.nameKo || s.name || '';
-        const desc = s.summary || (Array.isArray(s.eligibility) && s.eligibility[0]) || s.note || s.addReq || '매뉴얼 확인 필요';
-        return `<div class="manual-subcode-card${matchSet.has(s.code) ? ' match' : ''}">
-            <div class="manual-subcode-top"><span class="manual-subcode-code">${hl(s.code, keywords)}</span><span class="manual-subcode-name">${hl(label, keywords)}</span></div>
-            <div class="manual-subcode-desc">${hl(desc, keywords)}</div>
-        </div>`;
-    }).join('');
-    return `<div class="manual-section"><h4 class="manual-section-title">세부코드</h4><div class="manual-subcode-grid">${cards}</div></div>`;
-}
-
-function renderCommonWarnings(v) {
-    const warnings = Array.isArray(v.commonWarnings) && v.commonWarnings.length ? v.commonWarnings : COMMON_MANUAL_WARNINGS;
-    return `<div class="manual-warning-box"><strong>공통 매뉴얼 유의사항</strong><ul>${warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul></div>`;
-}
-
-function renderSourceReferences(v) {
-    const refs = Array.isArray(v.manualRefs) ? [...v.manualRefs] : [];
-    const status = v.sourceManualStatus || {};
-    if (!refs.length) {
-        if (getManualDomains(v).includes('visa_issuance')) refs.push({ manualName: '사증민원', manualVersion: status.visaManualVersion || '2026.5', pageRange: '매뉴얼 확인 필요', confidence: 'needs_review' });
-        if (getManualDomains(v).includes('stay_sojourn')) refs.push({ manualName: '체류민원', manualVersion: status.stayManualVersion || '2026.5', pageRange: '매뉴얼 확인 필요', confidence: 'needs_review' });
-    }
-    const refItems = refs.map(ref => {
-        const bits = [ref.manualName || ref.manual || '출처 매뉴얼', ref.manualVersion || ref.version || '2026.5', ref.pageRange || '페이지 확인 필요', ref.confidence ? `신뢰도: ${ref.confidence}` : '신뢰도: 매뉴얼 확인 필요'];
-        return `<li>${bits.map(escapeHtml).join(' · ')}</li>`;
-    }).join('');
-    const reviewText = status.needsManualReview === false ? '대표 데이터 검토 완료' : '대표 데이터이며 전체 수작업 검증 전입니다.';
-    return `<div class="manual-source-box"><div class="manual-source-title">출처 및 검증 상태</div><ul>${refItems}</ul><div style="margin-top:0.55rem;">${escapeHtml(reviewText)} 본 서비스는 안내용이며 실제 허가 여부는 심사에 의해 결정됩니다.</div></div>`;
-}
-
-function renderManualActions(v, isVisaCode) {
-    if (!isVisaCode) return '';
-    return `<div class="manual-actions">
-        <button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="new"><span>사증/신규 서류</span></button>
-        <button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="ext"><span>연장 서류</span></button>
-        <button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="change"><span>변경 서류</span></button>
-        ${v.faq ? `<button type="button" class="doc-trigger-btn" data-action="open-faq-modal" data-vcode="${escapeHtml(v.code)}"><span>FAQ</span></button>` : ''}
-        <button type="button" class="ai-btn" data-action="open-ai-modal" data-visa-code="${escapeHtml(v.code)}">Paradiso AI 상황 분석</button>
-    </div>`;
-}
-
 // --- Search Processing Core ---
 function calculateScore(item,keywords){
     if(!keywords || !keywords.length) return 1;
-    let score=0; const cL=(item.code||'').toLowerCase(), nL=getVisaNameKo(item).toLowerCase(), codeNorm=normalizeVisaCode(item.code);
+    let score=0; const cL=(item.code||'').toLowerCase(), nL=(item.name||'').toLowerCase();
     const aliasL=(item.aliases||[]).map(x=>String(x).toLowerCase());
-    const content=getRecordSearchText(item).toLowerCase();
+    const content=`${item.newReq||''} ${item.extReq||''} ${item.faq||''} ${item.period||''}`.toLowerCase();
     let isAnd=true;
     for(const kw of keywords){
-        let m=false; const kwNorm = normalizeVisaCode(kw);
-        if(cL===kw||nL===kw||(kwNorm && codeNorm===kwNorm)){score+=220; m=true;} else if(cL.includes(kw)||nL.includes(kw)||(kwNorm && codeNorm.includes(kwNorm))){score+=120; m=true;}
+        let m=false;
+        if(cL===kw||nL===kw){score+=220; m=true;} else if(cL.includes(kw)||nL.includes(kw)){score+=120; m=true;}
         aliasL.forEach(a=>{ if(a===kw){score+=180; m=true;} else if(a.includes(kw)||kw.includes(a)){score+=90; m=true;} });
-        const subs = getVisaSubcodes(item);
-        if(subs.length){
-            for(const s of subs){
+        if(item.subCodes){
+            for(const s of item.subCodes){
                 const sCode=(s.code||'').toLowerCase(), sName=(s.name||'').toLowerCase(), sAliases=(s.aliases||[]).join(' ').toLowerCase();
-                const sNorm = normalizeVisaCode(s.code);
-                if(sCode===kw||sName===kw||(kwNorm && sNorm===kwNorm)){score+=130; m=true;} else if(sCode.includes(kw)||sName.includes(kw)||(kwNorm && sNorm.includes(kwNorm))){score+=80; m=true;}
-                const sc=`${s.nameKo||''} ${s.nameEn||''} ${s.summary||''} ${(s.eligibility||[]).join(' ')} ${s.addReq||''} ${s.note||''} ${sAliases}`.toLowerCase();
+                if(sCode===kw||sName===kw){score+=90; m=true;} else if(sCode.includes(kw)||sName.includes(kw)){score+=60; m=true;}
+                const sc=`${s.addReq||''} ${s.note||''} ${sAliases}`.toLowerCase();
                 const n=(sc.match(new RegExp(escapeRegExp(kw),'g'))||[]).length;
                 if(n>0){score+=n*16; m=true;}
             }
@@ -4980,17 +4289,6 @@ function expandKeywords(keywords){
     if(ALIAS_MAP[joinedNoSpace]) expanded.add(ALIAS_MAP[joinedNoSpace].toLowerCase());
     keywords.forEach(k=>{
         const nk = k.replace(/\s+/g,'').toLowerCase();
-        const codeNorm = normalizeVisaCode(nk);
-        if(codeNorm) expanded.add(codeNorm.toLowerCase());
-        VISA_DATA.forEach(v => {
-            if (normalizeVisaCode(v.code) === codeNorm) expanded.add(String(v.code || '').toLowerCase());
-            getVisaSubcodes(v).forEach(s => {
-                if (normalizeVisaCode(s.code) === codeNorm) {
-                    expanded.add(String(s.code || '').toLowerCase());
-                    expanded.add(String(v.code || '').toLowerCase());
-                }
-            });
-        });
         if(ALIAS_MAP[nk]) expanded.add(ALIAS_MAP[nk].toLowerCase());
         if(nk==='제주') expanded.add('b-2-2');
         if(nk==='협정') expanded.add('b-1');
@@ -5009,19 +4307,12 @@ function showSuggestions(val) {
     if(!dataReady) return;
     const list = document.getElementById('auto-list'); list.innerHTML = '';
     if(!val) { list.classList.remove('active'); return; }
-    const lowerVal = val.toLowerCase(), valNorm = normalizeVisaCode(val);
+    const lowerVal = val.toLowerCase();
     const matches = PREDEF_KEYWORDS.filter(k => k.toLowerCase().includes(lowerVal));
     VISA_DATA.forEach(v => {
-        const codeMatch = (v.code||'').toLowerCase().includes(lowerVal) || (valNorm && normalizeVisaCode(v.code).includes(valNorm));
-        if(codeMatch || getVisaNameKo(v).toLowerCase().includes(lowerVal)) {
-            const str = `${v.code} ${getVisaNameKo(v)}`; if(!matches.includes(str)) matches.push(str);
+        if((v.code||'').toLowerCase().includes(lowerVal) || (v.name||'').toLowerCase().includes(lowerVal)) {
+            const str = `${v.code} ${v.name}`; if(!matches.includes(str)) matches.push(str);
         }
-        getVisaSubcodes(v).forEach(s => {
-            const subCodeMatch = (s.code || '').toLowerCase().includes(lowerVal) || (valNorm && normalizeVisaCode(s.code).includes(valNorm));
-            if (subCodeMatch || (s.nameKo || s.name || '').toLowerCase().includes(lowerVal)) {
-                const str = `${s.code} ${s.nameKo || s.name || ''}`; if(!matches.includes(str)) matches.push(str);
-            }
-        });
     });
     if(matches.length > 0) {
         matches.slice(0, 7).forEach(m => {
@@ -5116,46 +4407,46 @@ function renderResults(query){
     const box=document.getElementById('rlist'), rc=document.getElementById('rc');
     const kw=query.trim().split(/\s+/).filter(Boolean), kwL=expandKeywords(kw.map(k=>k.toLowerCase()));
     let scored=VISA_DATA.map(v=>({...v,_score:calculateScore(v,kwL)})), filtered=scored.filter(v=>v._score>0).sort((a,b)=>b._score-a._score);
-    let st=0; filtered.forEach(v=>{st += getVisaSubcodes(v).length;});
+    let st=0; filtered.forEach(v=>{if(v.subCodes) st+=v.subCodes.length;});
     if(!filtered.length){
         box.innerHTML=`<div class="es"><div class="es-t">궤도를 이탈했습니다</div><div class="es-d">'${escapeHtml(query)}'에 해당하는 정보가 없습니다.<br>키워드를 줄이거나 OR 모드로 전환해 보세요.</div></div>`;
         rc.textContent='0건'; return;
     }
     const fg=document.createDocumentFragment();
     filtered.forEach((v,idx)=>{
-        const c=document.createElement('article'); c.className='vc manual-result'; c.style.setProperty('--cbc', CC[v.cat]||CC.other); c.style.setProperty('--i', Math.min(idx,10));
-        const isVisaCode = !['faq', 'scn', 'nhis'].includes(v.cat), subs=getVisaSubcodes(v), hs=subs.length>0;
-        let ms=[]; if(hs&&kw.length) ms=getMatchingSubcodes(v, kw.map(k=>k.toLowerCase()));
+        const c=document.createElement('article'); c.className='vc'; c.style.setProperty('--cbc', CC[v.cat]||CC.other); c.style.setProperty('--i', Math.min(idx,10));
+        const isVisaCode = !['faq', 'scn', 'nhis'].includes(v.cat), hs=v.subCodes&&v.subCodes.length>0;
+        let ms=[]; if(hs&&kw.length) ms=v.subCodes.filter(s=>{const x=`${s.code} ${s.name} ${s.addReq||''} ${s.note||''}`.toLowerCase(); return kwL.some(k=>x.includes(k));});
         if(kw.length&&(v._score>=50||ms.length)) c.classList.add('open');
-        const periodHtml = v.period ? `<span class="manual-badge">${hl(v.period,kw)}</span>` : '';
-        const dataHtml = v.dataBadge ? `<span class="manual-badge">${escapeHtml(v.dataBadge)}</span>` : '';
-        const ddHtml = v.dataDate ? `<div class="data-date">데이터 기준: ${escapeHtml(v.dataDate)}</div>` : '';
-        const nameEn = getVisaNameEn(v);
+        
+        let sh='';
+        if(hs){
+            sh=`<div class="ss"><div class="ss-t"><b>세부항목</b>${v.subCodes.length}개</div>`;
+            v.subCodes.forEach((s, idx) => {
+                const x=`${s.code} ${s.name} ${s.addReq||''} ${s.note||''}`.toLowerCase(), im=!kw.length||kwL.some(k=>x.includes(k));
+                sh+=`<div class="su${kw.length&&im?' open':''}"><div class="su-h" data-action="toggle-su"><span class="s-c">${hl(s.code,kw)}</span><span class="s-n">${hl(s.name,kw)}</span><span class="tgl">▼</span></div><div class="su-cw"><div class="su-c"><div class="su-s">`;
+                if(s.note && String(s.note).trim().length > 0) sh+= `<div class="ct text-desc" style="margin-bottom:0.5rem;">${hl(s.note,kw)}</div>`;
+                sh+=`<div class="sub-req"><span class="badge-req">📌 세부항목 추가 확인</span></div><button type="button" class="ai-btn sub-doc-btn" style="background: var(--bg2); color: var(--t1); border: 1px solid var(--bd); padding: 0.6rem 1rem; width: 100%; justify-content: center; box-shadow:var(--sh1); margin-top:0.5rem;" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="sub" data-subidx="${idx}">📑 이 세부항목의 추가 구비서류 확인</button></div></div></div></div>`;
+            });
+            sh+=`</div>`;
+        }
+        
+        const dbHtml = v.dataBadge ? `<span class="bd">${escapeHtml(v.dataBadge)}</span>` : '', ddHtml = v.dataDate ? `<div class="data-date">데이터 기준: ${escapeHtml(v.dataDate)}</div>` : '', lb=getLabels(v);
         c.innerHTML=`
             <div class="vc-h" data-action="toggle-su">
-                <div class="manual-head-main">
-                    <span class="bc">${hl(v.code,kw)}</span>
-                    <div class="manual-title-stack">
-                        <div class="manual-title-row">
-                            <span class="manual-name-ko">${hl(getVisaNameKo(v),kw)}</span>
-                            ${hs?`<span class="bn">세부 ${subs.length}</span>`:''}
-                        </div>
-                        ${nameEn ? `<div class="manual-name-en">${hl(nameEn,kw)}</div>` : ''}
-                        <div class="manual-badges">${renderDomainBadges(v)}${renderReviewBadge(v)}${periodHtml}${dataHtml}</div>
-                    </div>
-                </div>
-                <span class="tgl">▼</span>
+                <span class="bc">${hl(v.code,kw)}</span><span class="vt">${hl(v.name,kw)}</span>
+                ${v.period?`<span class="bp">${hl(v.period,kw)}</span>`:''}${dbHtml}${hs?`<span class="bn">+${v.subCodes.length}</span>`:''}<span class="tgl">▼</span>
             </div>
             <div class="vc-cw"><div class="vc-c">
-                ${v.cat === 'scn' ? `<div class="ai-cta" style="flex-direction:column; align-items:center; text-align:center; padding:2.5rem 1rem; background:var(--bg0);"><h4 style="color:var(--t1); font-weight:800; font-size:1.1rem; margin-bottom:0.5rem;">특수 사례 심층 분석</h4><p style="font-size:0.85rem; color:var(--t3); margin-bottom:1.5rem; word-break:keep-all; max-width:400px;">이 시나리오는 체류 이력, 범죄 여부 등에 따라 법령 적용이 매우 복잡합니다. 단편적인 요약 대신 Paradiso AI의 2026년 출입국관리법령 심층 팩트체크를 직접 실행하십시오.</p><button type="button" class="ai-btn" style="width:100%; max-width:320px; justify-content:center; box-shadow:var(--shD);" data-action="open-ai-modal" data-visa-code="${escapeHtml(v.code)}">AI 심층 법률 검증 시작</button></div>` : `
-                <div class="manual-layout">
-                    ${renderSubcodes(v, kw, ms)}
-                    ${renderProcedures(v, kw)}
-                    ${renderCommonWarnings(v)}
-                    ${renderSourceReferences(v)}
-                    ${renderManualActions(v, isVisaCode)}
-                    ${ddHtml}
-                </div>`}
+                ${v.cat === 'scn' ? `<div class="ai-cta" style="flex-direction:column; align-items:center; text-align:center; padding:2.5rem 1rem; background:var(--bg0);"><div style="font-size:2.5rem; margin-bottom:0.8rem;">⚖️</div><h4 style="color:var(--t1); font-weight:800; font-size:1.1rem; margin-bottom:0.5rem;">특수 사례 심층 분석</h4><p style="font-size:0.85rem; color:var(--t3); margin-bottom:1.5rem; word-break:keep-all; max-width:400px;">이 시나리오는 체류 이력, 범죄 여부 등에 따라 법령 적용이 매우 복잡합니다. 단편적인 요약 대신 <strong>Paradiso AI의 2026년 출입국관리법령 심층 팩트체크</strong>를 직접 실행하십시오.</p><button type="button" class="ai-btn" style="width:100%; max-width:320px; justify-content:center; box-shadow:var(--shD);" data-action="open-ai-modal" data-visa-code="${escapeHtml(v.code)}">🤖 AI 심층 법률 검증 시작</button></div>` : `
+                <div class="ai-cta"><button type="button" class="ai-btn" data-action="open-ai-modal" data-visa-code="${escapeHtml(v.code)}">${isVisaCode ? '✨ 이 비자에 대해 내 상황 분석하기' : '🤖 AI 법령 팩트체크 및 사례 심층 검증'}</button></div>
+                ${isVisaCode ? `<div class="doc-buttons-grid"><button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="new"><span class="icon" aria-hidden="true">📝</span><span>신규 발급 구비서류</span></button><button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="ext"><span class="icon" aria-hidden="true">🔄</span><span>연장 신청 구비서류</span></button><button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="change"><span class="icon" aria-hidden="true">🧭</span><span>체류자격 변경 구비서류</span></button>${v.faq ? `<button type="button" class="doc-trigger-btn" style="grid-column: 1 / -1; flex-direction: row; justify-content: center; padding: 0.8rem;" data-action="open-faq-modal" data-vcode="${escapeHtml(v.code)}"><span class="icon" style="font-size:1.2rem;" aria-hidden="true">💡</span><span>자주 묻는 질문 (FAQ)</span></button>` : ''}</div>` : `
+                <div class="subcode-warning" style="margin: 1rem; background: var(--bg2); border-left: 4px solid var(--t3); color: var(--t2);">💡 <strong>안내:</strong> 아래 요약된 내용은 단순 참고용입니다. 자의적 해석을 방지하기 위해 반드시 상단의 AI 팩트체크를 통해 본인의 상황에 맞는 법적 근거를 확인하십시오.</div>
+                ${v.newReq ? `<div class="vs"><div class="tl tl-n">${lb[0]}</div><div class="ct text-desc">${hl(v.newReq,kw)}</div></div>` : ''}
+                ${v.extReq ? `<div class="vs"><div class="tl tl-e">${lb[1]}</div><div class="ct text-desc">${hl(v.extReq,kw)}</div></div>` : ''}
+                ${v.faq ? `<div class="vs"><div class="tl tl-f">${lb[2]}</div><div class="ct text-desc">${hl(v.faq,kw)}</div></div>` : ''}
+                `} `}
+                ${sh}${ddHtml}
             </div></div>`;
         fg.appendChild(c);
     });
@@ -5332,12 +4623,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 'open-ai-modal': () => openAiModal(actionBtn.dataset.visaCode),
                 'open-doc-modal': () => openDocModal(actionBtn.dataset.vcode, actionBtn.dataset.type, actionBtn.dataset.subidx),
                 'open-faq-modal': () => openFaqModal(actionBtn.dataset.vcode),
-                'select-procedure': () => {
-                    const card = actionBtn.closest('.manual-result');
-                    if (!card || actionBtn.disabled) return;
-                    card.querySelectorAll('.procedure-tab').forEach(btn => btn.classList.toggle('active', btn === actionBtn));
-                    card.querySelectorAll('.procedure-panel').forEach(panel => panel.classList.toggle('active', panel.dataset.procedurePanel === actionBtn.dataset.procedure));
-                },
                 'search-hint': () => { document.getElementById('q').value = actionBtn.dataset.query; executeSearch(); },
                 'quick-filter': () => { document.getElementById('q').value = actionBtn.dataset.query; document.getElementById('xb').classList.add('v'); renderResults(actionBtn.dataset.query); },
                 'set-search-mode': () => setSearchMode(actionBtn.dataset.mode),
