@@ -1,0 +1,470 @@
+[
+  {
+    "id": "doc_accom",
+    "ko_name": "Accom",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_address",
+    "ko_name": "Address",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_app_form",
+    "ko_name": "App Form",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_attend",
+    "ko_name": "Attend",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_bank_bal",
+    "ko_name": "Bank Bal",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_basic",
+    "ko_name": "Basic",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_biz_reg",
+    "ko_name": "Biz Reg",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_career",
+    "ko_name": "Career",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_consent",
+    "ko_name": "Consent",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_corp_reg",
+    "ko_name": "Corp Reg",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_credit_report",
+    "ko_name": "Credit Report",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_crim",
+    "ko_name": "Crim",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_cvi",
+    "ko_name": "Cvi",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_degree",
+    "ko_name": "Degree",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_dispatch",
+    "ko_name": "Dispatch",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_emp_certificate",
+    "ko_name": "Emp Certificate",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_emp_contract",
+    "ko_name": "Emp Contract",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_emp_recom",
+    "ko_name": "Emp Recom",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_employment_insurance_list",
+    "ko_name": "Employment Insurance List",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_employment_proof",
+    "ko_name": "Employment Proof",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_enroll",
+    "ko_name": "Enroll",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_eps",
+    "ko_name": "Eps",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_f4_proof",
+    "ko_name": "F4 Proof",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_fam_rel",
+    "ko_name": "Fam Rel",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_fee",
+    "ko_name": "Fee",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_fee_ext",
+    "ko_name": "Fee Ext",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_fee_new",
+    "ko_name": "Fee New",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_finance",
+    "ko_name": "Finance",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_flight",
+    "ko_name": "Flight",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_guarantee",
+    "ko_name": "Guarantee",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_health",
+    "ko_name": "Health",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_id",
+    "ko_name": "Id",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_inc_proof",
+    "ko_name": "Inc Proof",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_income_tax",
+    "ko_name": "Income Tax",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_internship_plan",
+    "ko_name": "Internship Plan",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_invest",
+    "ko_name": "Invest",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_invitation",
+    "ko_name": "Invitation",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_job_report",
+    "ko_name": "Job Report",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_job_search_plan",
+    "ko_name": "Job Search Plan",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_kiip",
+    "ko_name": "Kiip",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_kiip_cert",
+    "ko_name": "Kiip Cert",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_local_recommendation",
+    "ko_name": "지자체 추천서",
+    "en_name": "Local Government Recommendation",
+    "description": "지역특화·광역형 시범사업 추천서."
+  },
+  {
+    "id": "doc_mar_rel",
+    "ko_name": "Mar Rel",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_medical",
+    "ko_name": "Medical",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_passport",
+    "ko_name": "Passport",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_passport_copy",
+    "ko_name": "여권 사본",
+    "en_name": "Passport Copy",
+    "description": "유효한 여권 신원면 사본."
+  },
+  {
+    "id": "doc_passport_org",
+    "ko_name": "Passport Org",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_photo",
+    "ko_name": "Photo",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_plan",
+    "ko_name": "Plan",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_point_table",
+    "ko_name": "Point Table",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_prof_conf",
+    "ko_name": "Prof Conf",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_property_proof",
+    "ko_name": "Property Proof",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_purpose",
+    "ko_name": "Purpose",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_reason_proof",
+    "ko_name": "Reason Proof",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_refugee",
+    "ko_name": "Refugee",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_resident_reg",
+    "ko_name": "Resident Reg",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_schedule",
+    "ko_name": "Schedule",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_specialty",
+    "ko_name": "Specialty",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_tax",
+    "ko_name": "Tax",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_tax_cert",
+    "ko_name": "Tax Cert",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_tb",
+    "ko_name": "Tb",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_top_tier_degree",
+    "ko_name": "최우수인재 대학 학위 증명",
+    "en_name": "Top-Tier Degree Certificate",
+    "description": "최근 5년 이내 세계대학 순위 100위권 대학의 석사 이상 학위 증명."
+  },
+  {
+    "id": "doc_topik",
+    "ko_name": "Topik",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_training_cont",
+    "ko_name": "Training Cont",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_transcript",
+    "ko_name": "Transcript",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "doc_vat",
+    "ko_name": "Vat",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "개별 사안별 증빙서류(매뉴얼 해당 항목 및 관할기관 안내 기준)",
+    "ko_name": "개별 사안별 증빙서류(매뉴얼 해당 항목 및 관할기관 안내 기준)",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "변경 사유 입증서류(활동계획서·초청서·고용계약서 등 해당 자격별)",
+    "ko_name": "변경 사유 입증서류(활동계획서·초청서·고용계약서 등 해당 자격별)",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "사증발급신청서(별지 제17호 서식)",
+    "ko_name": "사증발급신청서(별지 제17호 서식)",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "사진 1매(해당 시)",
+    "ko_name": "사진 1매(해당 시)",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "수수료",
+    "ko_name": "수수료",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "여권",
+    "ko_name": "여권",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "여권 및 외국인등록증",
+    "ko_name": "여권 및 외국인등록증",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "체류자격별 개별 첨부서류(매뉴얼 해당 자격 항목 참조)",
+    "ko_name": "체류자격별 개별 첨부서류(매뉴얼 해당 자격 항목 참조)",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "체류지 입증서류",
+    "ko_name": "체류지 입증서류",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "통합신청서",
+    "ko_name": "통합신청서",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "통합신청서(체류자격변경허가 신청 포함)",
+    "ko_name": "통합신청서(체류자격변경허가 신청 포함)",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  },
+  {
+    "id": "표준규격사진 1매",
+    "ko_name": "표준규격사진 1매",
+    "en_name": "Document",
+    "description": "해당 체류자격 심사에 필요한 증빙서류."
+  }
+]
