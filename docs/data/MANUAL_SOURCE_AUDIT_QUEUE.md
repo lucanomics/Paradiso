@@ -37,3 +37,18 @@ For each category, the audit should capture:
 - manual page ranges and confidence level
 
 Representative records in the interface rebuild are schema samples only. They should remain marked `needsManualReview: true` until the manual page audit is complete.
+
+## 2026.5 Required Document Audit Pass
+
+On 2026-05-07, `visa_data.json` received a conservative first pass for all current stay-status records that map to the `체류민원_0504.pdf` manual.
+
+This pass added or refreshed:
+
+- `procedures.extension`
+- `procedures.registration`
+- `manualRequiredDocAudit`
+- 2026.5 stay-manual references
+
+Important limitation: this pass used PDF text extraction and does not replace human legal/source review. Records remain `needsManualReview: true`. If a procedure section could not be safely structured, the UI-facing required document list intentionally says `매뉴얼 확인 필요` instead of exposing a possibly mixed or misleading list.
+
+See `docs/data/MANUAL_REQUIRED_DOC_AUDIT_2026_05.md` for the audit scope and follow-up hotspots.
