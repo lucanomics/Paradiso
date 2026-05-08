@@ -1033,6 +1033,11 @@ body.searched .section-divider { display: none; }
 .doc-group-grid { display: grid; gap: 0.75rem; }
 .doc-group-title { margin: 0 0 0.45rem; color: var(--t1); font-size: 0.76rem; font-weight: 900; }
 .doc-group-empty { border: 1px dashed var(--bd2); border-radius: 8px; padding: 0.75rem; color: var(--t3); font-size: 0.8rem; background: var(--bg0); }
+.procedure-fee-box { border: 1px solid color-mix(in srgb, var(--ac) 24%, var(--bd2)); background: color-mix(in srgb, var(--ac) 7%, var(--bg1)); border-radius: 8px; padding: 0.75rem; margin-bottom: 0.75rem; color: var(--t2); font-size: 0.8rem; line-height: 1.55; }
+.procedure-fee-title { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.35rem; color: var(--t1); font-weight: 900; }
+.procedure-fee-amount { color: var(--ac); font-weight: 950; white-space: nowrap; }
+.procedure-fee-list { margin: 0.35rem 0 0; padding-left: 1.05rem; }
+.procedure-fee-note { margin-top: 0.35rem; color: var(--t3); font-size: 0.76rem; }
 .manual-warning-box, .manual-source-box { border-radius: 8px; padding: 0.9rem; font-size: 0.8rem; line-height: 1.65; }
 .manual-warning-box { border: 1px solid color-mix(in srgb, var(--color-warning) 28%, var(--bd)); background: color-mix(in srgb, var(--color-warning) 9%, var(--bg1)); color: var(--t2); }
 .manual-source-box { border: 1px solid var(--bd2); background: var(--bg0); color: var(--t2); }
@@ -3572,8 +3577,8 @@ const COMMON_EXT = ['doc_app_form', 'doc_passport_org', 'doc_passport_copy', 'do
 const DOC_DICT = {
     "doc_app_form": "통합신청서 (별지 제34호 서식)", "doc_passport": "여권 원본 및 인적사항면 사본", "doc_passport_org": "여권 원본 (대조용 필수지참)",
     "doc_passport_copy": "여권 인적사항면 사본", "doc_id": "외국인등록증(또는 거소증) 원본 및 사본 (기존 등록자에 한함)", "doc_photo": "표준규격사진 1매 (3.5x4.5cm, 최근 6개월)",
-    "doc_fee": "수수료 (정부수입인지)", "doc_fee_new": "신규 발급 수수료 (정부수입인지)", "doc_fee_ext": "기간 연장 수수료 (정부수입인지)",
-    "doc_arc_fee": "신분증(외국인등록증, 거소증 등) 발급 수수료 35,000원 (전액 현금 결제, 택배 수령 시 39,000원)",
+    "doc_fee": "수수료 (정부수입인지, 절차별 금액은 수수료 안내 확인)", "doc_fee_new": "신규/체류자격 부여 수수료 (정부수입인지, 절차별 금액은 수수료 안내 확인)", "doc_fee_ext": "체류기간 연장 수수료 (정부수입인지, 기본 60,000원)",
+    "doc_arc_fee": "외국인등록증 발급 및 재발급 수수료 35,000원",
     "doc_biz_reg": "사업자등록증 사본", "doc_corp_reg": "법인등기사항전부증명서 (발급 3개월 이내)", "doc_tax": "납세증명서 (국세 및 지방세 완납증명)",
     "doc_vat": "부가가치세 과세표준증명 (최근 1년)", "doc_inc_proof": "소득금액증명원 등 소득입증서류", "doc_score": "점수제 평가표 및 해당 항목별 증빙서류 (점수제 적용 비자에 한함)",
     "doc_emp_contract": "표준근로계약서 또는 고용계약서 원본/사본", "doc_emp_recom": "주무부처 고용추천서 (해당 직종 한정)", "doc_degree": "최종 학위/학력증명서 (아포스티유/영사확인 필수)",
@@ -4098,10 +4103,30 @@ function openDocModal(visaCode, type, subIdx) {
     }
     document.getElementById('docModalTitle').innerHTML = `${escapeHtml(visa.code)} - ${escapeHtml(title)}${stageNote ? ' <span style="font-size:0.8em;color:var(--color-warning);">(준용)</span>' : ''}`;
     const descEl = document.getElementById('docModalDesc');
-    descEl.innerHTML = `${stageNote ? `<div class="text-desc" style="margin-bottom:0.6rem;">${stageNote}</div>` : ''}🚨 <strong>실무 주의사항</strong>: 본 체크리스트는 법령에 명시된 기본 공통 서류입니다. 심사관의 재량적 판단에 따라 출입국 실무 현장에서 추가 소명 자료가 징구될 수 있습니다.<br><div style="margin-top:0.6rem; padding-top:0.6rem; border-top:1px dashed var(--bd); color:var(--t2);">🤝 <strong>대리인(가족, 고용주 등) 방문 대리 신청 안내</strong><br>• <strong>대리 자격:</strong> 질병, 만 17세 미만 등 부득이한 사유가 있거나, 배우자/직계친족, 초청자/고용주(소속 직원 포함)에 한함. (※ 영주(F-5) 등 본인 출석 필수 민원은 예외)<br>• <strong>필수 지참:</strong> 위 기본 서류 외에 <strong>① 위임장(소정 양식) ② 대리인 신분증(원본 대조 및 사본) ③ 관계 입증 서류(가족관계증명서, 재직증명서 등)</strong>를 반드시 지참해야 하며, 통합신청서 하단에 대리인 서명이 필수입니다.</div>`;
+    descEl.innerHTML = `${stageNote ? `<div class="text-desc" style="margin-bottom:0.6rem;">${stageNote}</div>` : ''}${renderModalFeeBox(visa, type)}🚨 <strong>실무 주의사항</strong>: 본 체크리스트는 법령에 명시된 기본 공통 서류입니다. 심사관의 재량적 판단에 따라 출입국 실무 현장에서 추가 소명 자료가 징구될 수 있습니다.<br><div style="margin-top:0.6rem; padding-top:0.6rem; border-top:1px dashed var(--bd); color:var(--t2);">🤝 <strong>대리인(가족, 고용주 등) 방문 대리 신청 안내</strong><br>• <strong>대리 자격:</strong> 질병, 만 17세 미만 등 부득이한 사유가 있거나, 배우자/직계친족, 초청자/고용주(소속 직원 포함)에 한함. (※ 영주(F-5) 등 본인 출석 필수 민원은 예외)<br>• <strong>필수 지참:</strong> 위 기본 서류 외에 <strong>① 위임장(소정 양식) ② 대리인 신분증(원본 대조 및 사본) ③ 관계 입증 서류(가족관계증명서, 재직증명서 등)</strong>를 반드시 지참해야 하며, 통합신청서 하단에 대리인 서명이 필수입니다.</div>`;
     descEl.style.display = 'block';
     document.getElementById('docModalChecklist').innerHTML = docs.length ? renderDocTags(docs, [], type === 'sub', targetCode) : '<div class="text-desc">해당 단계의 구조화된 구비서류 데이터가 없어 표시할 항목이 없습니다. 관할 기관 및 매뉴얼 원문 확인이 필요합니다.</div>';
     openModal('docModalOverlay');
+}
+
+function renderModalFeeBox(visa, type) {
+    const procedureKeyByType = { ext: 'extension', change: 'statusChange' };
+    const key = procedureKeyByType[type];
+    if (key) return renderProcedureFeeBox(getProcedureFeeInfo(visa, key));
+    if (type === 'new') {
+        return renderProcedureFeeBox({
+            label: '신규 체류자격 관련 수수료',
+            revenueStamp: null,
+            cardIssueFee: 35000,
+            notes: [
+                '국내에서 체류자격 부여를 신청하는 경우 정부수입인지 80,000원이 기본입니다.',
+                '입국 후 외국인등록 대상자는 외국인등록증 발급 수수료 35,000원이 별도입니다.',
+                '재외공관 사증발급 수수료는 국적·사증 종류·공관 기준에 따라 달라질 수 있습니다.'
+            ],
+            sourceNote: STAY_FEE_SOURCE_NOTE
+        });
+    }
+    return '';
 }
 
 // --- FAQ Modal ---
@@ -4767,6 +4792,88 @@ const COMMON_MANUAL_WARNINGS = [
     '체류허가 신청자는 국내 체류 중이어야 합니다.'
 ];
 
+const STAY_FEE_SOURCE_NOTE = '체류민원_0504.pdf 공통사항 「각종 체류허가 등에 관한 심사수수료」 기준입니다. 접수된 심사수수료는 반환되지 않을 수 있습니다.';
+const DEFAULT_PROCEDURE_FEES = {
+    activitiesOutsideStatus: {
+        label: '체류자격 외 활동허가',
+        revenueStamp: 120000,
+        notes: ['정부수입인지 120,000원']
+    },
+    workplaceChange: {
+        label: '근무처 변경·추가',
+        revenueStamp: 120000,
+        notes: ['정부수입인지 120,000원', '신고 민원 또는 개별 특례는 면제될 수 있어 관할 관서 확인이 필요합니다.']
+    },
+    statusGrant: {
+        label: '체류자격 부여',
+        revenueStamp: 80000,
+        notes: ['정부수입인지 80,000원']
+    },
+    statusChange: {
+        label: '체류자격 변경허가',
+        revenueStamp: 100000,
+        notes: ['정부수입인지 100,000원']
+    },
+    extension: {
+        label: '체류기간 연장허가',
+        revenueStamp: 60000,
+        notes: ['정부수입인지 60,000원']
+    },
+    registration: {
+        label: '외국인등록',
+        revenueStamp: 0,
+        cardIssueFee: 35000,
+        notes: ['외국인등록증 발급 및 재발급 수수료 35,000원']
+    },
+    reentry: {
+        label: '재입국허가',
+        revenueStamp: null,
+        notes: ['단수 재입국허가 30,000원', '복수 재입국허가 50,000원']
+    }
+};
+
+function formatWon(amount) {
+    if (typeof amount !== 'number') return '';
+    return `${amount.toLocaleString('ko-KR')}원`;
+}
+
+function getProcedureFeeInfo(v, procedureKey) {
+    const raw = v.procedures && v.procedures[procedureKey] ? v.procedures[procedureKey] : {};
+    if (raw && raw.feeInfo) return raw.feeInfo;
+    const base = DEFAULT_PROCEDURE_FEES[procedureKey];
+    if (!base) return null;
+    const fee = { ...base, notes: [...(base.notes || [])] };
+    if (procedureKey === 'statusChange') {
+        if (v.code === 'F-5') {
+            fee.revenueStamp = 200000;
+            fee.notes = ['영주(F-5) 자격 변경허가 정부수입인지 200,000원'];
+        } else if (v.code === 'F-6') {
+            fee.revenueStamp = 40000;
+            fee.notes = ['결혼이민(F-6) 자격 변경허가 정부수입인지 40,000원'];
+        }
+    }
+    if (procedureKey === 'extension' && v.code === 'F-6') {
+        fee.revenueStamp = 30000;
+        fee.notes = ['결혼이민(F-6) 체류기간 연장허가 정부수입인지 30,000원'];
+    }
+    return fee;
+}
+
+function renderProcedureFeeBox(feeInfo) {
+    if (!feeInfo) return '';
+    const amountBits = [];
+    if (typeof feeInfo.revenueStamp === 'number' && feeInfo.revenueStamp > 0) amountBits.push(`수입인지 ${formatWon(feeInfo.revenueStamp)}`);
+    if (feeInfo.revenueStamp === 0) amountBits.push('수입인지 없음');
+    if (typeof feeInfo.cardIssueFee === 'number' && feeInfo.cardIssueFee > 0) amountBits.push(`등록증 ${formatWon(feeInfo.cardIssueFee)}`);
+    const amountText = amountBits.length ? amountBits.join(' · ') : '금액 확인 필요';
+    const notes = Array.isArray(feeInfo.notes) ? feeInfo.notes : [];
+    return `<div class="procedure-fee-box">
+        <div class="procedure-fee-title"><span>${escapeHtml(feeInfo.label || '수수료')}</span><span class="procedure-fee-amount">${escapeHtml(amountText)}</span></div>
+        ${notes.length ? `<ul class="procedure-fee-list">${notes.map(note => `<li>${escapeHtml(note)}</li>`).join('')}</ul>` : ''}
+        <div class="procedure-fee-note">${escapeHtml(feeInfo.sourceNote || STAY_FEE_SOURCE_NOTE)}</div>
+    </div>`;
+}
+
 function normalizeVisaCode(value) {
     return String(value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 }
@@ -4839,6 +4946,7 @@ function getProcedure(v, cfg) {
         notes: raw?.notes || [],
         summary: raw?.summary || (cfg.oldText && v[cfg.oldText] ? v[cfg.oldText] : ''),
         docs: normalizeDocGroups(docValue, raw || {}),
+        feeInfo: getProcedureFeeInfo(v, cfg.key),
         manualRefs: raw?.manualRefs || []
     };
 }
@@ -4874,8 +4982,10 @@ function renderProcedurePanel(v, proc, keywords, isActive) {
     const eligibilityHtml = proc.eligibility.length ? `<div class="procedure-summary"><strong>대상/요건</strong><br>${proc.eligibility.map(x => escapeHtml(x)).join('<br>')}</div>` : '';
     const notesHtml = proc.notes.length ? `<div class="procedure-summary"><strong>유의사항</strong><br>${proc.notes.map(x => escapeHtml(x)).join('<br>')}</div>` : '';
     const summaryHtml = proc.summary ? `<div class="procedure-summary">${hl(proc.summary, keywords)}</div>` : '';
+    const feeHtml = renderProcedureFeeBox(proc.feeInfo);
     return `<div class="procedure-panel${isActive ? ' active' : ''}" data-procedure-panel="${proc.key}">
         ${eligibilityHtml}${summaryHtml}${notesHtml}
+        ${feeHtml}
         <div class="doc-group-grid">${docsHtml || reviewFallback}</div>
     </div>`;
 }
