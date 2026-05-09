@@ -50,6 +50,8 @@ into the image. See `.env.example` for the full list.
 | `OPENROUTER_MODEL`      | optional  | Defaults to `openrouter/auto`.                           |
 | `GROQ_API_KEY`          | optional* | Enables `/api/ask` via Groq if OpenRouter is not set.    |
 | `GROQ_MODEL`            | optional  | Defaults to `llama-3.1-8b-instant`.                      |
+| `SITE_URL`              | optional  | Sent as `HTTP-Referer` to OpenRouter; set to your frontend origin. |
+| `SITE_TITLE`            | optional  | Sent as `X-Title` to OpenRouter. Defaults to `Paradiso`. |
 | `LAW_API_KEY`           | optional  | Reserved for future law-data integration.                |
 | `DATABASE_URL`          | optional  | Reserved for future Postgres integration.                |
 | `SUPABASE_URL`          | optional  | Reserved for future Supabase integration.                |
@@ -64,37 +66,108 @@ for `/api/ask` to return answers.
 
 ## Deploying to Railway
 
-1. Create a new Railway service from this repository.
-2. In **Settings → Service → Source**, set **Root Directory** to
-   `backend`.
-3. Railway will detect `requirements.txt` and `Procfile` automatically.
+> **Status:** the files in this directory **prepare** Railway
+> deployment but do not deploy it. Each step below is a manual action a
+> human must perform once. No CI deploy hook is configured.
+
+1. Sign in to Railway and choose **New Project → Deploy from GitHub
+   repo**.
+2. Select **Repo:** `lucanomics/Paradiso`.
+3. After the service is created, open **Settings → Service → Source**
+   and set **Root Directory** to `backend`.
+4. Railway will detect `requirements.txt` and `Procfile` automatically.
    The start command is also pinned in `railway.json`:
 
    ```
    uvicorn paradiso_backend:app --host 0.0.0.0 --port $PORT
    ```
 
-4. Add the variables you need under **Variables**. At minimum, set one
-   LLM provider key (`OPENROUTER_API_KEY` or `GROQ_API_KEY`).
-5. Set `CORS_ALLOW_ORIGINS` to your frontend origin(s) for production,
-   for example:
+5. Open **Variables** and add the values below. At minimum, set one
+   LLM provider key (`OPENROUTER_API_KEY` or `GROQ_API_KEY`):
 
    ```
+   OPENROUTER_API_KEY=...        # or GROQ_API_KEY=...
    CORS_ALLOW_ORIGINS=https://paradiso.example.com
+   SITE_URL=https://paradiso.example.com
+   # Optional, declared but not yet wired:
+   # LAW_API_KEY=...
+   # DATABASE_URL=...
+   # SUPABASE_URL=...
+   # SUPABASE_SERVICE_KEY=...
    ```
 
-6. The service exposes `/health` and Railway will use it as the health
+   Replace `paradiso.example.com` with your real Paradiso frontend
+   origin. Use `*` for `CORS_ALLOW_ORIGINS` only in development.
+
+6. **Never commit `backend/.env`.** The repo `.gitignore` already
+   excludes it; only `backend/.env.example` is tracked.
+7. The service exposes `/health` and Railway uses it as the health
    check (already configured in `railway.json`).
+8. After the first deploy, verify each route with curl using the
+   Railway public URL — see _Verification_ below.
+
+### Visa data file path on Railway
+
+`/api/visas` reads from `visa_data.json`. With **Root Directory =
+backend**, the repo-root `visa_data.json` is not part of the build
+context and the endpoint will fall back to a tiny `DEFAULT_VISAS` stub
+(the response includes a `warning` field so this is observable).
+
+Pick one of:
+
+- **Option A (recommended):** copy `visa_data.json` into
+  `backend/data/visas.json` as part of your deploy pipeline. The
+  backend prefers this path automatically.
+- **Option B:** set `VISA_DATA_PATH` to an absolute path that exists at
+  runtime (for example, a Railway volume mount).
+- **Option C:** deploy without Root Directory = backend (use repo root
+  as the build context and a custom start command); the backend will
+  find the repo-root file automatically.
+
+Until one of these is configured, `/api/visas` returns the stub list
+with a `warning` describing the fallback.
+
+## Verification
+
+After deploying (or when running locally), verify each route:
+
+```bash
+BASE=https://your-paradiso-backend.up.railway.app   # or http://localhost:8000
+
+curl -fsS "$BASE/health" | jq
+curl -fsS "$BASE/api/visas" | jq '.count, .warning // "ok"'
+curl -fsS -X POST "$BASE/api/jobcodekeywords" \
+  -H 'content-type: application/json' \
+  -d '{"query":"한식 조리사"}' | jq
+curl -fsS -X POST "$BASE/api/ask" \
+  -H 'content-type: application/json' \
+  -d '{"message":"E-7 비자 갱신 요건은?"}' | jq
+```
+
+`/health` should return `status: "ok"` and a `providers` map showing
+which integrations are configured. `/api/visas` should return a non-
+empty `data` array (and no `warning` field) once `visa_data.json` is
+visible to the deployed service.
 
 ## Wiring the frontend
 
-The frontend reads `window.PARADISO_BACKEND_URL` (set in `index.html`)
-and falls back to same-origin if unset. Point it at your Railway URL
-either by editing `index.html` or by injecting the value at deploy time.
+The frontend exposes `window.PARADISO_BACKEND_URL` (set in
+`index.html`). Today, both `index.html` and `ai.html` still hard-code
+the legacy `API_BASE`; rewiring those pages to read
+`window.PARADISO_BACKEND_URL` is tracked as a follow-up PR (see
+`docs/backend/BACKEND_MIGRATION_GAP_REPORT.md`).
 
-```html
-<script>window.PARADISO_BACKEND_URL = "https://your-paradiso-backend.up.railway.app";</script>
-```
+Two ways to point the frontend at the deployed backend once that
+follow-up lands:
+
+1. Inline override in `index.html` head:
+
+   ```html
+   <script>window.PARADISO_BACKEND_URL = "https://your-paradiso-backend.up.railway.app";</script>
+   ```
+
+2. Or proxy `/api/*` from your static-frontend host to the backend, so
+   same-origin (`window.PARADISO_BACKEND_URL = ""`) works.
 
 ## Production hardening checklist
 
