@@ -1,0 +1,476 @@
+[
+  {
+    "id": "doc_accom",
+    "ko_name": "Accom",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_address",
+    "ko_name": "체류지 입증서류",
+    "en_name": "Proof of Address",
+    "description": "임대차계약서·숙소제공확인서 등 실제 체류지 입증자료."
+  },
+  {
+    "id": "doc_app_form",
+    "ko_name": "통합신청서",
+    "en_name": "Integrated Application Form",
+    "description": "법정 서식(별지) 기준의 통합신청서 원본."
+  },
+  {
+    "id": "doc_attend",
+    "ko_name": "Attend",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_bank_bal",
+    "ko_name": "Bank Bal",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_basic",
+    "ko_name": "Basic",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_biz_reg",
+    "ko_name": "사업자등록증",
+    "en_name": "Business Registration Certificate",
+    "description": "고용기관 또는 사업체의 사업자등록증 사본."
+  },
+  {
+    "id": "doc_career",
+    "ko_name": "경력증명서",
+    "en_name": "Career Certificate",
+    "description": "직무 관련 경력 기간 및 업무를 입증하는 서류."
+  },
+  {
+    "id": "doc_consent",
+    "ko_name": "Consent",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_corp_reg",
+    "ko_name": "법인등기사항증명서",
+    "en_name": "Corporate Registry Certificate",
+    "description": "법인 기본정보를 확인하는 등기사항증명서."
+  },
+  {
+    "id": "doc_credit_report",
+    "ko_name": "Credit Report",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_crim",
+    "ko_name": "범죄경력증명서",
+    "en_name": "Criminal Record Certificate",
+    "description": "해외·국내 체류 이력 관련 범죄경력 확인서."
+  },
+  {
+    "id": "doc_cvi",
+    "ko_name": "Cvi",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_degree",
+    "ko_name": "학위증명서",
+    "en_name": "Degree Certificate",
+    "description": "최종 학위 취득 사실을 확인할 수 있는 증명서."
+  },
+  {
+    "id": "doc_dispatch",
+    "ko_name": "Dispatch",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_emp_certificate",
+    "ko_name": "Emp Certificate",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_emp_contract",
+    "ko_name": "고용계약서",
+    "en_name": "Employment Contract",
+    "description": "근로조건·직무·보수를 포함한 고용계약서."
+  },
+  {
+    "id": "doc_emp_recom",
+    "ko_name": "Emp Recom",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_employment_insurance_list",
+    "ko_name": "Employment Insurance List",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_employment_proof",
+    "ko_name": "Employment Proof",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_enroll",
+    "ko_name": "Enroll",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_eps",
+    "ko_name": "Eps",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_f4_proof",
+    "ko_name": "F4 Proof",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_fam_rel",
+    "ko_name": "Fam Rel",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_fee",
+    "ko_name": "수수료 납부증빙",
+    "en_name": "Fee Payment Receipt",
+    "description": "체류민원 정부수입인지 납부 항목. 절차별 금액은 체류민원_0504.pdf 공통사항 수수료 표 기준으로 화면에 별도 안내합니다."
+  },
+  {
+    "id": "doc_fee_ext",
+    "ko_name": "체류기간 연장 수수료",
+    "en_name": "Required Supporting Document",
+    "description": "체류기간 연장허가 정부수입인지 항목. 기본 60,000원이며 결혼이민(F-6)은 30,000원입니다."
+  },
+  {
+    "id": "doc_fee_new",
+    "ko_name": "신규/체류자격 부여 수수료",
+    "en_name": "Required Supporting Document",
+    "description": "신규·체류자격 부여 등 국내 체류민원 수입인지 항목. 외국인등록 대상자는 등록증 발급 수수료가 별도로 발생할 수 있습니다."
+  },
+  {
+    "id": "doc_finance",
+    "ko_name": "재정입증서류",
+    "en_name": "Financial Proof",
+    "description": "잔고증명·재정증빙 등 체류비 조달능력 입증자료."
+  },
+  {
+    "id": "doc_flight",
+    "ko_name": "Flight",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_guarantee",
+    "ko_name": "Guarantee",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_health",
+    "ko_name": "Health",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_id",
+    "ko_name": "Id",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_inc_proof",
+    "ko_name": "소득입증서류",
+    "en_name": "Income Proof",
+    "description": "근로소득원천징수, 소득금액증명 등 소득 확인자료."
+  },
+  {
+    "id": "doc_income_tax",
+    "ko_name": "Income Tax",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_internship_plan",
+    "ko_name": "인턴십 계획서",
+    "en_name": "Internship Plan",
+    "description": "연수기관·기간·교육내용을 포함한 인턴십 계획서."
+  },
+  {
+    "id": "doc_invest",
+    "ko_name": "Invest",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_invitation",
+    "ko_name": "Invitation",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_job_report",
+    "ko_name": "Job Report",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_job_search_plan",
+    "ko_name": "Job Search Plan",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_kiip",
+    "ko_name": "사회통합프로그램 확인서",
+    "en_name": "KIIP Certificate",
+    "description": "사회통합프로그램 이수 또는 단계 확인서."
+  },
+  {
+    "id": "doc_kiip_cert",
+    "ko_name": "Kiip Cert",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_local_recommendation",
+    "ko_name": "지자체 추천서",
+    "en_name": "Local Government Recommendation",
+    "description": "지역특화·광역형 시범사업 대상 추천서."
+  },
+  {
+    "id": "doc_mar_rel",
+    "ko_name": "Mar Rel",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_medical",
+    "ko_name": "Medical",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_passport",
+    "ko_name": "Passport",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_passport_copy",
+    "ko_name": "여권 사본",
+    "en_name": "Passport Copy",
+    "description": "유효한 여권 신원면 사본."
+  },
+  {
+    "id": "doc_passport_org",
+    "ko_name": "Passport Org",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_photo",
+    "ko_name": "증명사진",
+    "en_name": "ID Photo",
+    "description": "최근 6개월 이내 촬영한 규격 증명사진."
+  },
+  {
+    "id": "doc_plan",
+    "ko_name": "활동계획서",
+    "en_name": "Activity Plan",
+    "description": "체류 목적·일정·활동 계획을 설명하는 문서."
+  },
+  {
+    "id": "doc_point_table",
+    "ko_name": "Point Table",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_prof_conf",
+    "ko_name": "Prof Conf",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_property_proof",
+    "ko_name": "Property Proof",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_purpose",
+    "ko_name": "체류목적 소명서류",
+    "en_name": "Purpose Statement",
+    "description": "신청 체류자격의 목적과 필요성을 소명하는 자료."
+  },
+  {
+    "id": "doc_reason_proof",
+    "ko_name": "Reason Proof",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_refugee",
+    "ko_name": "Refugee",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_resident_reg",
+    "ko_name": "Resident Reg",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_schedule",
+    "ko_name": "Schedule",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_specialty",
+    "ko_name": "Specialty",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_tax",
+    "ko_name": "Tax",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_tax_cert",
+    "ko_name": "납세증명서",
+    "en_name": "Tax Payment Certificate",
+    "description": "국세·지방세 납세 사실을 증명하는 서류."
+  },
+  {
+    "id": "doc_tb",
+    "ko_name": "Tb",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_top_tier_degree",
+    "ko_name": "최우수인재 대학 학위 증명",
+    "en_name": "Top-Tier Degree Certificate",
+    "description": "최근 5년 이내 세계대학 순위 100위권 대학 석사 이상 학위 증명."
+  },
+  {
+    "id": "doc_topik",
+    "ko_name": "한국어능력증명",
+    "en_name": "TOPIK Certificate",
+    "description": "TOPIK 성적표 또는 동등 한국어능력 입증자료."
+  },
+  {
+    "id": "doc_training_cont",
+    "ko_name": "Training Cont",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_transcript",
+    "ko_name": "Transcript",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_vat",
+    "ko_name": "Vat",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "개별 사안별 증빙서류(매뉴얼 해당 항목 및 관할기관 안내 기준)",
+    "ko_name": "개별 사안별 증빙서류(매뉴얼 해당 항목 및 관할기관 안내 기준)",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "변경 사유 입증서류(활동계획서·초청서·고용계약서 등 해당 자격별)",
+    "ko_name": "변경 사유 입증서류(활동계획서·초청서·고용계약서 등 해당 자격별)",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "사증발급신청서(별지 제17호 서식)",
+    "ko_name": "사증발급신청서(별지 제17호 서식)",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "사진 1매(해당 시)",
+    "ko_name": "사진 1매(해당 시)",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "수수료",
+    "ko_name": "수수료",
+    "en_name": "Required Supporting Document",
+    "description": "체류민원 수수료 항목. 절차별 정부수입인지 및 외국인등록증 발급 수수료는 화면의 수수료 안내를 함께 확인합니다."
+  },
+  {
+    "id": "여권",
+    "ko_name": "여권",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "여권 및 외국인등록증",
+    "ko_name": "여권 및 외국인등록증",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "체류자격별 개별 첨부서류(매뉴얼 해당 자격 항목 참조)",
+    "ko_name": "체류자격별 개별 첨부서류(매뉴얼 해당 자격 항목 참조)",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "체류지 입증서류",
+    "ko_name": "체류지 입증서류",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "통합신청서",
+    "ko_name": "통합신청서",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "통합신청서(체류자격변경허가 신청 포함)",
+    "ko_name": "통합신청서(체류자격변경허가 신청 포함)",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "표준규격사진 1매",
+    "ko_name": "표준규격사진 1매",
+    "en_name": "Required Supporting Document",
+    "description": "해당 체류자격 심사 기준에 따라 제출하는 필수 또는 보완 증빙서류."
+  },
+  {
+    "id": "doc_arc_fee",
+    "ko_name": "외국인등록증 발급 수수료",
+    "en_name": "Alien Registration Card Issuance Fee",
+    "description": "외국인등록증 발급 및 재발급 수수료 35,000원. 체류민원_0504.pdf 공통사항 수수료 표 기준입니다."
+  }
+]
