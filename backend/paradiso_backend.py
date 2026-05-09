@@ -50,6 +50,9 @@ OPENROUTER_MODEL: str = os.environ.get(
 )
 GROQ_MODEL: str = os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant")
 
+SITE_URL: str = os.environ.get("SITE_URL", "")
+SITE_TITLE: str = os.environ.get("SITE_TITLE", "Paradiso")
+
 CORS_ALLOW_ORIGINS = [
     origin.strip()
     for origin in os.environ.get("CORS_ALLOW_ORIGINS", "*").split(",")
@@ -163,6 +166,10 @@ async def _call_openrouter(prompt: str, model: Optional[str] = None) -> str:
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
     }
+    if SITE_URL:
+        headers["HTTP-Referer"] = SITE_URL
+    if SITE_TITLE:
+        headers["X-Title"] = SITE_TITLE
     async with httpx.AsyncClient(timeout=60.0) as client:
         resp = await client.post(
             "https://openrouter.ai/api/v1/chat/completions",
@@ -280,24 +287,94 @@ DEFAULT_VISAS: List[Dict[str, Any]] = [
 ]
 
 
-def _load_visas() -> List[Dict[str, Any]]:
-    """Visa list source.
+_VISAS_CACHE: Optional[Dict[str, Any]] = None
 
-    If a local JSON file at backend/data/visas.json exists, prefer it.
-    Otherwise return the default static list. Database integrations can
-    be added here without changing the route surface.
+
+def _candidate_visa_paths() -> List[str]:
+    """Search order for the authoritative visa JSON file.
+
+    1. `VISA_DATA_PATH` env var (absolute path, for explicit Railway
+       configuration).
+    2. `backend/data/visas.json` (committed override, e.g. for tests).
+    3. `<repo-root>/visa_data.json` (works for local dev and any deploy
+       whose build context includes the repo root).
     """
     here = os.path.dirname(os.path.abspath(__file__))
-    candidate = os.path.join(here, "data", "visas.json")
-    if os.path.isfile(candidate):
+    repo_root = os.path.dirname(here)
+    paths: List[str] = []
+    explicit = os.environ.get("VISA_DATA_PATH", "").strip()
+    if explicit:
+        paths.append(explicit)
+    paths.extend(
+        [
+            os.path.join(here, "data", "visas.json"),
+            os.path.join(repo_root, "visa_data.json"),
+        ]
+    )
+    return paths
+
+
+def _coerce_visa_list(raw: Any) -> Optional[List[Dict[str, Any]]]:
+    """Accept the common shapes for a visa data file.
+
+    Supported:
+    - a JSON list of records;
+    - an object with a list under one of: visas, data, records, items.
+    """
+    if isinstance(raw, list):
+        return [item for item in raw if isinstance(item, dict)]
+    if isinstance(raw, dict):
+        for key in ("visas", "data", "records", "items"):
+            value = raw.get(key)
+            if isinstance(value, list):
+                return [item for item in value if isinstance(item, dict)]
+    return None
+
+
+def _load_visas() -> Dict[str, Any]:
+    """Load and cache the visa list.
+
+    Returns a dict with `visas` and optionally a `warning` describing
+    why the fallback was used. The file is read once per process and
+    cached in module-level state.
+    """
+    global _VISAS_CACHE
+    if _VISAS_CACHE is not None:
+        return _VISAS_CACHE
+
+    last_error: Optional[str] = None
+    for path in _candidate_visa_paths():
+        if not os.path.isfile(path):
+            continue
         try:
-            with open(candidate, "r", encoding="utf-8") as fh:
-                data = json.load(fh)
-            if isinstance(data, list):
-                return data
-        except Exception as exc:  # pragma: no cover
-            logger.warning("Failed to load %s: %s", candidate, exc)
-    return DEFAULT_VISAS
+            with open(path, "r", encoding="utf-8") as fh:
+                raw = json.load(fh)
+        except (OSError, json.JSONDecodeError) as exc:
+            last_error = f"failed to read {path}: {exc}"
+            logger.warning(last_error)
+            continue
+        records = _coerce_visa_list(raw)
+        if records is None:
+            last_error = (
+                f"{path} did not contain a recognizable visa list shape"
+            )
+            logger.warning(last_error)
+            continue
+        logger.info("Loaded %d visa records from %s", len(records), path)
+        _VISAS_CACHE = {"visas": records, "source": path}
+        return _VISAS_CACHE
+
+    warning = (
+        "using fallback DEFAULT_VISAS because no visa data file was found"
+        if last_error is None
+        else f"using fallback DEFAULT_VISAS because {last_error}"
+    )
+    _VISAS_CACHE = {
+        "visas": DEFAULT_VISAS,
+        "source": "fallback",
+        "warning": warning,
+    }
+    return _VISAS_CACHE
 
 
 # ---------------------------------------------------------------------------
@@ -316,8 +393,26 @@ async def health() -> Dict[str, Any]:
 
 @app.get("/api/visas")
 async def list_visas() -> Dict[str, Any]:
-    visas = _load_visas()
-    return {"count": len(visas), "visas": visas}
+    """Return the visa catalog.
+
+    Response shape preserves backwards-compatibility with frontend
+    consumers that read either a bare array or `{data: [...]}`:
+
+    - `data`: list of visa records (frontend's `parse()` reads this)
+    - `visas`: same list under the explicit name used by newer code
+    - `count`: convenience integer
+    - `warning`: present only when DEFAULT_VISAS fallback is in use
+    """
+    cached = _load_visas()
+    visas = cached["visas"]
+    payload: Dict[str, Any] = {
+        "count": len(visas),
+        "data": visas,
+        "visas": visas,
+    }
+    if "warning" in cached:
+        payload["warning"] = cached["warning"]
+    return payload
 
 
 @app.post("/api/ask", response_model=AskResponse)
