@@ -1,0 +1,11 @@
+node_modules
+
+# Environment files - never commit secrets
+.env
+.env.*
+!.env.example
+
+# Python virtualenv and bytecode
+.venv/
+__pycache__/
+*.pyc
