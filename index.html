@@ -3695,6 +3695,304 @@ body.searched :is(.p-hero-copy, .p-entry-rail, .p-section, .p-footer-cta) {
   }
 }
 
+/* Landing readability tune-up */
+body:not(.searched) .p-hero-copy {
+  gap: 1rem;
+}
+
+body:not(.searched) .p-hero-title {
+  max-width: 13ch;
+  font-size: 3.75rem;
+  line-height: 1.12;
+  letter-spacing: 0;
+  overflow-wrap: normal;
+}
+
+body:not(.searched) .p-hero-title em {
+  margin-top: 0.08rem;
+  font-size: 0.84em;
+  line-height: 1.1;
+}
+
+body:not(.searched) .p-hero-sub {
+  max-width: 46rem;
+  color: rgba(244, 238, 224, 0.9);
+  font-size: 1.08rem;
+  line-height: 1.82;
+}
+
+body:not(.searched) .p-proof-chip {
+  border-color: rgba(244, 238, 224, 0.3);
+  background: rgba(244, 238, 224, 0.11);
+  color: rgba(244, 238, 224, 0.9);
+}
+
+body:not(.searched) .p-entry-card {
+  min-height: 112px;
+  border-color: rgba(244, 238, 224, 0.28);
+  background: rgba(244, 238, 224, 0.13);
+}
+
+body:not(.searched) .p-entry-title,
+body:not(.searched) .hero-action-label,
+body:not(.searched) .visa-track-title {
+  letter-spacing: 0;
+  line-height: 1.42;
+}
+
+body:not(.searched) .p-entry-sub {
+  color: rgba(244, 238, 224, 0.82);
+  line-height: 1.6;
+}
+
+body:not(.searched) .hero-action-btn,
+body:not(.searched) .visa-track-card {
+  border-color: rgba(244, 238, 224, 0.24);
+  background: rgba(244, 238, 224, 0.12);
+  color: rgba(255, 250, 242, 0.94);
+}
+
+body:not(.searched) .qa-main .hero-action-btn {
+  border-color: rgba(244, 238, 224, 0.22);
+  background: rgba(244, 238, 224, 0.1);
+}
+
+body:not(.searched) .hero-action-btn:hover,
+body:not(.searched) .visa-track-card:hover {
+  border-color: rgba(242, 201, 189, 0.48);
+  background: rgba(244, 238, 224, 0.18);
+}
+
+body:not(.searched) .hero-action-label,
+body:not(.searched) .visa-track-title {
+  color: #fffaf2;
+}
+
+body:not(.searched) .visa-track-desc {
+  color: rgba(244, 238, 224, 0.78);
+  line-height: 1.65;
+}
+
+body:not(.searched) .qa-main::before,
+body:not(.searched) #visaManualSection::before,
+body:not(.searched) .landing-hints-title {
+  color: rgba(244, 238, 224, 0.68) !important;
+  letter-spacing: 0.08em !important;
+}
+
+body:not(.searched) .reference-disclaimer {
+  color: rgba(244, 238, 224, 0.64);
+  font-size: 0.82rem;
+  line-height: 1.8;
+}
+
+body:not(.searched) .landing-hints-section {
+  gap: 0.72rem;
+  margin-bottom: 4.75rem !important;
+  padding: 1.15rem;
+  border-color: rgba(244, 238, 224, 0.22);
+  background: rgba(244, 238, 224, 0.1);
+}
+
+body:not(.searched) .ai-fab {
+  max-width: 12.75rem;
+  min-height: 42px;
+  padding: 0.58rem 0.78rem;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+body:not(.searched) .ai-fab strong {
+  display: none;
+}
+
+body.searched .ai-fab {
+  max-width: 12.75rem;
+  min-height: 42px;
+  padding: 0.58rem 0.78rem;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+body.searched .ai-fab strong {
+  display: none;
+}
+
+body:not(.searched) .lh {
+  min-height: 38px;
+  padding: 0.52rem 0.9rem;
+  color: rgba(255, 250, 242, 0.94) !important;
+  font-weight: 720;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+.p-section {
+  padding-inline: clamp(1rem, 3vw, 1.5rem);
+}
+
+.p-section-title {
+  max-width: 18ch;
+  font-size: 2.7rem;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+.p-section-copy,
+.p-pathway-desc,
+.p-how-step p,
+.p-source-card p,
+.p-tool-card p,
+.p-reminder-card p,
+.p-source-note {
+  color: var(--p-ink-2);
+  line-height: 1.75;
+}
+
+.p-pathway-card,
+.p-how-step,
+.p-source-card,
+.p-tool-card,
+.p-reminder-card {
+  background: rgba(255, 250, 244, 0.86);
+}
+
+.p-pathway-title,
+.p-how-step h3,
+.p-source-card h3,
+.p-tool-card h3,
+.p-reminder-card h3 {
+  line-height: 1.34;
+  letter-spacing: 0;
+}
+
+body.searched .header-inner {
+  display: grid !important;
+  grid-template-columns: auto minmax(22rem, 1fr) auto;
+  align-items: start !important;
+  gap: 0.55rem 0.9rem !important;
+}
+
+body.searched .logo-area {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+body.searched .search-wrap {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  max-width: none !important;
+}
+
+body.searched .ctrls {
+  grid-column: 3;
+  grid-row: 1;
+  align-self: center;
+  display: flex !important;
+  flex-wrap: nowrap;
+  gap: 0.45rem;
+  max-width: none !important;
+}
+
+body.searched .reference-disclaimer {
+  grid-column: 2 / -1;
+  grid-row: 2;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: color-mix(in srgb, var(--p-ink-3) 84%, var(--p-green));
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+body.searched .hero-ai-secondary {
+  display: none !important;
+}
+
+body.searched .smeta {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0.32rem 0.8rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 920px) {
+  body:not(.searched) .p-hero-title {
+    max-width: 12.5ch;
+    font-size: 3.15rem;
+  }
+
+  .p-section-title {
+    font-size: 2.2rem;
+  }
+
+  body.searched .header-inner {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  body.searched .search-wrap {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  body.searched .ctrls {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  body.searched .reference-disclaimer {
+    grid-column: 1 / -1;
+    grid-row: 4;
+  }
+}
+
+@media (max-width: 720px) {
+  body:not(.searched) .ai-fab {
+    left: auto !important;
+    right: 0.75rem !important;
+    bottom: 0.75rem !important;
+    width: auto !important;
+    max-width: min(13.5rem, calc(100vw - 1.5rem)) !important;
+    min-height: 42px;
+    padding: 0.58rem 0.75rem;
+    font-size: 0.72rem;
+    line-height: 1.25;
+  }
+
+  body:not(.searched) .ai-fab strong {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  body:not(.searched) .p-hero-title {
+    max-width: 11ch;
+    font-size: 2.55rem;
+    line-height: 1.08;
+  }
+
+  body:not(.searched) .p-hero-sub {
+    font-size: 0.97rem;
+    line-height: 1.72;
+  }
+
+  body:not(.searched) .p-entry-card {
+    min-height: 92px;
+  }
+
+  body:not(.searched) .landing-hints-section {
+    margin-bottom: 4rem !important;
+  }
+
+  .p-section-title {
+    font-size: 1.78rem;
+  }
+}
+
 </style>
 <script>
   window.PARADISO_BACKEND_URL = window.PARADISO_BACKEND_URL || "";
