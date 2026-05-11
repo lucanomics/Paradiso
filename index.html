@@ -3159,6 +3159,9 @@ body:not(.searched) #visaManualSection {
 html:lang(fr) body:not(.searched) .p-hero-title,
 html:lang(es) body:not(.searched) .p-hero-title,
 html:lang(id) body:not(.searched) .p-hero-title,
+html:lang(ar) body:not(.searched) .p-hero-title,
+html:lang(mn) body:not(.searched) .p-hero-title,
+html:lang(fa) body:not(.searched) .p-hero-title,
 html:lang(ru) body:not(.searched) .p-hero-title,
 html:lang(th) body:not(.searched) .p-hero-title,
 html:lang(vi) body:not(.searched) .p-hero-title,
@@ -3167,6 +3170,16 @@ html:lang(hi) body:not(.searched) .p-hero-title,
 html:lang(ne) body:not(.searched) .p-hero-title {
   font-size: clamp(2.05rem, 6.4vw, 4.75rem);
   line-height: 1.06;
+}
+
+html[dir="rtl"] body:not(.searched) .p-hero-copy,
+html[dir="rtl"] body:not(.searched) .p-entry-rail,
+html[dir="rtl"] .language-option {
+  text-align: right;
+}
+
+html[dir="rtl"] .language-menu {
+  direction: rtl;
 }
 
 .p-hero-sub {
@@ -3975,6 +3988,9 @@ body:not(.searched) #visaManualSection::before {
   html:lang(fr) body:not(.searched) .p-hero-title,
   html:lang(es) body:not(.searched) .p-hero-title,
   html:lang(id) body:not(.searched) .p-hero-title,
+  html:lang(ar) body:not(.searched) .p-hero-title,
+  html:lang(mn) body:not(.searched) .p-hero-title,
+  html:lang(fa) body:not(.searched) .p-hero-title,
   html:lang(ru) body:not(.searched) .p-hero-title,
   html:lang(th) body:not(.searched) .p-hero-title,
   html:lang(vi) body:not(.searched) .p-hero-title,
@@ -4045,6 +4061,9 @@ body:not(.searched) #visaManualSection::before {
   html:lang(fr) body:not(.searched) .p-hero-title,
   html:lang(es) body:not(.searched) .p-hero-title,
   html:lang(id) body:not(.searched) .p-hero-title,
+  html:lang(ar) body:not(.searched) .p-hero-title,
+  html:lang(mn) body:not(.searched) .p-hero-title,
+  html:lang(fa) body:not(.searched) .p-hero-title,
   html:lang(ru) body:not(.searched) .p-hero-title,
   html:lang(th) body:not(.searched) .p-hero-title,
   html:lang(vi) body:not(.searched) .p-hero-title,
@@ -6616,6 +6635,9 @@ const LANGUAGE_OPTIONS = [
     { code: 'th', html: 'th', short: 'TH', name: 'ไทย', local: 'Thai' },
     { code: 'vi', html: 'vi', short: 'VI', name: 'Tiếng Việt', local: 'Vietnamese' },
     { code: 'km', html: 'km', short: 'KM', name: 'ភាសាខ្មែរ', local: 'Khmer' },
+    { code: 'ar', html: 'ar', short: 'AR', name: 'العربية', local: 'Arabic', dir: 'rtl' },
+    { code: 'mn', html: 'mn', short: 'MN', name: 'Монгол', local: 'Mongolian' },
+    { code: 'fa', html: 'fa', short: 'FA', name: 'فارسی', local: 'Persian', dir: 'rtl' },
     { code: 'ru', html: 'ru', short: 'RU', name: 'Русский', local: 'Russian' }
 ];
 let currentLanguage = 'ko';
@@ -6915,6 +6937,69 @@ const UI_TRANSLATIONS = {
         landingHints: ['ប្តូរអាសយដ្ឋាន', 'បន្តលិខិតឆ្លងដែន', 'ចេញ ARC ឡើងវិញ', 'មកដោយមិនកក់/ករណីលើកលែង', 'លើកលែងវីសា Jeju', 'K-ETA', 'កម្មករជំនាញ (E-7-4)', 'អន្តោប្រវេសន៍អាពាហ៍ពិពាហ៍ (F-6)', 'លក្ខខណ្ឌចំណូល F-3', 'វិញ្ញាបនបត្រ TB', 'ដំណើរការជនភៀសខ្លួន', 'ស្នាក់នៅលើសកំណត់', 'ស្វែងរកការងារ D-10', 'K-Trainee (D-4-2K)'],
         quickFilters: ['ប្តូរអាសយដ្ឋាន', 'សេវាមិនចាំបាច់កក់', 'ចំណូល F-3', 'K-ETA', 'មគ្គុទ្ទេសក៍ TB', 'លើសកំណត់', 'ធានារ៉ាប់រងសុខភាព', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'ប្រព័ន្ធពិន្ទុ']
     },
+    ar: {
+        languageButton: 'إعدادات اللغة', languageMenu: 'اختر اللغة', languageChanged: 'تم تغيير اللغة إلى العربية.',
+        cityButton: 'ضبط الموقع والوقت', cityPlaceholder: 'ابحث عن مدينة...', citySearchAria: 'البحث باسم المدينة',
+        themeButton: 'تغيير المظهر', themeLight: 'الوضع الفاتح', themeDark: 'الوضع الداكن', reset: 'العودة إلى الصفحة الرئيسية',
+        heroEyebrow: 'Paradiso · دليل الإقامة في كوريا', heroTitle: 'ما يهمك يقودك.', heroEm: 'اعثر على طريقك.',
+        heroSub: 'استكشف 39 نوعا من أوضاع الإقامة في كوريا بحسب هدفك وظروفك.<br>كل مسار يبقى متصلا بمصادر رسمية قابلة للتحقق.',
+        proof1: 'مبني على مصادر عامة', proof2: 'مسارات بحسب الهدف', proof3: 'التحقق النهائي من المصادر الرسمية',
+        entryRail: 'اختر طريقة البدء', entryATitle: 'أعرف رمز التأشيرة', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: 'أستطيع فقط شرح وضعي', entryBSub: 'أجب عن أسئلة موجهة للعثور على المسار المناسب',
+        searchOpen: 'ابحث برمز التأشيرة أو كلمة مفتاحية', searchOpenAria: 'فتح البحث برمز التأشيرة والكلمات المفتاحية', searchClose: 'إغلاق البحث المباشر',
+        toolsLabel: 'أدوات إدارية', qaAria: 'أدوات إدارية شائعة', jobCode: 'رموز المهن والصناعات', jurisdiction: 'البحث عن مكتب الهجرة المختص',
+        visaLabel: 'اختر مسار الإقامة', preTrackAria: 'مسار إصدار التأشيرة قبل الدخول', preTrackTitle: 'قبل الدخول — إصدار التأشيرة عبر القنصلية', preTrackDesc: 'إجراءات إصدار تأشيرة جديدة عبر بعثة كورية في الخارج',
+        inTrackAria: 'مسار إدارة الإقامة بعد الدخول', inTrackTitle: 'بعد الدخول — التسجيل والتمديد', inTrackDesc: 'تسجيل الأجانب، تمديد الإقامة، تغيير الصفة، وخدمات الإقامة داخل كوريا',
+        qAria: 'البحث عن صفة التأشيرة أو كلمة مفتاحية', qPlaceholder: 'البحث عن صفة التأشيرة أو كلمة مفتاحية', dataLoading: 'جار تحميل البيانات…', dataReady: 'تم تحميل البيانات ({count}) - {source}',
+        sourceApi: 'API', sourceStatic: 'نسخة ثابتة', sourceOffline: 'بيانات مدمجة دون اتصال', xbAria: 'مسح البحث', submitSearch: 'بحث',
+        ctrlsAria: 'عناصر التحكم في نتائج البحث', fold: 'طي', unfold: 'توسيع', hintsTitle: 'كلمات مقترحة', hintsAria: 'عمليات بحث مقترحة سريعة',
+        aiSecondaryAria: 'مساعد AI اختياري', aiLink: 'اسأل AI بتفاصيل أكثر', scrollAria: 'مرر إلى الأسفل',
+        reference: 'يوفر Paradiso معلومات مرجعية مبنية على قوانين وأدلة عامة. هذا ليس استشارة قانونية ولا خدمة تمثيل في الطلبات. يرجى تأكيد القرار النهائي مع مكتب الهجرة أو HiKorea أو مختص مؤهل.',
+        landingHints: ['تغيير العنوان', 'تجديد جواز السفر', 'إعادة إصدار ARC', 'زيارة دون موعد/استثناء', 'إعفاء Jeju من التأشيرة', 'K-ETA', 'عامل ماهر (E-7-4)', 'مهاجر بالزواج (F-6)', 'شرط دخل F-3', 'شهادة TB', 'إجراءات اللجوء', 'تجاوز مدة الإقامة', 'بحث عن عمل D-10', 'K-Trainee (D-4-2K)'],
+        quickFilters: ['تغيير العنوان', 'خدمات دون موعد', 'دخل F-3', 'K-ETA', 'دليل TB', 'تجاوز الإقامة', 'التأمين الصحي', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'نظام النقاط']
+    },
+    mn: {
+        languageButton: 'Хэлний тохиргоо', languageMenu: 'Хэл сонгох', languageChanged: 'Хэлийг монгол болголоо.',
+        cityButton: 'Байршил ба цаг тохируулах', cityPlaceholder: 'Хот хайх...', citySearchAria: 'Хотын нэрээр хайх',
+        themeButton: 'Загвар солих', themeLight: 'Гэрэл горим', themeDark: 'Харанхуй горим', reset: 'Нүүр хуудас руу буцах',
+        heroEyebrow: 'Paradiso · Солонгост оршин суух хөтөч', heroTitle: 'Чухал зүйл чинь хөдөлгөнө.', heroEm: 'Урагшлах замаа ол.',
+        heroSub: 'Зорилго, нөхцөлдөө тааруулан Солонгосын 39 төрлийн оршин суух статустай танилцаарай.<br>Маршрут бүр шалгаж болох албан эх сурвалжтай холбогдоно.',
+        proof1: 'Нээлттэй эх сурвалжид тулгуурласан', proof2: 'Зорилгоор ангилсан маршрут', proof3: 'Эцсийн шалгалт албан эх сурвалжаар',
+        entryRail: 'Эхлэх аргаа сонгох', entryATitle: 'Би визний кодоо мэднэ', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: 'Би нөхцөлөө л тайлбарлаж чадна', entryBSub: 'Чиглүүлэх асуултад хариулаад тохирох замаа олно',
+        searchOpen: 'Визний код эсвэл түлхүүр үгээр хайх', searchOpenAria: 'Визний код болон түлхүүр үгийн хайлтыг нээх', searchClose: 'Шууд хайлтыг хаах',
+        toolsLabel: 'Захиргааны хэрэгслүүд', qaAria: 'Түгээмэл ашигладаг захиргааны хэрэгслүүд', jobCode: 'Мэргэжил ба салбарын код', jurisdiction: 'Хариуцах цагаачлалын албыг хайх',
+        visaLabel: 'Оршин суух маршрутаа сонгох', preTrackAria: 'Орохоос өмнөх виз олголтын маршрут', preTrackTitle: 'Орохоос өмнө — консулын виз олголт', preTrackDesc: 'Гадаад дахь Солонгосын төлөөлөгчийн газраар шинэ виз авах журам',
+        inTrackAria: 'Солонгост орсны дараах маршрут', inTrackTitle: 'Орсны дараа — бүртгэл ба сунгалт', inTrackDesc: 'Гадаад иргэний бүртгэл, хугацаа сунгах, статус өөрчлөх болон дотоод үйлчилгээ',
+        qAria: 'Визний статус эсвэл түлхүүр үг хайх', qPlaceholder: 'Визний статус эсвэл түлхүүр үг хайх', dataLoading: 'Өгөгдөл ачаалж байна…', dataReady: 'Өгөгдөл ачааллаа ({count}) - {source}',
+        sourceApi: 'API', sourceStatic: 'статик нөөц', sourceOffline: 'офлайн өгөгдөл', xbAria: 'Хайлтыг арилгах', submitSearch: 'Хайх',
+        ctrlsAria: 'Хайлтын үр дүнгийн удирдлага', fold: 'Хураах', unfold: 'Дэлгэх', hintsTitle: 'Санал болгох түлхүүр үгс', hintsAria: 'Санал болгосон хурдан хайлтууд',
+        aiSecondaryAria: 'Нэмэлт AI туслах', aiLink: 'AI-аас дэлгэрэнгүй асуух', scrollAria: 'Доош гүйлгэх',
+        reference: 'Paradiso нь олон нийтэд нээлттэй хууль, гарын авлагад тулгуурласан лавлах мэдээлэл өгдөг. Энэ нь хууль зүйн зөвлөгөө эсвэл өргөдөл гаргах төлөөллийн үйлчилгээ биш. Эцсийн шийдвэрийг цагаачлалын алба, HiKorea эсвэл мэргэшсэн хүнтэй баталгаажуулна уу.',
+        landingHints: ['Хаяг өөрчлөх', 'Паспорт сунгах', 'ARC дахин авах', 'Цаггүй/онцгой айлчлал', 'Jeju визгүй', 'K-ETA', 'Чадварлаг ажилтан (E-7-4)', 'Гэрлэлтийн цагаач (F-6)', 'F-3 орлогын нөхцөл', 'TB гэрчилгээ', 'Дүрвэгчийн журам', 'Хугацаа хэтрэх', 'D-10 ажил хайх', 'K-Trainee (D-4-2K)'],
+        quickFilters: ['Хаяг', 'Цаггүй үйлчилгээ', 'F-3 орлого', 'K-ETA', 'TB гарын авлага', 'Хугацаа хэтрэх', 'Эрүүл мэндийн даатгал', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'Онооны систем']
+    },
+    fa: {
+        languageButton: 'تنظیمات زبان', languageMenu: 'انتخاب زبان', languageChanged: 'زبان به فارسی تغییر کرد.',
+        cityButton: 'تنظیم مکان و زمان', cityPlaceholder: 'جست‌وجوی شهر...', citySearchAria: 'جست‌وجوی نام شهر',
+        themeButton: 'تغییر نما', themeLight: 'حالت روشن', themeDark: 'حالت تاریک', reset: 'بازگشت به صفحه اصلی',
+        heroEyebrow: 'Paradiso · راهنمای اقامت در کره', heroTitle: 'آنچه مهم است، حرکت می‌دهد.', heroEm: 'راه پیش رو را پیدا کن.',
+        heroSub: '۳۹ وضعیت اقامت در کره را بر اساس هدف و شرایط خود مرور کنید.<br>هر مسیر به منابع رسمی و قابل بررسی متصل می‌ماند.',
+        proof1: 'بر پایه منابع عمومی', proof2: 'مسیرها بر اساس هدف', proof3: 'بررسی نهایی با منابع رسمی',
+        entryRail: 'روش شروع را انتخاب کنید', entryATitle: 'کد ویزای خود را می‌دانم', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: 'فقط می‌توانم شرایط خود را توضیح بدهم', entryBSub: 'با پاسخ به پرسش‌های راهنما مسیر مناسب را پیدا کنید',
+        searchOpen: 'جست‌وجو با کد ویزا یا کلیدواژه', searchOpenAria: 'باز کردن جست‌وجوی کد ویزا و کلیدواژه', searchClose: 'بستن جست‌وجوی مستقیم',
+        toolsLabel: 'ابزارهای اداری', qaAria: 'ابزارهای اداری پرکاربرد', jobCode: 'کدهای شغل و صنعت', jurisdiction: 'یافتن اداره مهاجرت مسئول',
+        visaLabel: 'انتخاب مسیر اقامت', preTrackAria: 'مسیر صدور ویزا پیش از ورود', preTrackTitle: 'پیش از ورود — صدور ویزا از طریق کنسولگری', preTrackDesc: 'فرآیند صدور ویزای جدید از طریق نمایندگی کره در خارج',
+        inTrackAria: 'مسیر پس از ورود به کره', inTrackTitle: 'پس از ورود — ثبت و تمدید', inTrackDesc: 'ثبت خارجیان، تمدید اقامت، تغییر وضعیت و خدمات اقامت در کره',
+        qAria: 'جست‌وجوی وضعیت ویزا یا کلیدواژه', qPlaceholder: 'جست‌وجوی وضعیت ویزا یا کلیدواژه', dataLoading: 'در حال بارگذاری داده‌ها…', dataReady: 'داده‌ها بارگذاری شد ({count}) - {source}',
+        sourceApi: 'API', sourceStatic: 'پشتیبان ایستا', sourceOffline: 'داده آفلاین داخلی', xbAria: 'پاک کردن جست‌وجو', submitSearch: 'جست‌وجو',
+        ctrlsAria: 'کنترل‌های نتایج جست‌وجو', fold: 'جمع کردن', unfold: 'باز کردن', hintsTitle: 'کلیدواژه‌های پیشنهادی', hintsAria: 'جست‌وجوهای پیشنهادی سریع',
+        aiSecondaryAria: 'دستیار AI اختیاری', aiLink: 'جزئیات بیشتر را از AI بپرسید', scrollAria: 'پایین بروید',
+        reference: 'Paradiso اطلاعات مرجع را بر اساس قوانین و راهنماهای عمومی ارائه می‌کند. این خدمات مشاوره حقوقی یا نمایندگی در پرونده نیست. تصمیم نهایی را با اداره مهاجرت، HiKorea یا متخصص واجد شرایط تأیید کنید.',
+        landingHints: ['تغییر نشانی', 'تمدید گذرنامه', 'صدور دوباره ARC', 'مراجعه بدون نوبت/استثنا', 'معافیت ویزای Jeju', 'K-ETA', 'نیروی کار ماهر (E-7-4)', 'مهاجرت ازدواج (F-6)', 'شرط درآمد F-3', 'گواهی TB', 'فرآیند پناهندگی', 'اقامت بیش از مهلت', 'جست‌وجوی کار D-10', 'K-Trainee (D-4-2K)'],
+        quickFilters: ['تغییر نشانی', 'خدمات بدون نوبت', 'درآمد F-3', 'K-ETA', 'راهنمای TB', 'اقامت بیش از مهلت', 'بیمه سلامت', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'سیستم امتیاز']
+    },
     ru: {
         languageButton: 'Настройки языка', languageMenu: 'Выберите язык', languageChanged: 'Язык изменен на русский.',
         cityButton: 'Настроить город и время', cityPlaceholder: 'Поиск города...', citySearchAria: 'Поиск названия города',
@@ -7037,6 +7122,7 @@ function applyLanguage(code, options = {}) {
     currentLanguage = code;
     const lang = getLanguageOption(code);
     document.documentElement.lang = lang.html;
+    document.documentElement.dir = lang.dir || 'ltr';
     try { localStorage.setItem(LANGUAGE_STORAGE_KEY, code); } catch (e) {}
 
     setAttr('#languageBtn', 'aria-label', tx('languageButton'));
