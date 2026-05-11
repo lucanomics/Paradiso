@@ -3140,11 +3140,17 @@ body:not(.searched) #visaManualSection {
   letter-spacing: -0.02em;
   text-wrap: balance;
   word-break: keep-all;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+
+.p-hero-title .p-hero-line,
+.p-hero-title em {
+  display: block;
+  white-space: nowrap;
 }
 
 .p-hero-title em {
-  display: block;
   color: var(--p-coral-soft);
   font-style: normal;
   font-weight: 650;
@@ -3944,8 +3950,13 @@ body:not(.searched) #visaManualSection::before {
 
 @media (max-width: 920px) {
   body:not(.searched) .p-hero-title {
-    max-width: 12.5ch;
+    max-width: min(100%, 17ch);
     font-size: 3.15rem;
+  }
+
+  html:lang(en) body:not(.searched) .p-hero-title {
+    max-width: min(100%, 22ch);
+    font-size: 2.85rem;
   }
 
   .p-section-title {
@@ -3994,9 +4005,15 @@ body:not(.searched) #visaManualSection::before {
 
 @media (max-width: 640px) {
   body:not(.searched) .p-hero-title {
-    max-width: 11ch;
-    font-size: 2.55rem;
+    max-width: min(100%, 16ch);
+    font-size: 2.35rem;
     line-height: 1.08;
+  }
+
+  html:lang(en) body:not(.searched) .p-hero-title {
+    max-width: min(100%, 22ch);
+    font-size: 1.9rem;
+    line-height: 1.14;
   }
 
   body:not(.searched) .p-hero-sub {
@@ -4096,8 +4113,8 @@ body:not(.searched) #visaManualSection::before {
         <section class="p-hero-copy" aria-labelledby="pHeroTitle">
             <p class="p-hero-eyebrow">Paradiso · Korea residence guide</p>
             <h2 class="p-hero-title" id="pHeroTitle">
-                마음이 움직인 곳에서,
-                <em>새로운 길을 찾다.</em>
+                <span class="p-hero-line">마음이 움직인 곳에서,</span>
+                <em class="p-hero-line">새로운 길을 찾다.</em>
             </h2>
             <p class="p-hero-sub">
                 대한민국의 39가지 체류자격을 목적과 상황 중심으로 살펴봅니다.<br>
@@ -6885,7 +6902,7 @@ function applyLanguage(code, options = {}) {
     updateThemeLabel();
     setAttr('.logo-area', 'aria-label', tx('reset'));
     setText('.p-hero-eyebrow', tx('heroEyebrow'));
-    setHtml('#pHeroTitle', `${tx('heroTitle')}<em>${tx('heroEm')}</em>`);
+    setHtml('#pHeroTitle', `<span class="p-hero-line">${tx('heroTitle')}</span><em class="p-hero-line">${tx('heroEm')}</em>`);
     setHtml('.p-hero-sub', tx('heroSub'));
     setAttr('.p-hero-proof', 'aria-label', 'Paradiso');
     setIndexedText('.p-proof-chip', [tx('proof1'), tx('proof2'), tx('proof3')]);
