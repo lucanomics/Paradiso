@@ -154,6 +154,20 @@ img, svg, video, canvas { max-width: 100%; height: auto; }
 .city-list-item { width: 100%; display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 0.8rem; background: transparent; border: 0; border-radius: 8px; cursor: pointer; color: var(--t1); font-family: var(--ff); font-size: 0.9rem; text-align: left; transition: all 0.15s cubic-bezier(0.4,0,0.2,1); }
 .city-list-item:hover { background: var(--bg2); transform: translateX(4px); }
 .theme-btn { background: var(--bg2); border: 1px solid var(--bd); color: var(--t1); height: var(--btn-h-md); min-width: var(--btn-h-md); padding: var(--btn-pad-sm); border-radius: var(--btn-r-md); cursor: pointer; font-weight: var(--btn-fw); transition: var(--btn-tr); display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); line-height: 1; }
+.language-wrap { position: relative; }
+.language-btn { min-width: auto; padding-inline: 0.8rem; }
+.language-btn-code { color: var(--color-accent); font-family: var(--ff-display); font-weight: 900; font-size: 0.78rem; letter-spacing: 0.04em; }
+.language-btn-native { font-size: 0.78rem; color: var(--t2); font-weight: 800; }
+.language-menu { display: none; position: absolute; top: calc(100% + 0.5rem); right: 0; width: min(18rem, calc(100vw - 1.5rem)); max-height: min(70vh, 30rem); overflow-y: auto; padding: 0.45rem; border: 1px solid var(--bd); border-radius: 12px; background: color-mix(in srgb, var(--bg1) 94%, white); box-shadow: var(--sh2); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.language-menu.open { display: grid; gap: 0.2rem; }
+.language-option { width: 100%; min-height: 42px; padding: 0.55rem 0.65rem; border: 0; border-radius: 8px; background: transparent; color: var(--t1); display: grid; grid-template-columns: 2.4rem 1fr auto; align-items: center; gap: 0.55rem; text-align: left; cursor: pointer; font-family: var(--ff); transition: background 0.16s ease, transform 0.16s ease; }
+.language-option:hover,
+.language-option:focus-visible { background: var(--bg2); transform: translateX(2px); }
+.language-option[aria-selected="true"] { background: color-mix(in srgb, var(--ac) 12%, var(--bg2)); color: var(--ac2); }
+.language-option-code { font-family: var(--ff-display); font-weight: 900; font-size: 0.72rem; letter-spacing: 0.06em; color: var(--color-accent); }
+.language-option-name { font-weight: 850; font-size: 0.86rem; }
+.language-option-local { color: var(--t3); font-size: 0.74rem; }
+.language-option-check { color: var(--color-accent); font-weight: 900; }
 
 /* Toast */
 .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--color-surface-dark); color: var(--color-surface); padding: 0.9rem 1.4rem; border-radius: var(--radius-md); box-shadow: var(--shD); opacity: 0; transition: opacity 0.3s, transform 0.3s; z-index: 2000; max-width: 90vw; font-size: 0.88rem; line-height: 1.5; pointer-events: none; }
@@ -834,6 +848,8 @@ body:not(.searched) .sbar-go { border-radius: 9999px; }
     .hero-action-btn { flex-direction: row; min-height: var(--btn-h-lg); padding: var(--sp-3) var(--sp-4); gap: var(--sp-3); width: 100%; min-width: 0; box-sizing: border-box; }
     .hero-action-btn.search-toggle-btn { grid-column: auto; width: 100%; }
     .hero-action-btn .hero-action-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .language-btn-native { display: none; }
+    .language-menu { left: 0; right: auto; }
     .hero-action-label { font-size: 0.85rem; text-align: left; word-break: keep-all; min-width: 0; flex: 1; }
     .theme-btn-text { display: none; }
     #cityBtnLabel { display: none; }
@@ -3918,6 +3934,14 @@ body.searched .smeta {
   line-height: 1.45;
 }
 
+body:not(.searched) .qa-main::before {
+  content: var(--lang-tools-label, '관련 행정 도구') !important;
+}
+
+body:not(.searched) #visaManualSection::before {
+  content: var(--lang-visa-label, '체류 경로 선택') !important;
+}
+
 @media (max-width: 920px) {
   body:not(.searched) .p-hero-title {
     max-width: 12.5ch;
@@ -4013,6 +4037,14 @@ body.searched .smeta {
             <input type="text" id="citySearch" class="city-search-input" placeholder="도시 검색..." aria-label="도시 이름 검색">
             <div id="cityList"></div>
         </div>
+    </div>
+    <div class="language-wrap" id="languageWrap">
+        <button id="languageBtn" class="theme-btn language-btn" data-action="toggle-language-menu" aria-label="언어 설정" aria-expanded="false" aria-haspopup="listbox">
+            <span aria-hidden="true">文</span>
+            <span id="languageBtnCode" class="language-btn-code">KO</span>
+            <span id="languageBtnNative" class="language-btn-native">한국어</span>
+        </button>
+        <div id="languageMenu" class="language-menu" role="listbox" aria-label="언어 선택"></div>
     </div>
     <button id="mainThemeBtn" class="theme-btn" data-action="toggle-theme" aria-label="테마 변경">
         ◐ <span class="theme-btn-text">테마 변경</span>
@@ -5144,6 +5176,7 @@ function toggleCityMenu(force) {
     const show = (force === true) ? true : (force === false ? false : getComputedStyle(menu).display === 'none');
     menu.style.display = show ? 'block' : 'none';
     if (show) {
+        toggleLanguageMenu(false);
         renderCityList('');
         const s = document.getElementById('citySearch');
         if (s) { s.value = ''; setTimeout(() => s.focus(), 50); }
@@ -5943,7 +5976,7 @@ async function submitAiAnalysis(actionType, btnEl) {
                 question: userInput,
                 consent: true,
                 context: actionDirective,
-                lang: "ko",
+                lang: currentLanguage,
                 visa_data: {
                     code: visa.code,
                     name: visa.name,
@@ -6391,10 +6424,10 @@ function setDirectSearchToggleState(isOpen){
     const labelEl = stb.querySelector('.hero-action-label');
     stb.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     stb.classList.toggle('active', isOpen);
-    stb.setAttribute('aria-label', isOpen ? '직접 검색 닫기' : '비자 코드 및 키워드 직접 검색 열기');
-    stb.title = isOpen ? '직접 검색 닫기' : '비자 코드 및 키워드 직접 검색';
+    stb.setAttribute('aria-label', isOpen ? tx('searchClose') : tx('searchOpenAria'));
+    stb.title = isOpen ? tx('searchClose') : tx('searchOpen');
     if (iconEl) iconEl.textContent = isOpen ? '✕' : '🔍';
-    if (labelEl) labelEl.textContent = isOpen ? '직접 검색 닫기' : '비자 코드 및 키워드 직접 검색';
+    if (labelEl) labelEl.textContent = isOpen ? tx('searchClose') : tx('searchOpen');
 }
 
 function closeDirectSearchMode(){
@@ -6424,7 +6457,7 @@ function resetToLanding(){
     debugSearchState('resetToLanding:start');
     document.body.classList.remove('searched', 'searching'); document.body.classList.add('landing'); qEl.value='';
     document.getElementById('xb').classList.remove('v'); document.getElementById('auto-list').classList.remove('active');
-    document.getElementById('rlist').innerHTML=''; rcEl.textContent = dataReady ? `데이터 로드 완료 (${VISA_DATA.length}개)` : '데이터 로딩 중…';
+    document.getElementById('rlist').innerHTML=''; rcEl.textContent = dataReady ? tx('dataReady', { count: VISA_DATA.length, source: tx('sourceStatic') }) : tx('dataLoading');
     const stb = document.getElementById('searchToggleBtn');
     closeDirectSearchMode();
     if (stb) stb.style.display = '';
@@ -6510,6 +6543,384 @@ function clearSearch(){
 }
 function setSearchMode(m){currentSearchMode=m;document.getElementById('ma').classList.toggle('on',m==='and');document.getElementById('mo').classList.toggle('on',m==='or');if(document.body.classList.contains('searched')&&dataReady)renderResults(qEl.value);}
 
+const LANGUAGE_STORAGE_KEY = 'paradiso:language';
+const LANGUAGE_OPTIONS = [
+    { code: 'ko', html: 'ko', short: 'KO', name: '한국어', local: '한국어' },
+    { code: 'en', html: 'en', short: 'EN', name: 'English', local: 'English' },
+    { code: 'zh', html: 'zh-CN', short: 'ZH', name: '中文', local: 'Chinese' },
+    { code: 'ja', html: 'ja', short: 'JA', name: '日本語', local: 'Japanese' },
+    { code: 'fr', html: 'fr', short: 'FR', name: 'Français', local: 'French' },
+    { code: 'id', html: 'id', short: 'ID', name: 'Bahasa Indonesia', local: 'Indonesian' },
+    { code: 'hi', html: 'hi', short: 'HI', name: 'हिन्दी', local: 'Hindi' },
+    { code: 'ne', html: 'ne', short: 'NE', name: 'नेपाली', local: 'Nepali' },
+    { code: 'es', html: 'es', short: 'ES', name: 'Español', local: 'Spanish' },
+    { code: 'ru', html: 'ru', short: 'RU', name: 'Русский', local: 'Russian' }
+];
+let currentLanguage = 'ko';
+
+const UI_TRANSLATIONS = {
+    ko: {
+        languageButton: '언어 설정', languageMenu: '언어 선택', languageChanged: '언어가 한국어로 변경되었습니다.',
+        cityButton: '위치 및 시간 설정', cityPlaceholder: '도시 검색...', citySearchAria: '도시 이름 검색',
+        themeButton: '테마 변경', themeLight: '라이트 모드', themeDark: '다크 모드', reset: '메인 화면으로 초기화',
+        heroEyebrow: 'Paradiso · Korea residence guide', heroTitle: '낯선 체류도, 다음은 선명하게', heroEm: 'next move, clear.',
+        heroSub: '대한민국의 39가지 체류자격을 목적과 상황 중심으로 살펴봅니다.<br>공식 자료로 이어지는 확인 경로를 정리합니다.',
+        proof1: '공개 자료 기반', proof2: '목적별 경로 정리', proof3: '최종 확인은 공식 출처',
+        entryRail: '시작 방식 선택', entryATitle: '비자 코드를 알고 있어요', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: '제 상황만 설명할 수 있어요', entryBSub: '안내 질문에 답하면 경로를 찾아드려요',
+        searchOpen: '비자 코드 및 키워드 직접 검색', searchOpenAria: '비자 코드 및 키워드 직접 검색 열기', searchClose: '직접 검색 닫기',
+        toolsLabel: '관련 행정 도구', qaAria: '자주 사용하는 행정 도구', jobCode: '취업신고용 업종·직종 코드', jurisdiction: '관할 출입국관서 조회',
+        visaLabel: '체류 경로 선택', preTrackAria: '입국 전 사증 발급 트랙', preTrackTitle: '입국 전 — 재외공관 사증 발급', preTrackDesc: '해외에서 재외공관을 통한 사증(비자) 신규 발급 절차',
+        inTrackAria: '입국 후 체류 관리 트랙', inTrackTitle: '입국 후 — 외국인 등록·체류 연장', inTrackDesc: '외국인등록, 체류기간 연장, 자격 변경 등 국내 체류 민원',
+        qAria: '비자 자격 및 키워드 검색', qPlaceholder: '비자 자격 및 키워드 검색', dataLoading: '데이터 로딩 중…', dataReady: '데이터 로드 완료 ({count}개) - {source}',
+        sourceApi: 'API 연동', sourceStatic: '정적 백업', sourceOffline: '오프라인 내장 데이터', xbAria: '검색어 지우기', submitSearch: '검색',
+        ctrlsAria: '검색결과 정렬 및 조작', fold: '접기', unfold: '펼치기', hintsTitle: '추천 키워드', hintsAria: '빠른 추천 검색어',
+        aiSecondaryAria: '선택형 AI 도우미', aiLink: 'AI로 더 자세히 묻기', scrollAria: '아래로 스크롤',
+        reference: '본 서비스는 공개 법령·매뉴얼 기반 참고용 정보 제공 도구이며, 법적 상담이나 민원 대행이 아닙니다. 최종 판단은 출입국·외국인청, 하이코리아, 또는 자격 있는 전문가에게 확인하세요.',
+        landingHints: ['체류지 변경(주민센터)', '여권 갱신(비예약)', '등록증 재발급', '만료 당일/임산부 등', '제주 무사증', 'K-ETA 발급', '숙련기능(E-7-4)', '결혼이민(F-6)', '동반(F-3) 소득요건', '결핵 제출 대상', '난민신청 절차', '오버스테이', 'D-10 구직', 'K-Trainee(D-4-2K)'],
+        quickFilters: ['체류지 변경', '비예약 업무', 'F-3 소득', 'K-ETA', '결핵 가이드', '오버스테이', '건강보험', 'B-2-2 제주', 'E-7', 'E-9', 'F-6', 'F-5', '점수제']
+    },
+    en: {
+        languageButton: 'Language settings', languageMenu: 'Choose language', languageChanged: 'Language changed to English.',
+        cityButton: 'Set location and time', cityPlaceholder: 'Search city...', citySearchAria: 'Search city name',
+        themeButton: 'Change theme', themeLight: 'Light mode', themeDark: 'Dark mode', reset: 'Reset to home',
+        heroEyebrow: 'Paradiso · Korea residence guide', heroTitle: 'Unfamiliar stay, clearly next.', heroEm: 'next move, clear.',
+        heroSub: 'Explore Korea’s 39 residence statuses by purpose and situation.<br>Paradiso keeps the path connected to official sources.',
+        proof1: 'Public-source based', proof2: 'Purpose-first pathways', proof3: 'Final check with official sources',
+        entryRail: 'Choose how to start', entryATitle: 'I know my visa code', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: 'I can only explain my situation', entryBSub: 'Answer guided questions to find your path',
+        searchOpen: 'Search by visa code or keyword', searchOpenAria: 'Open direct visa code and keyword search', searchClose: 'Close direct search',
+        toolsLabel: 'Admin tools', qaAria: 'Frequently used admin tools', jobCode: 'Occupation and industry codes', jurisdiction: 'Find immigration office jurisdiction',
+        visaLabel: 'Choose stay pathway', preTrackAria: 'Pre-entry visa issuance track', preTrackTitle: 'Before entry — consular visa issuance', preTrackDesc: 'New visa issuance through a Korean mission overseas',
+        inTrackAria: 'In-Korea stay management track', inTrackTitle: 'After entry — registration and extension', inTrackDesc: 'Alien registration, extension, status change, and other in-Korea stay services',
+        qAria: 'Search visa status or keyword', qPlaceholder: 'Search visa status or keyword', dataLoading: 'Loading data…', dataReady: 'Data loaded ({count}) - {source}',
+        sourceApi: 'API', sourceStatic: 'static backup', sourceOffline: 'offline built-in data', xbAria: 'Clear search', submitSearch: 'Search',
+        ctrlsAria: 'Search result controls', fold: 'Collapse', unfold: 'Expand', hintsTitle: 'Recommended keywords', hintsAria: 'Quick recommended searches',
+        aiSecondaryAria: 'Optional AI assistant', aiLink: 'Ask AI for more detail', scrollAria: 'Scroll down',
+        reference: 'Paradiso provides reference information based on public laws and manuals. It is not legal advice or application agency service. Confirm final decisions with immigration offices, HiKorea, or a qualified professional.',
+        landingHints: ['Address change', 'Passport renewal', 'ARC reissue', 'Same-day/exception visit', 'Jeju visa waiver', 'K-ETA', 'Skilled worker (E-7-4)', 'Marriage migrant (F-6)', 'F-3 income requirement', 'TB certificate 대상', 'Refugee process', 'Overstay', 'D-10 job search', 'K-Trainee (D-4-2K)'],
+        quickFilters: ['Address change', 'Walk-in services', 'F-3 income', 'K-ETA', 'TB guide', 'Overstay', 'Health insurance', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'Points system']
+    },
+    zh: {
+        languageButton: '语言设置', languageMenu: '选择语言', languageChanged: '语言已切换为中文。',
+        cityButton: '设置位置和时间', cityPlaceholder: '搜索城市...', citySearchAria: '搜索城市名称',
+        themeButton: '切换主题', themeLight: '浅色模式', themeDark: '深色模式', reset: '返回首页',
+        heroEyebrow: 'Paradiso · 韩国居留指南', heroTitle: '陌生的居留，也能看清下一步', heroEm: 'next move, clear.',
+        heroSub: '按目的和情况浏览韩国39种居留资格。<br>每条路径都连接到可核验的官方资料。',
+        proof1: '基于公开资料', proof2: '按目的整理路径', proof3: '最终以官方来源确认',
+        entryRail: '选择开始方式', entryATitle: '我知道签证代码', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: '我只能说明自己的情况', entryBSub: '回答引导问题，找到合适路径',
+        searchOpen: '按签证代码或关键词搜索', searchOpenAria: '打开签证代码和关键词搜索', searchClose: '关闭直接搜索',
+        toolsLabel: '行政工具', qaAria: '常用行政工具', jobCode: '职业和行业代码', jurisdiction: '查询管辖出入境机构',
+        visaLabel: '选择居留路径', preTrackAria: '入境前签证签发路径', preTrackTitle: '入境前 — 驻外使领馆签证签发', preTrackDesc: '在海外通过韩国驻外机构办理新签证',
+        inTrackAria: '入境后居留管理路径', inTrackTitle: '入境后 — 外国人登记和延期', inTrackDesc: '外国人登记、居留延期、资格变更等韩国境内事务',
+        qAria: '搜索签证资格或关键词', qPlaceholder: '搜索签证资格或关键词', dataLoading: '数据加载中…', dataReady: '数据已加载（{count}项）- {source}',
+        sourceApi: 'API连接', sourceStatic: '静态备份', sourceOffline: '离线内置数据', xbAria: '清除搜索词', submitSearch: '搜索',
+        ctrlsAria: '搜索结果控制', fold: '收起', unfold: '展开', hintsTitle: '推荐关键词', hintsAria: '快速推荐搜索',
+        aiSecondaryAria: '可选AI助手', aiLink: '向AI询问更多细节', scrollAria: '向下滚动',
+        reference: 'Paradiso基于公开法律和手册提供参考信息，不构成法律咨询或代办服务。最终判断请向出入境机构、HiKorea或合格专业人士确认。',
+        landingHints: ['住址变更', '护照更新', '外国人登记证补发', '当天/例外访问', '济州免签', 'K-ETA申请', '熟练技能(E-7-4)', '结婚移民(F-6)', 'F-3收入条件', '结核证明对象', '难民申请流程', '逾期停留', 'D-10求职', 'K-Trainee(D-4-2K)'],
+        quickFilters: ['住址变更', '无需预约业务', 'F-3收入', 'K-ETA', '结核指南', '逾期停留', '健康保险', 'B-2-2济州', 'E-7', 'E-9', 'F-6', 'F-5', '积分制']
+    },
+    ja: {
+        languageButton: '言語設定', languageMenu: '言語を選択', languageChanged: '言語を日本語に変更しました。',
+        cityButton: '位置と時間を設定', cityPlaceholder: '都市を検索...', citySearchAria: '都市名を検索',
+        themeButton: 'テーマ変更', themeLight: 'ライトモード', themeDark: 'ダークモード', reset: 'ホームに戻る',
+        heroEyebrow: 'Paradiso · 韓国在留ガイド', heroTitle: '慣れない在留も、次の一手を明確に', heroEm: 'next move, clear.',
+        heroSub: '韓国の39種類の在留資格を、目的と状況から確認できます。<br>公式資料につながる確認ルートを整理します。',
+        proof1: '公開資料ベース', proof2: '目的別ルート整理', proof3: '最終確認は公式情報で',
+        entryRail: '開始方法を選択', entryATitle: 'ビザコードが分かります', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: '状況だけ説明できます', entryBSub: '質問に答えるとルートを案内します',
+        searchOpen: 'ビザコード・キーワードで検索', searchOpenAria: 'ビザコードとキーワード検索を開く', searchClose: '直接検索を閉じる',
+        toolsLabel: '行政ツール', qaAria: 'よく使う行政ツール', jobCode: '職業・産業コード', jurisdiction: '管轄出入国事務所を検索',
+        visaLabel: '在留ルートを選択', preTrackAria: '入国前ビザ発給ルート', preTrackTitle: '入国前 — 在外公館でのビザ発給', preTrackDesc: '海外の韓国公館を通じた新規ビザ発給手続き',
+        inTrackAria: '入国後の在留管理ルート', inTrackTitle: '入国後 — 外国人登録・在留延長', inTrackDesc: '外国人登録、在留期間延長、資格変更など韓国内の手続き',
+        qAria: 'ビザ資格またはキーワード検索', qPlaceholder: 'ビザ資格またはキーワード検索', dataLoading: 'データ読み込み中…', dataReady: 'データ読み込み完了（{count}件）- {source}',
+        sourceApi: 'API連携', sourceStatic: '静的バックアップ', sourceOffline: 'オフライン内蔵データ', xbAria: '検索語を消去', submitSearch: '検索',
+        ctrlsAria: '検索結果コントロール', fold: '閉じる', unfold: '開く', hintsTitle: 'おすすめキーワード', hintsAria: 'クイックおすすめ検索',
+        aiSecondaryAria: '任意のAIアシスタント', aiLink: 'AIに詳しく聞く', scrollAria: '下へスクロール',
+        reference: 'Paradisoは公開法令・マニュアルに基づく参考情報を提供するツールであり、法律相談や申請代行ではありません。最終判断は出入国機関、HiKorea、または専門家にご確認ください。',
+        landingHints: ['住所変更', 'パスポート更新', '登録証再発行', '当日/例外訪問', '済州ノービザ', 'K-ETA申請', '熟練技能(E-7-4)', '結婚移民(F-6)', 'F-3所得要件', '結核提出対象', '難民申請手続き', 'オーバーステイ', 'D-10求職', 'K-Trainee(D-4-2K)'],
+        quickFilters: ['住所変更', '予約不要業務', 'F-3所得', 'K-ETA', '結核ガイド', 'オーバーステイ', '健康保険', 'B-2-2済州', 'E-7', 'E-9', 'F-6', 'F-5', 'ポイント制']
+    },
+    fr: {
+        languageButton: 'Paramètres de langue', languageMenu: 'Choisir la langue', languageChanged: 'Langue changée en français.',
+        cityButton: 'Régler lieu et heure', cityPlaceholder: 'Rechercher une ville...', citySearchAria: 'Rechercher un nom de ville',
+        themeButton: 'Changer le thème', themeLight: 'Mode clair', themeDark: 'Mode sombre', reset: 'Retour à l’accueil',
+        heroEyebrow: 'Paradiso · Guide de résidence en Corée', heroTitle: 'Même un séjour inconnu devient lisible', heroEm: 'next move, clear.',
+        heroSub: 'Explorez les 39 statuts de séjour en Corée selon votre objectif et votre situation.<br>Chaque parcours reste relié aux sources officielles.',
+        proof1: 'Basé sur des sources publiques', proof2: 'Parcours par objectif', proof3: 'Vérification finale officielle',
+        entryRail: 'Choisir un point de départ', entryATitle: 'Je connais mon code visa', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: 'Je peux seulement décrire ma situation', entryBSub: 'Répondez aux questions guidées pour trouver un parcours',
+        searchOpen: 'Recherche par code visa ou mot-clé', searchOpenAria: 'Ouvrir la recherche par code visa ou mot-clé', searchClose: 'Fermer la recherche directe',
+        toolsLabel: 'Outils administratifs', qaAria: 'Outils administratifs fréquents', jobCode: 'Codes métier et industrie', jurisdiction: 'Trouver le bureau compétent',
+        visaLabel: 'Choisir un parcours de séjour', preTrackAria: 'Parcours visa avant entrée', preTrackTitle: 'Avant l’entrée — visa auprès du consulat', preTrackDesc: 'Délivrance d’un nouveau visa via une mission coréenne à l’étranger',
+        inTrackAria: 'Parcours après entrée', inTrackTitle: 'Après l’entrée — enregistrement et prolongation', inTrackDesc: 'Enregistrement étranger, prolongation, changement de statut et démarches en Corée',
+        qAria: 'Rechercher un statut de visa ou un mot-clé', qPlaceholder: 'Rechercher un statut de visa ou un mot-clé', dataLoading: 'Chargement des données…', dataReady: 'Données chargées ({count}) - {source}',
+        sourceApi: 'API', sourceStatic: 'sauvegarde statique', sourceOffline: 'données hors ligne', xbAria: 'Effacer la recherche', submitSearch: 'Rechercher',
+        ctrlsAria: 'Contrôles des résultats', fold: 'Réduire', unfold: 'Développer', hintsTitle: 'Mots-clés recommandés', hintsAria: 'Recherches rapides recommandées',
+        aiSecondaryAria: 'Assistant IA optionnel', aiLink: 'Demander plus de détails à l’IA', scrollAria: 'Faire défiler',
+        reference: 'Paradiso fournit des informations de référence fondées sur des lois et manuels publics. Ce n’est ni un conseil juridique ni un service de dépôt de dossier. Confirmez la décision finale auprès de l’immigration, de HiKorea ou d’un professionnel qualifié.',
+        landingHints: ['Changement d’adresse', 'Renouvellement du passeport', 'Réémission ARC', 'Visite sans rendez-vous', 'Exemption Jeju', 'K-ETA', 'Travailleur qualifié (E-7-4)', 'Mariage (F-6)', 'Revenu F-3', 'Certificat TB', 'Procédure réfugié', 'Dépassement de séjour', 'Recherche d’emploi D-10', 'K-Trainee (D-4-2K)'],
+        quickFilters: ['Adresse', 'Sans rendez-vous', 'Revenu F-3', 'K-ETA', 'Guide TB', 'Dépassement', 'Assurance santé', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'Système de points']
+    },
+    id: {
+        languageButton: 'Pengaturan bahasa', languageMenu: 'Pilih bahasa', languageChanged: 'Bahasa diubah ke Bahasa Indonesia.',
+        cityButton: 'Atur lokasi dan waktu', cityPlaceholder: 'Cari kota...', citySearchAria: 'Cari nama kota',
+        themeButton: 'Ubah tema', themeLight: 'Mode terang', themeDark: 'Mode gelap', reset: 'Kembali ke beranda',
+        heroEyebrow: 'Paradiso · Panduan izin tinggal Korea', heroTitle: 'Tinggal di Korea, langkah berikutnya lebih jelas', heroEm: 'next move, clear.',
+        heroSub: 'Jelajahi 39 status tinggal Korea berdasarkan tujuan dan situasi Anda.<br>Paradiso menghubungkan setiap langkah dengan sumber resmi.',
+        proof1: 'Berbasis sumber publik', proof2: 'Jalur berdasarkan tujuan', proof3: 'Cek akhir di sumber resmi',
+        entryRail: 'Pilih cara mulai', entryATitle: 'Saya tahu kode visa saya', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: 'Saya hanya bisa menjelaskan situasi saya', entryBSub: 'Jawab pertanyaan terpandu untuk menemukan jalur',
+        searchOpen: 'Cari kode visa atau kata kunci', searchOpenAria: 'Buka pencarian kode visa dan kata kunci', searchClose: 'Tutup pencarian langsung',
+        toolsLabel: 'Alat administrasi', qaAria: 'Alat administrasi yang sering dipakai', jobCode: 'Kode pekerjaan dan industri', jurisdiction: 'Cari kantor imigrasi berwenang',
+        visaLabel: 'Pilih jalur tinggal', preTrackAria: 'Jalur visa sebelum masuk', preTrackTitle: 'Sebelum masuk — penerbitan visa di konsulat', preTrackDesc: 'Penerbitan visa baru melalui perwakilan Korea di luar negeri',
+        inTrackAria: 'Jalur setelah masuk Korea', inTrackTitle: 'Setelah masuk — registrasi dan perpanjangan', inTrackDesc: 'Registrasi orang asing, perpanjangan, perubahan status, dan layanan tinggal di Korea',
+        qAria: 'Cari status visa atau kata kunci', qPlaceholder: 'Cari status visa atau kata kunci', dataLoading: 'Memuat data…', dataReady: 'Data dimuat ({count}) - {source}',
+        sourceApi: 'API', sourceStatic: 'cadangan statis', sourceOffline: 'data bawaan offline', xbAria: 'Hapus pencarian', submitSearch: 'Cari',
+        ctrlsAria: 'Kontrol hasil pencarian', fold: 'Tutup', unfold: 'Buka', hintsTitle: 'Kata kunci rekomendasi', hintsAria: 'Pencarian cepat rekomendasi',
+        aiSecondaryAria: 'Asisten AI opsional', aiLink: 'Tanya AI lebih detail', scrollAria: 'Gulir ke bawah',
+        reference: 'Paradiso menyediakan informasi referensi berdasarkan hukum dan manual publik. Ini bukan nasihat hukum atau layanan pengurusan aplikasi. Konfirmasi keputusan akhir dengan kantor imigrasi, HiKorea, atau profesional yang memenuhi syarat.',
+        landingHints: ['Perubahan alamat', 'Perpanjangan paspor', 'Penerbitan ulang ARC', 'Kunjungan tanpa reservasi', 'Bebas visa Jeju', 'K-ETA', 'Pekerja terampil (E-7-4)', 'Migran menikah (F-6)', 'Syarat pendapatan F-3', 'Sertifikat TB', 'Proses pengungsi', 'Overstay', 'Pencarian kerja D-10', 'K-Trainee (D-4-2K)'],
+        quickFilters: ['Alamat', 'Tanpa reservasi', 'Pendapatan F-3', 'K-ETA', 'Panduan TB', 'Overstay', 'Asuransi kesehatan', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'Sistem poin']
+    },
+    hi: {
+        languageButton: 'भाषा सेटिंग', languageMenu: 'भाषा चुनें', languageChanged: 'भाषा हिन्दी में बदल दी गई है।',
+        cityButton: 'स्थान और समय सेट करें', cityPlaceholder: 'शहर खोजें...', citySearchAria: 'शहर का नाम खोजें',
+        themeButton: 'थीम बदलें', themeLight: 'लाइट मोड', themeDark: 'डार्क मोड', reset: 'मुख्य पेज पर लौटें',
+        heroEyebrow: 'Paradiso · Korea residence guide', heroTitle: 'अजनबी ठहराव में भी अगला कदम साफ', heroEm: 'next move, clear.',
+        heroSub: 'अपने उद्देश्य और स्थिति के आधार पर कोरिया की 39 निवास श्रेणियां देखें।<br>Paradiso हर रास्ते को आधिकारिक स्रोतों से जोड़ता है।',
+        proof1: 'सार्वजनिक स्रोत आधारित', proof2: 'उद्देश्य के अनुसार मार्ग', proof3: 'अंतिम जांच आधिकारिक स्रोत से',
+        entryRail: 'शुरू करने का तरीका चुनें', entryATitle: 'मुझे अपना वीजा कोड पता है', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: 'मैं केवल अपनी स्थिति बता सकता/सकती हूं', entryBSub: 'मार्ग खोजने के लिए निर्देशित प्रश्नों का उत्तर दें',
+        searchOpen: 'वीजा कोड या कीवर्ड से खोजें', searchOpenAria: 'वीजा कोड और कीवर्ड खोज खोलें', searchClose: 'सीधी खोज बंद करें',
+        toolsLabel: 'प्रशासनिक टूल', qaAria: 'अक्सर इस्तेमाल होने वाले प्रशासनिक टूल', jobCode: 'पेशा और उद्योग कोड', jurisdiction: 'इमिग्रेशन कार्यालय खोजें',
+        visaLabel: 'ठहराव मार्ग चुनें', preTrackAria: 'प्रवेश से पहले वीजा मार्ग', preTrackTitle: 'प्रवेश से पहले — दूतावास/कांसुलर वीजा', preTrackDesc: 'विदेश में कोरियाई मिशन के माध्यम से नया वीजा जारी करना',
+        inTrackAria: 'कोरिया में प्रवेश के बाद मार्ग', inTrackTitle: 'प्रवेश के बाद — पंजीकरण और विस्तार', inTrackDesc: 'विदेशी पंजीकरण, अवधि विस्तार, स्थिति परिवर्तन और कोरिया में सेवाएं',
+        qAria: 'वीजा स्थिति या कीवर्ड खोजें', qPlaceholder: 'वीजा स्थिति या कीवर्ड खोजें', dataLoading: 'डेटा लोड हो रहा है…', dataReady: 'डेटा लोड हुआ ({count}) - {source}',
+        sourceApi: 'API', sourceStatic: 'स्थिर बैकअप', sourceOffline: 'ऑफलाइन डेटा', xbAria: 'खोज मिटाएं', submitSearch: 'खोजें',
+        ctrlsAria: 'खोज परिणाम नियंत्रण', fold: 'समेटें', unfold: 'खोलें', hintsTitle: 'सुझाए गए कीवर्ड', hintsAria: 'त्वरित सुझाई गई खोजें',
+        aiSecondaryAria: 'वैकल्पिक AI सहायक', aiLink: 'AI से और पूछें', scrollAria: 'नीचे स्क्रॉल करें',
+        reference: 'Paradiso सार्वजनिक कानूनों और मैनुअल पर आधारित संदर्भ जानकारी देता है। यह कानूनी सलाह या आवेदन एजेंसी सेवा नहीं है। अंतिम निर्णय इमिग्रेशन कार्यालय, HiKorea या योग्य पेशेवर से पुष्टि करें।',
+        landingHints: ['पता बदलना', 'पासपोर्ट नवीनीकरण', 'ARC पुनः जारी', 'बिना予約/अपवाद विजिट', 'Jeju visa waiver', 'K-ETA', 'Skilled worker (E-7-4)', 'Marriage migrant (F-6)', 'F-3 आय शर्त', 'TB प्रमाणपत्र', 'शरणार्थी प्रक्रिया', 'Overstay', 'D-10 नौकरी खोज', 'K-Trainee (D-4-2K)'],
+        quickFilters: ['पता', 'बिना 예약 सेवा', 'F-3 आय', 'K-ETA', 'TB गाइड', 'Overstay', 'स्वास्थ्य बीमा', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'पॉइंट सिस्टम']
+    },
+    ne: {
+        languageButton: 'भाषा सेटिङ', languageMenu: 'भाषा छान्नुहोस्', languageChanged: 'भाषा नेपालीमा परिवर्तन भयो।',
+        cityButton: 'स्थान र समय सेट गर्नुहोस्', cityPlaceholder: 'शहर खोज्नुहोस्...', citySearchAria: 'शहरको नाम खोज्नुहोस्',
+        themeButton: 'थिम परिवर्तन', themeLight: 'लाइट मोड', themeDark: 'डार्क मोड', reset: 'मुख्य पृष्ठमा फर्कनुहोस्',
+        heroEyebrow: 'Paradiso · Korea residence guide', heroTitle: 'अपरिचित बसाइमा पनि अर्को कदम स्पष्ट', heroEm: 'next move, clear.',
+        heroSub: 'आफ्नो उद्देश्य र अवस्थाअनुसार कोरियाका 39 बसोबास स्थितिहरू हेर्नुहोस्।<br>Paradiso ले बाटोलाई आधिकारिक स्रोतसँग जोड्छ।',
+        proof1: 'सार्वजनिक स्रोतमा आधारित', proof2: 'उद्देश्यअनुसार मार्ग', proof3: 'अन्तिम जाँच आधिकारिक स्रोतबाट',
+        entryRail: 'कसरी सुरु गर्ने छान्नुहोस्', entryATitle: 'मलाई मेरो भिसा कोड थाहा छ', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: 'म आफ्नो अवस्था मात्र भन्न सक्छु', entryBSub: 'मार्ग पत्ता लगाउन निर्देशित प्रश्नहरूको उत्तर दिनुहोस्',
+        searchOpen: 'भिसा कोड वा किवर्ड खोज्नुहोस्', searchOpenAria: 'भिसा कोड र किवर्ड खोज खोल्नुहोस्', searchClose: 'प्रत्यक्ष खोज बन्द गर्नुहोस्',
+        toolsLabel: 'प्रशासनिक उपकरण', qaAria: 'प्रायः प्रयोग हुने प्रशासनिक उपकरण', jobCode: 'पेशा र उद्योग कोड', jurisdiction: 'सम्बन्धित अध्यागमन कार्यालय खोज्नुहोस्',
+        visaLabel: 'बसोबास मार्ग छान्नुहोस्', preTrackAria: 'प्रवेशअघि भिसा जारी मार्ग', preTrackTitle: 'प्रवेशअघि — कन्सुलर भिसा जारी', preTrackDesc: 'विदेशस्थित कोरियाली नियोगमार्फत नयाँ भिसा जारी प्रक्रिया',
+        inTrackAria: 'कोरियामा प्रवेशपछि बसाइ व्यवस्थापन', inTrackTitle: 'प्रवेशपछि — दर्ता र अवधि थप', inTrackDesc: 'विदेशी दर्ता, बसाइ अवधि थप, स्थिति परिवर्तन र कोरियाभित्रका सेवा',
+        qAria: 'भिसा स्थिति वा किवर्ड खोज्नुहोस्', qPlaceholder: 'भिसा स्थिति वा किवर्ड खोज्नुहोस्', dataLoading: 'डाटा लोड हुँदैछ…', dataReady: 'डाटा लोड भयो ({count}) - {source}',
+        sourceApi: 'API', sourceStatic: 'स्थिर ब्याकअप', sourceOffline: 'अफलाइन डाटा', xbAria: 'खोज मेटाउनुहोस्', submitSearch: 'खोज',
+        ctrlsAria: 'खोज नतिजा नियन्त्रण', fold: 'बन्द', unfold: 'खोल्नुहोस्', hintsTitle: 'सिफारिस किवर्ड', hintsAria: 'छिटो सिफारिस खोज',
+        aiSecondaryAria: 'वैकल्पिक AI सहायक', aiLink: 'AI लाई थप सोध्नुहोस्', scrollAria: 'तल स्क्रोल गर्नुहोस्',
+        reference: 'Paradiso सार्वजनिक कानुन र म्यानुअलमा आधारित सन्दर्भ जानकारी हो। यो कानुनी सल्लाह वा आवेदन代理 सेवा होइन। अन्तिम निर्णय अध्यागमन कार्यालय, HiKorea वा योग्य पेशेवरसँग पुष्टि गर्नुहोस्।',
+        landingHints: ['ठेगाना परिवर्तन', 'पासपोर्ट नवीकरण', 'ARC पुनः जारी', 'बिना预约/अपवाद भ्रमण', 'Jeju visa waiver', 'K-ETA', 'Skilled worker (E-7-4)', 'Marriage migrant (F-6)', 'F-3 आय शर्त', 'TB प्रमाणपत्र', 'शरणार्थी प्रक्रिया', 'Overstay', 'D-10 जागिर खोज', 'K-Trainee (D-4-2K)'],
+        quickFilters: ['ठेगाना', 'बिना 예약 सेवा', 'F-3 आय', 'K-ETA', 'TB गाइड', 'Overstay', 'स्वास्थ्य बीमा', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'प्वाइन्ट प्रणाली']
+    },
+    es: {
+        languageButton: 'Configuración de idioma', languageMenu: 'Elegir idioma', languageChanged: 'Idioma cambiado a español.',
+        cityButton: 'Configurar ubicación y hora', cityPlaceholder: 'Buscar ciudad...', citySearchAria: 'Buscar nombre de ciudad',
+        themeButton: 'Cambiar tema', themeLight: 'Modo claro', themeDark: 'Modo oscuro', reset: 'Volver al inicio',
+        heroEyebrow: 'Paradiso · Guía de residencia en Corea', heroTitle: 'Una estancia desconocida, un siguiente paso claro', heroEm: 'next move, clear.',
+        heroSub: 'Explora los 39 estatus de residencia de Corea según tu objetivo y situación.<br>Paradiso conecta cada ruta con fuentes oficiales.',
+        proof1: 'Basado en fuentes públicas', proof2: 'Rutas por objetivo', proof3: 'Verificación final oficial',
+        entryRail: 'Elige cómo empezar', entryATitle: 'Sé mi código de visa', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: 'Solo puedo explicar mi situación', entryBSub: 'Responde preguntas guiadas para encontrar tu ruta',
+        searchOpen: 'Buscar por código de visa o palabra clave', searchOpenAria: 'Abrir búsqueda por código de visa o palabra clave', searchClose: 'Cerrar búsqueda directa',
+        toolsLabel: 'Herramientas administrativas', qaAria: 'Herramientas administrativas frecuentes', jobCode: 'Códigos de ocupación e industria', jurisdiction: 'Buscar oficina de inmigración competente',
+        visaLabel: 'Elegir ruta de estancia', preTrackAria: 'Ruta de visa antes de entrar', preTrackTitle: 'Antes de entrar — visa consular', preTrackDesc: 'Emisión de nueva visa mediante una misión coreana en el extranjero',
+        inTrackAria: 'Ruta después de entrar a Corea', inTrackTitle: 'Después de entrar — registro y extensión', inTrackDesc: 'Registro de extranjero, extensión, cambio de estatus y servicios dentro de Corea',
+        qAria: 'Buscar estatus de visa o palabra clave', qPlaceholder: 'Buscar estatus de visa o palabra clave', dataLoading: 'Cargando datos…', dataReady: 'Datos cargados ({count}) - {source}',
+        sourceApi: 'API', sourceStatic: 'copia estática', sourceOffline: 'datos sin conexión', xbAria: 'Borrar búsqueda', submitSearch: 'Buscar',
+        ctrlsAria: 'Controles de resultados', fold: 'Contraer', unfold: 'Expandir', hintsTitle: 'Palabras clave recomendadas', hintsAria: 'Búsquedas rápidas recomendadas',
+        aiSecondaryAria: 'Asistente de IA opcional', aiLink: 'Preguntar más a la IA', scrollAria: 'Desplazarse hacia abajo',
+        reference: 'Paradiso ofrece información de referencia basada en leyes y manuales públicos. No es asesoría legal ni servicio de gestión de solicitudes. Confirma la decisión final con inmigración, HiKorea o un profesional calificado.',
+        landingHints: ['Cambio de dirección', 'Renovar pasaporte', 'Reemisión ARC', 'Visita sin cita/excepción', 'Exención Jeju', 'K-ETA', 'Trabajador cualificado (E-7-4)', 'Migrante por matrimonio (F-6)', 'Ingreso F-3', 'Certificado TB', 'Proceso de refugio', 'Overstay', 'Búsqueda de empleo D-10', 'K-Trainee (D-4-2K)'],
+        quickFilters: ['Dirección', 'Sin cita', 'Ingreso F-3', 'K-ETA', 'Guía TB', 'Overstay', 'Seguro médico', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'Sistema de puntos']
+    },
+    ru: {
+        languageButton: 'Настройки языка', languageMenu: 'Выберите язык', languageChanged: 'Язык изменен на русский.',
+        cityButton: 'Настроить город и время', cityPlaceholder: 'Поиск города...', citySearchAria: 'Поиск названия города',
+        themeButton: 'Сменить тему', themeLight: 'Светлый режим', themeDark: 'Темный режим', reset: 'Вернуться на главную',
+        heroEyebrow: 'Paradiso · Гид по пребыванию в Корее', heroTitle: 'Незнакомый статус — следующий шаг ясен', heroEm: 'next move, clear.',
+        heroSub: 'Изучайте 39 статусов пребывания в Корее по цели и ситуации.<br>Paradiso связывает каждый путь с официальными источниками.',
+        proof1: 'На основе открытых источников', proof2: 'Маршруты по цели', proof3: 'Финальная проверка по официальным источникам',
+        entryRail: 'Выберите способ начать', entryATitle: 'Я знаю свой код визы', entryASub: 'D-2 · F-2-7 · E-7-1 …',
+        entryBTitle: 'Я могу только описать ситуацию', entryBSub: 'Ответьте на вопросы, чтобы найти подходящий путь',
+        searchOpen: 'Поиск по коду визы или ключевому слову', searchOpenAria: 'Открыть поиск по коду визы и ключевому слову', searchClose: 'Закрыть прямой поиск',
+        toolsLabel: 'Административные инструменты', qaAria: 'Часто используемые административные инструменты', jobCode: 'Коды профессий и отраслей', jurisdiction: 'Найти компетентный офис иммиграции',
+        visaLabel: 'Выберите путь пребывания', preTrackAria: 'Маршрут визы до въезда', preTrackTitle: 'До въезда — выдача визы в консульстве', preTrackDesc: 'Оформление новой визы через корейское представительство за рубежом',
+        inTrackAria: 'Маршрут после въезда в Корею', inTrackTitle: 'После въезда — регистрация и продление', inTrackDesc: 'Регистрация иностранца, продление, смена статуса и услуги в Корее',
+        qAria: 'Поиск статуса визы или ключевого слова', qPlaceholder: 'Поиск статуса визы или ключевого слова', dataLoading: 'Загрузка данных…', dataReady: 'Данные загружены ({count}) - {source}',
+        sourceApi: 'API', sourceStatic: 'статическая копия', sourceOffline: 'офлайн-данные', xbAria: 'Очистить поиск', submitSearch: 'Поиск',
+        ctrlsAria: 'Управление результатами', fold: 'Свернуть', unfold: 'Развернуть', hintsTitle: 'Рекомендуемые ключевые слова', hintsAria: 'Быстрый рекомендуемый поиск',
+        aiSecondaryAria: 'Дополнительный AI-помощник', aiLink: 'Спросить AI подробнее', scrollAria: 'Прокрутить вниз',
+        reference: 'Paradiso предоставляет справочную информацию на основе открытых законов и руководств. Это не юридическая консультация и не услуга подачи заявлений. Окончательное решение уточняйте в иммиграционной службе, HiKorea или у квалифицированного специалиста.',
+        landingHints: ['Смена адреса', 'Обновление паспорта', 'Повторная выдача ARC', 'Визит без записи/исключение', 'Безвизовый Jeju', 'K-ETA', 'Квалифицированный работник (E-7-4)', 'Брак (F-6)', 'Доход F-3', 'Справка TB', 'Процедура беженца', 'Overstay', 'Поиск работы D-10', 'K-Trainee (D-4-2K)'],
+        quickFilters: ['Адрес', 'Без записи', 'Доход F-3', 'K-ETA', 'Гид TB', 'Overstay', 'Медстрахование', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'Балльная система']
+    }
+};
+
+function tx(key, vars = {}) {
+    const pack = UI_TRANSLATIONS[currentLanguage] || UI_TRANSLATIONS.ko;
+    let value = pack[key] ?? UI_TRANSLATIONS.ko[key] ?? key;
+    if (typeof value !== 'string') return value;
+    Object.entries(vars).forEach(([k, v]) => { value = value.replaceAll(`{${k}}`, v); });
+    return value;
+}
+
+function setText(selector, text) {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = text;
+}
+
+function setHtml(selector, html) {
+    const el = document.querySelector(selector);
+    if (el) el.innerHTML = html;
+}
+
+function setAttr(selector, attr, value) {
+    const el = document.querySelector(selector);
+    if (el) el.setAttribute(attr, value);
+}
+
+function setIndexedText(selector, values) {
+    document.querySelectorAll(selector).forEach((el, idx) => {
+        if (values[idx] !== undefined) el.textContent = values[idx];
+    });
+}
+
+function getLanguageOption(code = currentLanguage) {
+    return LANGUAGE_OPTIONS.find(lang => lang.code === code) || LANGUAGE_OPTIONS[0];
+}
+
+function getStoredLanguage() {
+    try {
+        const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+        return LANGUAGE_OPTIONS.some(lang => lang.code === stored) ? stored : 'ko';
+    } catch (e) {
+        return 'ko';
+    }
+}
+
+function renderLanguageMenu() {
+    const menu = document.getElementById('languageMenu');
+    if (!menu) return;
+    menu.innerHTML = LANGUAGE_OPTIONS.map(lang => `
+        <button type="button" class="language-option" role="option" aria-selected="${lang.code === currentLanguage ? 'true' : 'false'}" data-action="apply-language" data-lang="${lang.code}">
+            <span class="language-option-code">${lang.short}</span>
+            <span><span class="language-option-name">${lang.name}</span><br><span class="language-option-local">${lang.local}</span></span>
+            <span class="language-option-check" aria-hidden="true">${lang.code === currentLanguage ? '✓' : ''}</span>
+        </button>
+    `).join('');
+}
+
+function toggleLanguageMenu(forceOpen) {
+    const menu = document.getElementById('languageMenu');
+    const btn = document.getElementById('languageBtn');
+    if (!menu || !btn) return;
+    const open = forceOpen === undefined ? !menu.classList.contains('open') : forceOpen;
+    menu.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) toggleCityMenu(false);
+}
+
+function getLandingHintItems() {
+    const labels = tx('landingHints');
+    const queries = ['체류지 변경', '여권 변경', '등록증 재발급', '비예약 방문', '제주 무사증', 'K-ETA', 'E-7-4', 'F-6', 'F-3 소득요건', 'TB-1', 'RF-1', 'SCN-6', 'D-10', 'D-4-2K'];
+    return queries.map((q, idx) => ({ l: labels[idx] || UI_TRANSLATIONS.ko.landingHints[idx], q }));
+}
+
+function getQuickFilterItems() {
+    const labels = tx('quickFilters');
+    const queries = ['체류지 변경', '비예약 방문', 'F-3 소득', 'K-ETA', 'TB-1', 'SCN-6', '건강보험 면제', 'B-2-2 제주', 'E-7', 'E-9', 'F-6', 'F-5', '점수'];
+    return queries.map((q, idx) => ({ l: labels[idx] || UI_TRANSLATIONS.ko.quickFilters[idx], q }));
+}
+
+function updateThemeLabel() {
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    const textEl = document.querySelector('.theme-btn-text');
+    const label = isDark ? tx('themeLight') : tx('themeDark');
+    if (textEl) textEl.textContent = label;
+    setAttr('#mainThemeBtn', 'aria-label', tx('themeButton'));
+    setAttr('#mainThemeBtn', 'title', tx('themeButton'));
+}
+
+function updateSearchMetaText() {
+    if (!rcEl) return;
+    if (!dataReady) {
+        rcEl.textContent = tx('dataLoading');
+    } else if (!document.body.classList.contains('searched') && !qEl?.value) {
+        rcEl.textContent = '';
+    }
+}
+
+function applyLanguage(code, options = {}) {
+    if (!LANGUAGE_OPTIONS.some(lang => lang.code === code)) code = 'ko';
+    currentLanguage = code;
+    const lang = getLanguageOption(code);
+    document.documentElement.lang = lang.html;
+    try { localStorage.setItem(LANGUAGE_STORAGE_KEY, code); } catch (e) {}
+
+    setAttr('#languageBtn', 'aria-label', tx('languageButton'));
+    setAttr('#languageBtn', 'title', tx('languageButton'));
+    setAttr('#languageMenu', 'aria-label', tx('languageMenu'));
+    setText('#languageBtnCode', lang.short);
+    setText('#languageBtnNative', lang.name);
+    renderLanguageMenu();
+
+    setAttr('#cityBtn', 'aria-label', tx('cityButton'));
+    setAttr('#citySearch', 'placeholder', tx('cityPlaceholder'));
+    setAttr('#citySearch', 'aria-label', tx('citySearchAria'));
+    updateThemeLabel();
+    setAttr('.logo-area', 'aria-label', tx('reset'));
+    setText('.p-hero-eyebrow', tx('heroEyebrow'));
+    setHtml('#pHeroTitle', `${tx('heroTitle')}<em>${tx('heroEm')}</em>`);
+    setHtml('.p-hero-sub', tx('heroSub'));
+    setAttr('.p-hero-proof', 'aria-label', 'Paradiso');
+    setIndexedText('.p-proof-chip', [tx('proof1'), tx('proof2'), tx('proof3')]);
+    setAttr('.p-entry-rail', 'aria-label', tx('entryRail'));
+    setIndexedText('.p-entry-title', [tx('entryATitle'), tx('entryBTitle')]);
+    setIndexedText('.p-entry-sub', [tx('entryASub'), tx('entryBSub')]);
+    setAttr('#qaMain', 'aria-label', tx('qaAria'));
+    setIndexedText('#qaMain .hero-action-label', [tx('jobCode'), tx('jurisdiction')]);
+    setAttr('.visa-track-card:nth-child(1)', 'aria-label', tx('preTrackAria'));
+    setAttr('.visa-track-card:nth-child(2)', 'aria-label', tx('inTrackAria'));
+    setIndexedText('.visa-track-title', [tx('preTrackTitle'), tx('inTrackTitle')]);
+    setIndexedText('.visa-track-desc', [tx('preTrackDesc'), tx('inTrackDesc')]);
+    document.documentElement.style.setProperty('--lang-tools-label', JSON.stringify(tx('toolsLabel')));
+    document.documentElement.style.setProperty('--lang-visa-label', JSON.stringify(tx('visaLabel')));
+
+    setAttr('#q', 'aria-label', tx('qAria'));
+    if (qEl) qEl.placeholder = qEl.disabled ? tx('dataLoading') : tx('qPlaceholder');
+    setAttr('#xb', 'aria-label', tx('xbAria'));
+    setAttr('.sbar-go', 'aria-label', tx('submitSearch'));
+    setAttr('.ctrls', 'aria-label', tx('ctrlsAria'));
+    setText('[data-action="toggle-accordions"][data-fold="true"]', tx('fold'));
+    setText('[data-action="toggle-accordions"][data-fold="false"]', tx('unfold'));
+    setText('#landingHintsTitle', tx('hintsTitle'));
+    setAttr('#landingHints', 'aria-label', tx('hintsAria'));
+    setAttr('.hero-ai-secondary', 'aria-label', tx('aiSecondaryAria'));
+    setHtml('.hero-ai-link', `<span aria-hidden="true">✦</span> ${tx('aiLink')} <strong>Paradiso.ai</strong>`);
+    setHtml('.ai-fab', `<span class="fab-spark" aria-hidden="true">✦</span> ${tx('aiLink')} <strong>Paradiso.ai</strong>`);
+    setAttr('#scrollCue', 'aria-label', tx('scrollAria'));
+    setText('.reference-disclaimer', tx('reference'));
+    setDirectSearchToggleState(document.getElementById('searchToggleBtn')?.getAttribute('aria-expanded') === 'true');
+    if (dataReady) initUI();
+    updateSearchMetaText();
+    if (!options.silent) showToast(tx('languageChanged'), 'success');
+}
+
 function updateNightLightClass() {
   const d = new Date();
   const hour = d.getHours() + d.getMinutes() / 60;
@@ -6522,50 +6933,20 @@ function toggleTheme(){
     const newTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     document.body.setAttribute('data-theme', newTheme);
     updateNightLightClass();
-    const textEl = document.querySelector('.theme-btn-text');
-    if(textEl) textEl.textContent = newTheme === 'dark' ? '라이트 모드' : '다크 모드';
+    updateThemeLabel();
 }
 
 function toggleAccordions(c){document.querySelectorAll('.vc,.su').forEach(el=>{if(c)el.classList.remove('open');else el.classList.add('open');});}
 
 function initUI(){
-    const lf=[
-        {l:'체류지 변경(주민센터)',q:'체류지 변경'},
-        {l:'여권 갱신(비예약)',q:'여권 변경'},
-        {l:'등록증 재발급',q:'등록증 재발급'},
-        {l:'만료 당일/임산부 등',q:'비예약 방문'},
-        {l:'제주 무사증',q:'제주 무사증'},
-        {l:'K-ETA 발급',q:'K-ETA'},
-        {l:'숙련기능(E-7-4)',q:'E-7-4'},
-        {l:'결혼이민(F-6)',q:'F-6'},
-        {l:'동반(F-3) 소득요건',q:'F-3 소득요건'},
-        {l:'결핵 제출 대상',q:'TB-1'},
-        {l:'난민신청 절차',q:'RF-1'},
-        {l:'오버스테이',q:'SCN-6'},
-        {l:'D-10 구직',q:'D-10'},
-        {l:'K-Trainee(D-4-2K)',q:'D-4-2K'},
-    ];
+    const lf=getLandingHintItems();
     const lc=document.getElementById('landingHints');
     if(lc) {
         lc.innerHTML='';
         lf.forEach(x=>{const b=document.createElement('button');b.className='lh';b.textContent=x.l;b.onclick=()=>{qEl.value=x.q;executeSearch();};lc.appendChild(b);});
     }
     
-    const rf=[
-        {l:'체류지 변경',q:'체류지 변경'},
-        {l:'비예약 업무',q:'비예약 방문'},
-        {l:'F-3 소득',q:'F-3 소득'},
-        {l:'K-ETA',q:'K-ETA'},
-        {l:'결핵 가이드',q:'TB-1'},
-        {l:'오버스테이',q:'SCN-6'},
-        {l:'건강보험',q:'건강보험 면제'},
-        {l:'B-2-2 제주',q:'B-2-2 제주'},
-        {l:'E-7',q:'E-7'},
-        {l:'E-9',q:'E-9'},
-        {l:'F-6',q:'F-6'},
-        {l:'F-5',q:'F-5'},
-        {l:'점수제',q:'점수'}
-    ];
+    const rf=getQuickFilterItems();
     const qc=document.getElementById('qf');
     if(qc) {
         qc.innerHTML='';
@@ -6584,8 +6965,10 @@ function setSearchEnabled(enabled) {
     if (goBtn) goBtn.disabled = !enabled;
     qEl.style.opacity = enabled ? '1' : '0.6';
     if (enabled) {
-        qEl.placeholder = "비자 자격 및 키워드 검색";
+        qEl.placeholder = tx('qPlaceholder');
         if (rcEl) rcEl.textContent = '';
+    } else {
+        qEl.placeholder = tx('dataLoading');
     }
 }
 
@@ -6593,26 +6976,28 @@ function setSearchEnabled(enabled) {
 async function loadVisaData() {
     const parse = (raw) => injectLocalData(Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []));
     const applySuccess = (arr, label) => {
-        VISA_DATA = arr; dataReady = true; if(rcEl) rcEl.textContent = `데이터 로드 완료 (${VISA_DATA.length}개) - ${label}`;
+        VISA_DATA = arr; dataReady = true; if(rcEl) rcEl.textContent = tx('dataReady', { count: VISA_DATA.length, source: label });
         setSearchEnabled(true); initUI();
     };
     try {
         if (!API_BASE) throw new Error("Local");
         const res = await fetch(`${API_BASE}/api/visas`, { cache: 'no-store' });
         if (!res.ok) throw new Error(`API Fail`);
-        applySuccess(parse(await res.json()), 'API 연동'); return;
+        applySuccess(parse(await res.json()), tx('sourceApi')); return;
     } catch (e) {
         try {
             const res = await fetch('./visa_data.json', { cache: 'no-store' });
             if (!res.ok) throw new Error(`JSON Fail`);
-            applySuccess(parse(await res.json()), '정적 백업');
-        } catch (err) { applySuccess(parse([]), '오프라인 내장 데이터'); }
+            applySuccess(parse(await res.json()), tx('sourceStatic'));
+        } catch (err) { applySuccess(parse([]), tx('sourceOffline')); }
     }
 }
 
 // --- Global Event Delegation ---
 document.addEventListener('DOMContentLoaded', () => {
     ensureSearchDebugPanel();
+    renderLanguageMenu();
+    applyLanguage(getStoredLanguage(), { silent: true });
     loadVisaData();
     if(qEl) qEl.addEventListener('input', handleInput);
 
@@ -6681,6 +7066,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 'reset-to-landing': () => { if(document.body.classList.contains('searched')) resetToLanding(); },
                 'toggle-city': () => toggleCityMenu(),
                 'apply-city': () => { applyCity(JSON.parse(actionBtn.dataset.city)); toggleCityMenu(false); },
+                'toggle-language-menu': () => toggleLanguageMenu(),
+                'apply-language': () => { applyLanguage(actionBtn.dataset.lang); toggleLanguageMenu(false); },
                 'toggle-theme': () => toggleTheme(),
                 'scroll-to-brand': () => document.getElementById('brandHero')?.scrollIntoView({ behavior: 'smooth' })
             };
@@ -6701,6 +7088,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const wrap = document.getElementById('cityWrap'), menu = document.getElementById('cityMenu');
         if (wrap && !wrap.contains(e.target) && menu && menu.style.display !== 'none') menu.style.display = 'none';
 
+        const langWrap = document.getElementById('languageWrap'), langMenu = document.getElementById('languageMenu');
+        if (langWrap && !langWrap.contains(e.target) && langMenu?.classList.contains('open')) toggleLanguageMenu(false);
+
         const sWrap = document.getElementById('searchForm'), al = document.getElementById('auto-list');
         if (sWrap && !sWrap.contains(e.target) && al) al.classList.remove('active');
     });
@@ -6710,6 +7100,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.body.classList.contains('searched')) resetToLanding();
         }
         if (e.key === 'Escape') {
+            const langMenu = document.getElementById('languageMenu');
+            if (langMenu?.classList.contains('open')) {
+                toggleLanguageMenu(false);
+                return;
+            }
             const anyModalOpen = ['jobCodeModalOverlay', 'jurisdictionModalOverlay', 'aiModalOverlay', 'docModalOverlay', 'faqModalOverlay'].some(id => {
                 const el = document.getElementById(id);
                 if (el?.classList.contains('active')) { closeModal(id); return true; }
