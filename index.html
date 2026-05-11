@@ -4093,6 +4093,124 @@ body:not(.searched) #visaManualSection::before {
   }
 }
 
+/* Registered immigration agent finder — scaffold (sample data only) */
+.p-agent-finder { display: flex; flex-direction: column; gap: 0.9rem; }
+.p-agent-finder__banner,
+.p-agent-finder__disclaimer {
+  border-radius: var(--radius-md);
+  padding: 0.7rem 0.95rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  margin: 0;
+}
+.p-agent-finder__banner {
+  background: color-mix(in srgb, var(--color-warning) 14%, transparent);
+  border-left: 3px solid var(--color-warning);
+  color: var(--color-text);
+  font-weight: 600;
+}
+.p-agent-finder__disclaimer {
+  background: color-mix(in srgb, var(--color-border) 22%, transparent);
+  border-left: 3px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+.p-agent-finder__official-link { color: inherit; text-decoration: underline; }
+.p-agent-finder__controls {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) minmax(220px, 2fr);
+  gap: 0.6rem;
+}
+.p-agent-finder__controls select,
+.p-agent-finder__controls input[type="search"] {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.95rem;
+}
+.p-agent-finder__count {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+.p-agent-finder__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.p-agent-finder__card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.p-agent-finder__card h3 { margin: 0; font-size: 0.98rem; line-height: 1.35; }
+.p-agent-finder__region {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+}
+.p-agent-finder__card address {
+  font-style: normal;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+.p-agent-finder__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.15rem;
+}
+.p-agent-finder__actions a,
+.p-agent-finder__actions button {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+}
+.p-agent-finder__actions a:hover,
+.p-agent-finder__actions a:focus-visible,
+.p-agent-finder__actions button:hover,
+.p-agent-finder__actions button:focus-visible {
+  border-color: var(--color-primary);
+  color: var(--color-primary-ink);
+}
+.p-agent-finder__empty,
+.p-agent-finder__error {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  font-size: 0.88rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-border) 22%, transparent);
+  color: var(--color-text-muted);
+}
+.p-agent-finder__error {
+  border-left: 3px solid var(--color-warning);
+  color: var(--color-text);
+}
+.p-agent-finder[hidden] { display: none; }
+.p-agent-finder [hidden] { display: none !important; }
+@media (max-width: 600px) {
+  .p-agent-finder__controls { grid-template-columns: 1fr; }
+}
+
 </style>
 <script>
   window.PARADISO_BACKEND_URL = window.PARADISO_BACKEND_URL || "";
@@ -4530,6 +4648,38 @@ body:not(.searched) #visaManualSection::before {
                 <p>상황 요약을 바탕으로 상담 전 확인할 질문을 정리하는 기능입니다.</p>
             </a>
         </div>
+    </section>
+
+    <section class="p-section p-agent-finder" id="agentFinder" aria-labelledby="agentFinderTitle">
+        <div class="p-section-head">
+            <div>
+                <p class="p-kicker">Local guidance</p>
+                <h2 class="p-section-title" id="agentFinderTitle">가까운 행정 도움 찾기</h2>
+            </div>
+            <p class="p-section-copy">공식 등록된 출입국민원 대행기관을 지역별로 확인하고, 네이버지도 또는 카카오맵에서 위치를 열어볼 수 있습니다.</p>
+        </div>
+        <p class="p-agent-finder__banner" id="agentFinderSampleBanner" role="note" hidden>
+            현재 표시되는 항목은 자리표시(scaffold)용 <strong>샘플 데이터</strong>이며, 실제 등록 대행기관 정보가 아닙니다. 실제 정보는 공식 출처에서 직접 확인하세요.
+        </p>
+        <p class="p-agent-finder__disclaimer" id="agentFinderDisclaimer">
+            이 목록은 하이코리아/법무부 공개 자료를 바탕으로 정리한 공식 등록 대행기관 정보입니다. Paradiso는 특정 기관을 추천하거나 업무 결과를 보증하지 않습니다. 방문 또는 의뢰 전
+            <a class="p-agent-finder__official-link" href="https://www.hikorea.go.kr/cvlappl/CvlapplAgentInfo.pt" target="_blank" rel="noopener noreferrer">하이코리아 공식 조회</a>,
+            전화 확인, 상담 범위 및 수수료 확인을 권장합니다.
+        </p>
+        <div class="p-agent-finder__controls" role="search" aria-controls="agentFinderList">
+            <label class="sr-only" for="agentFinderRegion">지역</label>
+            <select id="agentFinderRegion" aria-label="지역 선택">
+                <option value="">전체 지역</option>
+            </select>
+            <label class="sr-only" for="agentFinderKeyword">키워드</label>
+            <input id="agentFinderKeyword" type="search" placeholder="기관명·주소 키워드 검색" autocomplete="off" />
+        </div>
+        <p class="p-agent-finder__count" id="agentFinderCount" aria-live="polite"></p>
+        <ul class="p-agent-finder__list" id="agentFinderList" aria-label="등록 대행기관 목록"></ul>
+        <p class="p-agent-finder__empty" id="agentFinderEmpty" hidden>조건에 맞는 항목이 없습니다. 지역을 바꾸거나 키워드를 비워보세요.</p>
+        <p class="p-agent-finder__error" id="agentFinderError" role="alert" hidden>데이터를 불러오지 못했습니다. 잠시 후 다시 시도하거나
+            <a class="p-agent-finder__official-link" href="https://www.hikorea.go.kr/cvlappl/CvlapplAgentInfo.pt" target="_blank" rel="noopener noreferrer">하이코리아 공식 조회</a>를 이용하세요.
+        </p>
     </section>
 
     <section class="p-section p-reminder-section" aria-labelledby="pReminderTitle">
@@ -7813,6 +7963,139 @@ function showVisaDocForAction(visaCode) {
     openAiModal(visaCode);
   }
 }
+
+// ── Registered immigration agent finder (scaffold; sample data only) ──
+(function initAgentFinder() {
+  const root = document.getElementById('agentFinder');
+  if (!root) return;
+  const banner = document.getElementById('agentFinderSampleBanner');
+  const regionSel = document.getElementById('agentFinderRegion');
+  const keywordIn = document.getElementById('agentFinderKeyword');
+  const countEl = document.getElementById('agentFinderCount');
+  const listEl = document.getElementById('agentFinderList');
+  const emptyEl = document.getElementById('agentFinderEmpty');
+  const errorEl = document.getElementById('agentFinderError');
+  let dataset = { agencies: [], regions: [], meta: {} };
+
+  function escapeText(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'absolute';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand && document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('copy command failed'));
+      } catch (err) { reject(err); }
+    });
+  }
+  function buildCard(a) {
+    const name = escapeText(a.name);
+    const region = escapeText(a.region || '');
+    const address = a.address ? escapeText(a.address) : '';
+    const phone = (a.phone || '').trim();
+    const phoneSafe = phone.replace(/[^0-9+\-]/g, '');
+    const q = encodeURIComponent(a.map_query || a.address || a.name || '');
+    const naverHref = 'https://map.naver.com/p/search/' + q;
+    const kakaoHref = 'https://map.kakao.com/link/search/' + q;
+    const phoneBtn = phone
+      ? '<a href="tel:' + escapeText(phoneSafe) + '" rel="nofollow">전화 ' + escapeText(phone) + '</a>'
+      : '';
+    const copyBtn = address
+      ? '<button type="button" data-agent-copy="' + escapeText(a.address) + '">주소 복사</button>'
+      : '';
+    return ''
+      + '<li class="p-agent-finder__card">'
+      +   '<span class="p-agent-finder__region">' + region + '</span>'
+      +   '<h3>' + name + '</h3>'
+      +   (address ? '<address>' + address + '</address>' : '')
+      +   '<div class="p-agent-finder__actions">'
+      +     '<a href="' + naverHref + '" target="_blank" rel="noopener noreferrer">네이버지도</a>'
+      +     '<a href="' + kakaoHref + '" target="_blank" rel="noopener noreferrer">카카오맵</a>'
+      +     copyBtn
+      +     phoneBtn
+      +   '</div>'
+      + '</li>';
+  }
+  function applyFilter() {
+    const region = regionSel.value;
+    const kw = (keywordIn.value || '').trim().toLowerCase();
+    const total = dataset.agencies.length;
+    const filtered = dataset.agencies.filter(function (a) {
+      if (region && a.region !== region) return false;
+      if (!kw) return true;
+      const hay = ((a.name || '') + ' ' + (a.address || '') + ' ' + (a.region || '')).toLowerCase();
+      return hay.indexOf(kw) !== -1;
+    });
+    const isSample = !!(dataset.meta && dataset.meta.is_sample);
+    const noun = isSample ? '샘플 항목' : '대행기관';
+    if (region || kw) {
+      countEl.textContent = '전체 ' + total + '개 중 ' + filtered.length + '개 ' + noun + ' 표시';
+    } else {
+      countEl.textContent = filtered.length + '개의 ' + noun + ' 표시';
+    }
+    if (filtered.length === 0) {
+      listEl.innerHTML = '';
+      emptyEl.hidden = false;
+    } else {
+      emptyEl.hidden = true;
+      listEl.innerHTML = filtered.map(buildCard).join('');
+    }
+  }
+  function populateRegions(regions) {
+    const opts = regions.map(function (r) {
+      return '<option value="' + escapeText(r) + '">' + escapeText(r) + '</option>';
+    }).join('');
+    regionSel.insertAdjacentHTML('beforeend', opts);
+  }
+  function showError() {
+    errorEl.hidden = false;
+    listEl.innerHTML = '';
+    countEl.textContent = '';
+    emptyEl.hidden = true;
+  }
+  listEl.addEventListener('click', function (ev) {
+    const btn = ev.target.closest('button[data-agent-copy]');
+    if (!btn) return;
+    ev.preventDefault();
+    const addr = btn.getAttribute('data-agent-copy') || '';
+    if (!addr) return;
+    copyToClipboard(addr).then(function () {
+      if (typeof showToast === 'function') showToast('주소를 복사했습니다.', 'success');
+    }).catch(function () {
+      if (typeof showToast === 'function') showToast('주소 복사에 실패했습니다. 주소를 길게 눌러 직접 복사하세요.', 'warning');
+    });
+  });
+  regionSel.addEventListener('change', applyFilter);
+  keywordIn.addEventListener('input', applyFilter);
+
+  fetch('data/registered_agents.json', { cache: 'no-cache' })
+    .then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function (json) {
+      dataset.meta = json && json._meta ? json._meta : {};
+      dataset.regions = Array.isArray(json && json.regions) ? json.regions : [];
+      dataset.agencies = Array.isArray(json && json.agencies) ? json.agencies : [];
+      if (dataset.meta.is_sample === true) banner.hidden = false;
+      populateRegions(dataset.regions);
+      applyFilter();
+    })
+    .catch(showError);
+})();
 </script>
 </body>
 </html>
