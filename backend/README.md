@@ -151,14 +151,14 @@ visible to the deployed service.
 
 ## Wiring the frontend
 
-The frontend exposes `window.PARADISO_BACKEND_URL` (set in
-`index.html`). Today, both `index.html` and `ai.html` still hard-code
-the legacy `API_BASE`; rewiring those pages to read
-`window.PARADISO_BACKEND_URL` is tracked as a follow-up PR (see
-`docs/backend/BACKEND_MIGRATION_GAP_REPORT.md`).
+Both `index.html` and `ai.html` define `API_BASE` from a documented
+precedence chain (see `docs/backend/BACKEND_DEPLOYMENT_ALIGNMENT.md`):
 
-Two ways to point the frontend at the deployed backend once that
-follow-up lands:
+1. `window.PARADISO_BACKEND_URL` if set and non-empty (highest priority).
+2. `""` for local development (`localhost`, `127.0.0.1`, or `file:`).
+3. `DEFAULT_API_BASE` constant (currently the legacy Railway URL).
+
+Two ways to point the frontend at a different backend:
 
 1. Inline override in `index.html` head:
 
