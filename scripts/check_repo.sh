@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "[1/4] Validating visa_data.json format..."
+echo "[1/5] Validating visa_data.json format..."
 python3 -m json.tool visa_data.json > /tmp/visa_data_check.json
 
-echo "[2/4] Validating representative manual-aware visa schema..."
+echo "[2/5] Validating representative manual-aware visa schema..."
 python3 - <<'PY'
 import json
 import sys
@@ -72,10 +72,23 @@ if errors:
     raise SystemExit("\\n".join(errors))
 PY
 
-echo "[3/4] Running git diff --check..."
+echo "[3/5] Running git diff --check..."
 git diff --check -- index.html visa_data.json doc_master.json scripts/check_repo.sh docs/data docs/design
 
-echo "[4/4] Scanning key user-facing files for forbidden branding strings..."
+echo "[4/5] Validating EN/KO UI translations..."
+if [[ -f scripts/check_i18n.js ]]; then
+  if command -v node >/dev/null 2>&1; then
+    node scripts/check_i18n.js
+  else
+    echo "ERROR: Node.js is required to run scripts/check_i18n.js but was not found on PATH." >&2
+    echo "       Install Node.js (>=14) or run via your existing Node toolchain." >&2
+    exit 1
+  fi
+else
+  echo "INFO: scripts/check_i18n.js not present; skipping i18n validation."
+fi
+
+echo "[5/5] Scanning key user-facing files for forbidden branding strings..."
 KEY_FILES=(
   "index.html"
   "ai.html"
