@@ -319,7 +319,12 @@
         // ==========================================
         // Constants & State
         // ==========================================
-        const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:') ? "" : "https://web-production-14f9a.up.railway.app";
+        // Backend API base. Override at deploy time by setting `window.PARADISO_BACKEND_URL`
+        // in a <script> tag before this script runs (or edit DEFAULT_API_BASE below).
+        // See docs/backend/BACKEND_DEPLOYMENT_ALIGNMENT.md.
+        const DEFAULT_API_BASE = "https://web-production-14f9a.up.railway.app";
+        const API_BASE = (window.PARADISO_BACKEND_URL && window.PARADISO_BACKEND_URL.trim())
+            || ((location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:') ? "" : DEFAULT_API_BASE);
         const MAX_CHARS = 500;
         const QUOTA_LIMIT = 30;
         const STORE_KEYS = {
