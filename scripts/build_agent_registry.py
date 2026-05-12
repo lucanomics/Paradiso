@@ -179,7 +179,6 @@ def normalized_search_text(*parts: str) -> str:
 def build_records(rows: list[dict[str, str]]) -> list[dict[str, str]]:
     header_idx = find_header_index(rows)
     records: list[dict[str, str]] = []
-    seen: set[tuple[str, str, str]] = set()
     for row in rows[header_idx + 1 :]:
         serial = row.get("A", "").strip()
         name = row.get("B", "").strip()
@@ -189,10 +188,6 @@ def build_records(rows: list[dict[str, str]]) -> list[dict[str, str]]:
             continue
         if not (serial and name and address):
             fail(f"incomplete registry row after header: {row}")
-        key = (name, address, phone)
-        if key in seen:
-            continue
-        seen.add(key)
         province, city_or_district = parse_regions(address)
         record: OrderedDict[str, str] = OrderedDict()
         record["id"] = f"agent-{int(float(serial)):04d}" if re.fullmatch(r"\d+(?:\\.0)?", serial) else f"agent-{serial}"
