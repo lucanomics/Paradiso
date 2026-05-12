@@ -6,10 +6,10 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "[1/6] Validating visa_data.json format..."
+echo "[1/8] Validating visa_data.json format..."
 python3 -m json.tool visa_data.json > /tmp/visa_data_check.json
 
-echo "[2/6] Validating representative manual-aware visa schema..."
+echo "[2/8] Validating representative manual-aware visa schema..."
 python3 - <<'PY'
 import json
 import sys
@@ -77,13 +77,13 @@ if errors:
     raise SystemExit("\\n".join(errors))
 PY
 
-echo "[3/6] Validating current source manuals..."
+echo "[3/8] Validating current source manuals..."
 python3 scripts/check_source_manuals.py
 
-echo "[4/6] Running git diff --check..."
+echo "[4/8] Running git diff --check..."
 git diff --check -- index.html ai.html visa_data.json doc_master.json scripts/check_repo.sh scripts/check_source_manuals.py scripts/check_i18n.js scripts/smoke_ai_payload.js docs/data docs/design docs/source-manuals docs/i18n docs/backend
 
-echo "[5/6] Validating EN/KO UI translations..."
+echo "[5/8] Validating EN/KO UI translations..."
 if [[ -f scripts/check_i18n.js ]]; then
   if command -v node >/dev/null 2>&1; then
     node scripts/check_i18n.js
@@ -96,7 +96,7 @@ else
   echo "INFO: scripts/check_i18n.js not present; skipping i18n validation."
 fi
 
-echo "[6/6] Scanning key user-facing files for forbidden branding strings..."
+echo "[6/8] Scanning key user-facing files for forbidden branding strings..."
 KEY_FILES=(
   "index.html"
   "ai.html"
@@ -131,5 +131,11 @@ else
     fi
   fi
 fi
+
+echo "[7/8] Verifying backend deploy-context visa data file is in sync..."
+python3 scripts/sync_visa_data.py --check
+
+echo "[8/8] Running backend regression tests..."
+python3 backend/tests/test_paradiso_backend.py
 
 echo "Success: repository validation passed. JSON is valid, representative manual schema is valid, source manuals are registered, git diff check is clean, and no forbidden branding strings were found in existing key user-facing files."

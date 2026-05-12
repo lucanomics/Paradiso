@@ -80,8 +80,21 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 
 class AskRequest(BaseModel):
+    # Prompt aliases. Resolution order: message -> query -> question.
+    # `question` is the field the Paradiso frontend currently sends; the
+    # other two keep parity with curl-driven clients and earlier docs.
     message: Optional[str] = None
     query: Optional[str] = None
+    question: Optional[str] = None
+
+    # Optional metadata accepted to keep the contract stable. These fields
+    # are not yet used for answer generation, but declaring them prevents
+    # accidental schema rejection and documents the wire format.
+    visa_code: Optional[str] = None
+    visa_data: Optional[Dict[str, Any]] = None
+    context: Optional[str] = None
+    lang: Optional[str] = None
+    consent: Optional[bool] = None
     history: Optional[List[Dict[str, Any]]] = None
     model: Optional[str] = None
 
@@ -331,12 +344,25 @@ def _coerce_visa_list(raw: Any) -> Optional[List[Dict[str, Any]]]:
     return None
 
 
+def _classify_source(path: str) -> str:
+    """Tag where a discovered visa file came from for response metadata."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.dirname(here)
+    if path == os.path.join(here, "data", "visas.json"):
+        return "backend-data"
+    if path == os.path.join(repo_root, "visa_data.json"):
+        return "repo-root"
+    return "explicit"
+
+
 def _load_visas() -> Dict[str, Any]:
     """Load and cache the visa list.
 
-    Returns a dict with `visas` and optionally a `warning` describing
-    why the fallback was used. The file is read once per process and
-    cached in module-level state.
+    Returns a dict with `visas` and either a `source_type` tag (real data
+    loaded) or a `warning` describing why the DEFAULT_VISAS fallback was
+    used. The file is read once per process and cached in module-level
+    state. `source` always exposes only a short tag, not an absolute
+    path, to avoid leaking the runtime layout.
     """
     global _VISAS_CACHE
     if _VISAS_CACHE is not None:
@@ -360,8 +386,18 @@ def _load_visas() -> Dict[str, Any]:
             )
             logger.warning(last_error)
             continue
-        logger.info("Loaded %d visa records from %s", len(records), path)
-        _VISAS_CACHE = {"visas": records, "source": path}
+        source_type = _classify_source(path)
+        logger.info(
+            "Loaded %d visa records (source_type=%s) from %s",
+            len(records),
+            source_type,
+            path,
+        )
+        _VISAS_CACHE = {
+            "visas": records,
+            "source": source_type,
+            "source_type": source_type,
+        }
         return _VISAS_CACHE
 
     warning = (
@@ -372,9 +408,16 @@ def _load_visas() -> Dict[str, Any]:
     _VISAS_CACHE = {
         "visas": DEFAULT_VISAS,
         "source": "fallback",
+        "source_type": "fallback",
         "warning": warning,
     }
     return _VISAS_CACHE
+
+
+def _reset_visas_cache_for_tests() -> None:
+    """Test hook only — clears the module-level cache."""
+    global _VISAS_CACHE
+    _VISAS_CACHE = None
 
 
 # ---------------------------------------------------------------------------
@@ -409,6 +452,8 @@ async def list_visas() -> Dict[str, Any]:
         "count": len(visas),
         "data": visas,
         "visas": visas,
+        "source": cached.get("source", "unknown"),
+        "source_type": cached.get("source_type", "unknown"),
     }
     if "warning" in cached:
         payload["warning"] = cached["warning"]
@@ -417,13 +462,13 @@ async def list_visas() -> Dict[str, Any]:
 
 @app.post("/api/ask", response_model=AskResponse)
 async def ask(req: AskRequest) -> AskResponse:
-    prompt = (req.message or req.query or "").strip()
+    prompt = (req.message or req.query or req.question or "").strip()
     if not prompt:
         raise HTTPException(
             status_code=400,
             detail={
                 "error": "empty_prompt",
-                "message": "Provide a non-empty 'message' or 'query'.",
+                "message": "Provide a non-empty 'message', 'query', or 'question'.",
             },
         )
 
