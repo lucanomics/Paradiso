@@ -410,6 +410,85 @@
         }
 
         // ==========================================
+        // Visa Code Extraction & Language Detection
+        // ==========================================
+        // Allowed first-letter classes (single-letter Korean visa families).
+        // Multi-letter codes (K-ETA, TB-1, SCN-x, OVS-1, etc.) are intentionally
+        // excluded — they are not normal visa codes and would create false matches.
+        const VISA_LETTERS = new Set(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']);
+
+        function extractVisaCode(text) {
+            if (!text || typeof text !== 'string') return null;
+            // Match optional "(", letter, optional "-", 1-2 digits, optional "-" + alnum sub.
+            // Lookbehind prevents matches inside words like "abcF-6".
+            const re = /(?<![A-Za-z0-9])\(?\s*([A-Za-z])\s*-?\s*(\d{1,2})(?:\s*-\s*([A-Za-z0-9]{1,3}))?\s*\)?/g;
+            let m;
+            while ((m = re.exec(text)) !== null) {
+                const letter = m[1].toUpperCase();
+                if (!VISA_LETTERS.has(letter)) continue;
+                const num = m[2];
+                const sub = m[3] ? m[3].toUpperCase() : null;
+                return sub ? `${letter}-${num}-${sub}` : `${letter}-${num}`;
+            }
+            return null;
+        }
+
+        function findVisaMatch(detectedCode, dataset) {
+            if (!detectedCode) {
+                return { detected_code: null, match_found: false, reason: 'No visa code detected in user message' };
+            }
+            if (!Array.isArray(dataset) || dataset.length === 0) {
+                return { detected_code: detectedCode, match_found: false, reason: 'Local visa_data not loaded' };
+            }
+            const upper = detectedCode.toUpperCase();
+            const exact = dataset.find(r => r && typeof r.code === 'string' && r.code.toUpperCase() === upper);
+            if (exact) {
+                return Object.assign({}, exact, {
+                    detected_code: detectedCode,
+                    matched_code: exact.code,
+                    match_type: 'exact',
+                    match_found: true
+                });
+            }
+            const parts = upper.split('-');
+            if (parts.length >= 3) {
+                const parentCode = `${parts[0]}-${parts[1]}`;
+                const parent = dataset.find(r => r && typeof r.code === 'string' && r.code.toUpperCase() === parentCode);
+                if (parent) {
+                    return Object.assign({}, parent, {
+                        detected_code: detectedCode,
+                        matched_code: parent.code,
+                        match_type: 'parent',
+                        match_found: true
+                    });
+                }
+            }
+            return { detected_code: detectedCode, match_found: false, reason: 'No matching local visa_data entry' };
+        }
+
+        function detectUserLang(text) {
+            if (!text) return 'ko';
+            if (/[가-힯ᄀ-ᇿ㄰-㆏]/.test(text)) return 'ko';
+            if (/[A-Za-z]/.test(text)) return 'en';
+            return 'ko';
+        }
+
+        function buildAskContext(lang) {
+            if (lang === 'en') {
+                return [
+                    '[Requirement] Diagnose the user\'s situation objectively based on the Korean Immigration Control Act and field manuals. Present required documents and procedures clearly.',
+                    '[Language lock] The user wrote in English. Respond strictly in English. Do not use Chinese, Japanese, or any other language. Do not insert Chinese characters such as 您 or 您的.',
+                    '[Fallback] If the provided reference data is insufficient, acknowledge the detected visa code or topic, do not pretend the question is unrecognized, do not invent legal rules or specific numbers, and recommend the user confirm with the 1345 immigration call center, HiKorea (hikorea.go.kr), or the nearest immigration office.'
+                ].join('\n');
+            }
+            return [
+                '[요구사항] 출입국관리법 및 실무 매뉴얼에 근거하여 사용자 상황을 객관적이고 논리적으로 진단하고, 필요한 구비서류와 절차를 명확히 제시하십시오.',
+                '[언어 고정] 사용자가 한국어로 질문했습니다. 답변은 반드시 한국어로 작성하고, 중국어/일본어/기타 언어 및 중국식 한자(您, 您的 등)는 사용하지 마십시오.',
+                '[데이터 부족 시] 참고 자료가 부족하더라도 감지된 비자 코드 또는 주제는 인지하고 있음을 밝히고, 질문 자체를 인식하지 못한 것처럼 응답하지 마십시오. 구체 수치나 법적 결론을 임의로 단정하지 말고, 1345 외국인종합안내센터, 하이코리아(hikorea.go.kr) 또는 관할 출입국·외국인청에서 최종 확인하도록 안내하십시오.'
+            ].join('\n');
+        }
+
+        // ==========================================
         // Consent Modal Logic
         // ==========================================
         function showConsent() {
@@ -552,15 +631,19 @@
             _abortController = new AbortController();
             
             try {
+                const userLang = detectUserLang(text);
+                const detectedCode = extractVisaCode(text);
+                const visaPayload = findVisaMatch(detectedCode, VISA_DATA);
+                const contextText = buildAskContext(userLang);
                 const response = await fetch(`${API_BASE}/api/ask`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         question: text,
                         consent: true,
-                        context: "[요구사항] 출입국관리법 및 실무 매뉴얼에 근거하여 사용자 상황을 객관적이고 논리적으로 진단하고, 필요한 구비서류와 절차를 명확히 제시하십시오.",
-                        lang: "ko",
-                        visa_data: { code: 'N/A', cat: 'N/A' } // General context
+                        context: contextText,
+                        lang: userLang,
+                        visa_data: visaPayload
                     }),
                     signal: _abortController.signal
                 });
