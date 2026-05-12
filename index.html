@@ -2903,12 +2903,11 @@ body:not(.searched) {
   background:
     linear-gradient(180deg, #f7f3eb 0%, #eef7f3 42%, #fff8f3 100%) !important;
 }
-/* Interactive cursor/touch spotlight on landing */
-body:not(.searched)::before {
-  content: "";
-  position: fixed;
+/* Interactive cursor/touch spotlight on landing hero only */
+body:not(.searched) .hero-spotlight {
+  position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
   pointer-events: none;
   background:
     radial-gradient(
@@ -2921,9 +2920,10 @@ body:not(.searched)::before {
   transition: opacity 0.6s ease;
   will-change: background-position;
 }
-body:not(.searched).bg-ready::before { opacity: 1; }
+body:not(.searched) .hero-container.spotlight-ready .hero-spotlight { opacity: 1; }
+body.searched .hero-spotlight { display: none; }
 @media (prefers-reduced-motion: reduce) {
-  body:not(.searched)::before { display: none; }
+  body:not(.searched) .hero-spotlight { display: none; }
 }
 body:not(.searched) #starCanvas {
   opacity: 0 !important;
@@ -4115,7 +4115,7 @@ body:not(.searched) #visaManualSection::before {
   }
 }
 
-/* Registered immigration agent finder — scaffold (sample data only) */
+/* Registered immigration agent finder */
 .p-agent-finder { display: flex; flex-direction: column; gap: 0.9rem; }
 .p-agent-finder__banner,
 .p-agent-finder__disclaimer {
@@ -4751,6 +4751,7 @@ body:not(.searched) .visa-track-card:hover {
 </header>
 
 <header class="hero-container" id="hero">
+    <div class="hero-spotlight" aria-hidden="true"></div>
     <div class="header-inner">
         <div class="logo-area" tabindex="0" role="button" aria-label="메인 화면으로 초기화" data-action="reset-to-landing">
             <img class="brand-wordmark-img" src="assets/brand/paradiso-wordmark-brush-white.png" alt="Paradiso" decoding="async" loading="eager" />
@@ -5163,13 +5164,12 @@ body:not(.searched) .visa-track-card:hover {
             </div>
             <p class="p-section-copy">공식 등록된 출입국민원 대행기관을 지역별로 확인하고, 네이버지도 또는 카카오맵에서 위치를 열어볼 수 있습니다.</p>
         </div>
-        <p class="p-agent-finder__banner" id="agentFinderSampleBanner" role="note" hidden>
-            현재 표시되는 항목은 자리표시(scaffold)용 <strong>샘플 데이터</strong>이며, 실제 등록 대행기관 정보가 아닙니다. 실제 정보는 공식 출처에서 직접 확인하세요.
+        <p class="p-agent-finder__disclaimer" id="agentFinderSourceNote">
+            출처: 출입국업무 민원신청대행 등록기관 현황(2026.04.30.부)
         </p>
         <p class="p-agent-finder__disclaimer" id="agentFinderDisclaimer">
-            이 목록은 하이코리아/법무부 공개 자료를 바탕으로 정리한 공식 등록 대행기관 정보입니다. Paradiso는 특정 기관을 추천하거나 업무 결과를 보증하지 않습니다. 방문 또는 의뢰 전
-            <a class="p-agent-finder__official-link" href="https://www.hikorea.go.kr/cvlappl/CvlapplAgentInfo.pt" target="_blank" rel="noopener noreferrer">하이코리아 공식 조회</a>,
-            전화 확인, 상담 범위 및 수수료 확인을 권장합니다.
+            <span id="agentFinderDisclaimerText">Paradiso는 특정 기관을 추천하거나 업무 결과를 보증하지 않습니다. 방문 또는 의뢰 전 전화 확인, 상담 범위 및 수수료 확인을 권장합니다.</span>
+            <a class="p-agent-finder__official-link" href="https://www.hikorea.go.kr/cvlappl/CvlapplAgentInfo.pt" target="_blank" rel="noopener noreferrer">하이코리아 공식 조회</a>
         </p>
         <div class="p-agent-finder__controls" role="search" aria-controls="agentFinderList">
             <label class="sr-only" for="agentFinderRegion">지역</label>
@@ -5182,9 +5182,7 @@ body:not(.searched) .visa-track-card:hover {
         <p class="p-agent-finder__count" id="agentFinderCount" aria-live="polite"></p>
         <ul class="p-agent-finder__list" id="agentFinderList" aria-label="등록 대행기관 목록"></ul>
         <p class="p-agent-finder__empty" id="agentFinderEmpty" hidden>조건에 맞는 항목이 없습니다. 지역을 바꾸거나 키워드를 비워보세요.</p>
-        <p class="p-agent-finder__error" id="agentFinderError" role="alert" hidden>데이터를 불러오지 못했습니다. 잠시 후 다시 시도하거나
-            <a class="p-agent-finder__official-link" href="https://www.hikorea.go.kr/cvlappl/CvlapplAgentInfo.pt" target="_blank" rel="noopener noreferrer">하이코리아 공식 조회</a>를 이용하세요.
-        </p>
+        <p class="p-agent-finder__error" id="agentFinderError" role="alert" hidden>데이터를 불러오지 못했습니다. 잠시 후 다시 시도하거나 하이코리아 공식 조회를 이용하세요.</p>
     </section>
 
     <section class="p-section p-reminder-section" aria-labelledby="pReminderTitle">
@@ -5526,11 +5524,19 @@ body:not(.searched) .visa-track-card:hover {
 <script>
 (() => {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const root = document.body;
+  const root = document.getElementById('hero');
+  if (!root) return;
   let raf = 0, tx = 50, ty = 35, cx = 50, cy = 35;
   const set = (x, y) => {
-    tx = (x / innerWidth) * 100;
-    ty = (y / innerHeight) * 100;
+    if (document.body.classList.contains('searched')) return;
+    const rect = root.getBoundingClientRect();
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      root.classList.remove('spotlight-ready');
+      return;
+    }
+    tx = ((x - rect.left) / Math.max(rect.width, 1)) * 100;
+    ty = ((y - rect.top) / Math.max(rect.height, 1)) * 100;
+    root.classList.add('spotlight-ready');
     if (!raf) raf = requestAnimationFrame(tick);
   };
   const tick = () => {
@@ -5541,11 +5547,11 @@ body:not(.searched) .visa-track-card:hover {
     raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.1
       ? requestAnimationFrame(tick) : 0;
   };
-  addEventListener('pointermove', e => set(e.clientX, e.clientY), { passive: true });
-  addEventListener('touchmove', e => {
+  root.addEventListener('pointermove', e => set(e.clientX, e.clientY), { passive: true });
+  root.addEventListener('pointerleave', () => root.classList.remove('spotlight-ready'), { passive: true });
+  root.addEventListener('touchmove', e => {
     const t = e.touches[0]; if (t) set(t.clientX, t.clientY);
   }, { passive: true });
-  requestAnimationFrame(() => root.classList.add('bg-ready'));
 })();
 
 // --- UI Helpers ---
@@ -6056,9 +6062,13 @@ function openAiModal(visaCode) {
     
     const descEl = document.querySelector('#aiModalOverlay .modal-body p');
     if (['faq', 'scn', 'nhis'].includes(visa.cat)) {
-        descEl.innerHTML = `현재 직면한 상황(사건 경위, 체류 상태, 국적 등)을 상세히 적어주시면, Paradiso AI가 2026년 출입국관리법 및 매뉴얼 원문에 근거하여 <strong>자의적 해석 없이 철저한 법적 판단 및 구제 절차</strong>를 검증해 드립니다.`;
+        descEl.innerHTML = currentLanguage === 'en'
+            ? `Describe the situation you are facing, including facts, stay status, and nationality. Paradiso AI will check the issue against the 2026 Immigration Act and manuals without adding unsupported interpretation.`
+            : `현재 직면한 상황(사건 경위, 체류 상태, 국적 등)을 상세히 적어주시면, Paradiso AI가 2026년 출입국관리법 및 매뉴얼 원문에 근거하여 <strong>자의적 해석 없이 철저한 법적 판단 및 구제 절차</strong>를 검증해 드립니다.`;
     } else {
-        descEl.innerHTML = `현재 국적, 보유 체류자격, 직무, 거주지 등 상황을 상세히 입력하시면, Paradiso AI가 <strong>2026년 4월 법무부 출입국 실무 매뉴얼(사증·체류민원 최신본)</strong>에 근거하여 분석합니다.<br><span style="color:var(--color-warning); font-weight:700;">⚠ AI 답변은 참고용입니다. 최종 판단은 반드시 ☎ 1345 또는 관할 출입국·외국인관서에서 확인하십시오.</span>`;
+        descEl.innerHTML = currentLanguage === 'en'
+            ? `Enter nationality, current residence status, role, residence area, and other details. Paradiso AI analyzes against the April 2026 Ministry of Justice immigration manuals.<br><span style="color:var(--color-warning); font-weight:700;">AI answers are for reference only. Always confirm final decisions with 1345 or the competent immigration office.</span>`
+            : `현재 국적, 보유 체류자격, 직무, 거주지 등 상황을 상세히 입력하시면, Paradiso AI가 <strong>2026년 4월 법무부 출입국 실무 매뉴얼(사증·체류민원 최신본)</strong>에 근거하여 분석합니다.<br><span style="color:var(--color-warning); font-weight:700;">⚠ AI 답변은 참고용입니다. 최종 판단은 반드시 ☎ 1345 또는 관할 출입국·외국인관서에서 확인하십시오.</span>`;
     }
     
     const jobCodeBtn = document.getElementById('btnJobCode');
@@ -6082,30 +6092,33 @@ function openDocModal(visaCode, type, subIdx) {
     const isFaq = ['faq', 'scn', 'nhis'].includes(visa.cat);
 
     if (type === 'new') {
-        title = '신규 발급/신규 신청 구비서류';
+        title = currentLanguage === 'en' ? 'Visa / new application documents' : '신규 발급/신규 신청 구비서류';
         docs = visa.initialReqDocs || visa.newReqDocs || [];
     } else if (type === 'ext') {
-        title = '체류기간 연장 구비서류';
+        title = currentLanguage === 'en' ? 'Extension documents' : '체류기간 연장 구비서류';
         docs = visa.extensionReqDocs || visa.extReqDocs || [];
     } else if (type === 'change') {
-        title = '체류자격 변경 구비서류';
+        title = currentLanguage === 'en' ? 'Change of status documents' : '체류자격 변경 구비서류';
         docs = visa.changeReqDocs || [];
         if (!docs.length) {
             docs = visa.extensionReqDocs || visa.extReqDocs || visa.initialReqDocs || visa.newReqDocs || [];
-            if (docs.length) stageNote = '※ [준용 안내] 체류자격 변경 전용 문서목록이 아직 수작업 검증·정규화되지 않아 연장/신규 단계 문서를 보수적으로 준용 표시합니다. 공식 확정 목록이 아닙니다.';
+            if (docs.length) stageNote = currentLanguage === 'en' ? 'Note: the dedicated change-of-status document list has not yet been manually verified and normalized, so extension/new-application documents are shown conservatively. This is not an official final list.' : '※ [준용 안내] 체류자격 변경 전용 문서목록이 아직 수작업 검증·정규화되지 않아 연장/신규 단계 문서를 보수적으로 준용 표시합니다. 공식 확정 목록이 아닙니다.';
         }
     } else if (type === 'sub' && subIdx != null) {
         const sIdx = parseInt(subIdx, 10);
         if (!isNaN(sIdx) && visa.subCodes && visa.subCodes[sIdx]) {
             const sub = visa.subCodes[sIdx];
-            title = `${sub.name || '해당 세부항목'} 추가 구비서류`; docs = sub.addReqDocs || []; targetCode = sub.code;
-        } else { title = `세부항목 추가 구비서류`; }
+            title = currentLanguage === 'en' ? `${sub.name || 'Selected subcode'} additional documents` : `${sub.name || '해당 세부항목'} 추가 구비서류`; docs = sub.addReqDocs || []; targetCode = sub.code;
+        } else { title = currentLanguage === 'en' ? `Subcode additional documents` : `세부항목 추가 구비서류`; }
     }
-    document.getElementById('docModalTitle').innerHTML = `${escapeHtml(visa.code)} - ${escapeHtml(title)}${stageNote ? ' <span style="font-size:0.8em;color:var(--color-warning);">(준용)</span>' : ''}`;
+    document.getElementById('docModalTitle').innerHTML = `${escapeHtml(visa.code)} - ${escapeHtml(title)}${stageNote ? ` <span style="font-size:0.8em;color:var(--color-warning);">(${currentLanguage === 'en' ? 'reference' : '준용'})</span>` : ''}`;
     const descEl = document.getElementById('docModalDesc');
-    descEl.innerHTML = `${stageNote ? `<div class="text-desc" style="margin-bottom:0.6rem;">${stageNote}</div>` : ''}${renderModalFeeBox(visa, type)}🚨 <strong>실무 주의사항</strong>: 본 체크리스트는 법령에 명시된 기본 공통 서류입니다. 심사관의 재량적 판단에 따라 출입국 실무 현장에서 추가 소명 자료가 징구될 수 있습니다.<br><div style="margin-top:0.6rem; padding-top:0.6rem; border-top:1px dashed var(--bd); color:var(--t2);">🤝 <strong>대리인(가족, 고용주 등) 방문 대리 신청 안내</strong><br>• <strong>대리 자격:</strong> 질병, 만 17세 미만 등 부득이한 사유가 있거나, 배우자/직계친족, 초청자/고용주(소속 직원 포함)에 한함. (※ 영주(F-5) 등 본인 출석 필수 민원은 예외)<br>• <strong>필수 지참:</strong> 위 기본 서류 외에 <strong>① 위임장(소정 양식) ② 대리인 신분증(원본 대조 및 사본) ③ 관계 입증 서류(가족관계증명서, 재직증명서 등)</strong>를 반드시 지참해야 하며, 통합신청서 하단에 대리인 서명이 필수입니다.</div>`;
+    const docDisclaimer = currentLanguage === 'en'
+        ? `<strong>Practice note</strong>: This checklist covers basic common documents stated in laws and manuals. Immigration reviewers may request additional supporting materials in practice.<br><div style="margin-top:0.6rem; padding-top:0.6rem; border-top:1px dashed var(--bd); color:var(--t2);"><strong>Proxy visit note</strong><br>Proxy filing is limited to permitted cases such as unavoidable illness, minors under 17, spouse/direct relatives, inviter/employer, or employees of the employer. Bring the required base documents plus a power of attorney, proxy ID, and relationship proof where applicable.</div>`
+        : `🚨 <strong>실무 주의사항</strong>: 본 체크리스트는 법령에 명시된 기본 공통 서류입니다. 심사관의 재량적 판단에 따라 출입국 실무 현장에서 추가 소명 자료가 징구될 수 있습니다.<br><div style="margin-top:0.6rem; padding-top:0.6rem; border-top:1px dashed var(--bd); color:var(--t2);">🤝 <strong>대리인(가족, 고용주 등) 방문 대리 신청 안내</strong><br>• <strong>대리 자격:</strong> 질병, 만 17세 미만 등 부득이한 사유가 있거나, 배우자/직계친족, 초청자/고용주(소속 직원 포함)에 한함. (※ 영주(F-5) 등 본인 출석 필수 민원은 예외)<br>• <strong>필수 지참:</strong> 위 기본 서류 외에 <strong>① 위임장(소정 양식) ② 대리인 신분증(원본 대조 및 사본) ③ 관계 입증 서류(가족관계증명서, 재직증명서 등)</strong>를 반드시 지참해야 하며, 통합신청서 하단에 대리인 서명이 필수입니다.</div>`;
+    descEl.innerHTML = `${stageNote ? `<div class="text-desc" style="margin-bottom:0.6rem;">${stageNote}</div>` : ''}${renderModalFeeBox(visa, type)}${docDisclaimer}`;
     descEl.style.display = 'block';
-    document.getElementById('docModalChecklist').innerHTML = docs.length ? renderDocTags(docs, [], type === 'sub', targetCode) : '<div class="text-desc">해당 단계의 구조화된 구비서류 데이터가 없어 표시할 항목이 없습니다. 관할 기관 및 매뉴얼 원문 확인이 필요합니다.</div>';
+    document.getElementById('docModalChecklist').innerHTML = docs.length ? renderDocTags(docs, [], type === 'sub', targetCode) : `<div class="text-desc">${escapeHtml(tx('docReviewFallback'))}</div>`;
     openModal('docModalOverlay');
 }
 
@@ -6115,10 +6128,14 @@ function renderModalFeeBox(visa, type) {
     if (key) return renderProcedureFeeBox(getProcedureFeeInfo(visa, key));
     if (type === 'new') {
         return renderProcedureFeeBox({
-            label: '신규 체류자격 관련 수수료',
+            label: currentLanguage === 'en' ? 'New status-related fees' : '신규 체류자격 관련 수수료',
             revenueStamp: null,
             cardIssueFee: 35000,
-            notes: [
+            notes: currentLanguage === 'en' ? [
+                'When applying for grant of status in Korea, a KRW 80,000 revenue stamp is the usual baseline.',
+                'People subject to foreigner registration after entry have a separate KRW 35,000 registration card fee.',
+                'Consular visa issuance fees may vary by nationality, visa type, and mission.'
+            ] : [
                 '국내에서 체류자격 부여를 신청하는 경우 정부수입인지 80,000원이 기본입니다.',
                 '입국 후 외국인등록 대상자는 외국인등록증 발급 수수료 35,000원이 별도입니다.',
                 '재외공관 사증발급 수수료는 국적·사증 종류·공관 기준에 따라 달라질 수 있습니다.'
@@ -6139,13 +6156,14 @@ window.verifyFaqWithAi = function(visaCode, question) {
 function openFaqModal(visaCode) {
     const visa = VISA_DATA.find(v => v.code === visaCode);
     if (!visa || !visa.faq) return;
-    document.getElementById('faqModalTitle').innerHTML = `💡 ${escapeHtml(visa.code)} 자주 묻는 질문`;
+    document.getElementById('faqModalTitle').innerHTML = currentLanguage === 'en' ? `💡 ${escapeHtml(visa.code)} FAQ` : `💡 ${escapeHtml(visa.code)} 자주 묻는 질문`;
     const pairs = visa.faq.split(/Q:\s*/).filter(Boolean);
     const html = pairs.map(p => {
         const parts = p.split(/A:\s*/); const q = parts[0].trim(); const a = (parts[1] || '').trim();
-        return `<div class="faq-item"><div class="faq-q">Q. ${escapeHtml(q)}</div><div class="faq-a">${escapeHtml(a).replace(/\n/g, '<br>')}<div style="margin-top:0.85rem; text-align:right; border-top:1px dashed var(--bd2); padding-top:0.6rem;"><button type="button" class="cb" style="color:var(--ac); border-color:var(--ac);" data-action="verify-faq" data-vcode="${escapeHtml(visa.code)}" data-q="${escapeHtml(q).replace(/'/g,"\\'").replace(/"/g,"&quot;")}">🤖 AI 팩트체크 (법령/매뉴얼 근거 확인)</button></div></div></div>`;
+        const verifyLabel = currentLanguage === 'en' ? 'AI fact-check with legal/manual sources' : 'AI 팩트체크 (법령/매뉴얼 근거 확인)';
+        return `<div class="faq-item"><div class="faq-q">Q. ${escapeHtml(q)}</div><div class="faq-a">${escapeHtml(a).replace(/\n/g, '<br>')}<div style="margin-top:0.85rem; text-align:right; border-top:1px dashed var(--bd2); padding-top:0.6rem;"><button type="button" class="cb" style="color:var(--ac); border-color:var(--ac);" data-action="verify-faq" data-vcode="${escapeHtml(visa.code)}" data-q="${escapeHtml(q).replace(/'/g,"\\'").replace(/"/g,"&quot;")}">🤖 ${escapeHtml(verifyLabel)}</button></div></div></div>`;
     }).join('');
-    document.getElementById('faqModalBody').innerHTML = html || '<div class="text-desc">등록된 자주 묻는 질문이 없습니다.</div>';
+    document.getElementById('faqModalBody').innerHTML = html || `<div class="text-desc">${currentLanguage === 'en' ? 'No registered FAQ entries.' : '등록된 자주 묻는 질문이 없습니다.'}</div>`;
     openModal('faqModalOverlay');
 }
 
@@ -6767,20 +6785,20 @@ function renderDocTags(docKeys, keywords, isSubCode = false, visaCode = '') {
         const iconHtml = isCritical ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
         return `<div class="doc-chk-item${criticalClass}">${iconHtml}<span>${hl(officialName, keywords)}</span></div>`;
     }).join('');
-    const warningHtml = isSubCode ? `<div class="subcode-warning">💡 주의: 아래 서류는 해당 세부항목의 <strong>추가 구비서류</strong>입니다. 관할 관서 방문 시 반드시 <strong>대분류 공통 서류와 함께 모두 지참</strong>하시기 바랍니다.</div>` : '';
+    const warningHtml = isSubCode ? `<div class="subcode-warning">${escapeHtml(tx('manualNeedsReview'))}: ${escapeHtml(txAt('docGroupLabels', 2, '추가/심사 필요 서류'))}</div>` : '';
     return `<div class="doc-req-box" style="margin-top:0; padding:0; border:none; background:transparent;">${warningHtml}<div class="doc-checklist">${tagsHtml}</div></div>`;
 }
 
 const PROCEDURE_CONFIG = [
-    { key: 'visaIssuance', label: '사증발급', oldType: 'new', oldDocs: ['initialReqDocs', 'newReqDocs'], oldText: 'newReq' },
-    { key: 'certificateOfVisaIssuance', label: '사증발급인정서', oldType: 'new', oldDocs: ['cviReqDocs'] },
-    { key: 'statusChange', label: '체류자격 변경', oldType: 'change', oldDocs: ['changeReqDocs'], oldText: 'changeReq' },
-    { key: 'extension', label: '체류기간 연장', oldType: 'ext', oldDocs: ['extensionReqDocs', 'extReqDocs'], oldText: 'extReq' },
-    { key: 'statusGrant', label: '체류자격 부여', oldType: 'new', oldDocs: ['statusGrantReqDocs'] },
-    { key: 'registration', label: '외국인등록', oldType: 'new', oldDocs: ['registrationReqDocs'] },
-    { key: 'activitiesOutsideStatus', label: '자격외활동', oldType: 'change', oldDocs: ['activitiesOutsideStatusReqDocs'] },
-    { key: 'workplaceChange', label: '근무처 변경·추가', oldType: 'change', oldDocs: ['workplaceChangeReqDocs'] },
-    { key: 'reentry', label: '재입국', oldType: 'ext', oldDocs: ['reentryReqDocs'] }
+    { key: 'visaIssuance', labelIndex: 0, label: '사증발급', oldType: 'new', oldDocs: ['initialReqDocs', 'newReqDocs'], oldText: 'newReq' },
+    { key: 'certificateOfVisaIssuance', labelIndex: 1, label: '사증발급인정서', oldType: 'new', oldDocs: ['cviReqDocs'] },
+    { key: 'statusChange', labelIndex: 2, label: '체류자격 변경', oldType: 'change', oldDocs: ['changeReqDocs'], oldText: 'changeReq' },
+    { key: 'extension', labelIndex: 3, label: '체류기간 연장', oldType: 'ext', oldDocs: ['extensionReqDocs', 'extReqDocs'], oldText: 'extReq' },
+    { key: 'statusGrant', labelIndex: 4, label: '체류자격 부여', oldType: 'new', oldDocs: ['statusGrantReqDocs'] },
+    { key: 'registration', labelIndex: 5, label: '외국인등록', oldType: 'new', oldDocs: ['registrationReqDocs'] },
+    { key: 'activitiesOutsideStatus', labelIndex: 6, label: '자격외활동', oldType: 'change', oldDocs: ['activitiesOutsideStatusReqDocs'] },
+    { key: 'workplaceChange', labelIndex: 7, label: '근무처 변경·추가', oldType: 'change', oldDocs: ['workplaceChangeReqDocs'] },
+    { key: 'reentry', labelIndex: 8, label: '재입국', oldType: 'ext', oldDocs: ['reentryReqDocs'] }
 ];
 
 const COMMON_MANUAL_WARNINGS = [
@@ -6834,7 +6852,7 @@ const DEFAULT_PROCEDURE_FEES = {
 
 function formatWon(amount) {
     if (typeof amount !== 'number') return '';
-    return `${amount.toLocaleString('ko-KR')}원`;
+    return currentLanguage === 'en' ? `KRW ${amount.toLocaleString('en-US')}` : `${amount.toLocaleString('ko-KR')}원`;
 }
 
 function getProcedureFeeInfo(v, procedureKey) {
@@ -6862,13 +6880,13 @@ function getProcedureFeeInfo(v, procedureKey) {
 function renderProcedureFeeBox(feeInfo) {
     if (!feeInfo) return '';
     const amountBits = [];
-    if (typeof feeInfo.revenueStamp === 'number' && feeInfo.revenueStamp > 0) amountBits.push(`${tx('feeRevenueStamp')} ${formatWon(feeInfo.revenueStamp)}`);
-    if (feeInfo.revenueStamp === 0) amountBits.push(tx('feeNoRevenueStamp'));
-    if (typeof feeInfo.cardIssueFee === 'number' && feeInfo.cardIssueFee > 0) amountBits.push(`${tx('feeCardIssue')} ${formatWon(feeInfo.cardIssueFee)}`);
-    const amountText = amountBits.length ? amountBits.join(' · ') : tx('feeAmountCheckNeeded');
+    if (typeof feeInfo.revenueStamp === 'number' && feeInfo.revenueStamp > 0) amountBits.push(`${currentLanguage === 'en' ? 'revenue stamp' : '수입인지'} ${formatWon(feeInfo.revenueStamp)}`);
+    if (feeInfo.revenueStamp === 0) amountBits.push(currentLanguage === 'en' ? 'no revenue stamp' : '수입인지 없음');
+    if (typeof feeInfo.cardIssueFee === 'number' && feeInfo.cardIssueFee > 0) amountBits.push(`${currentLanguage === 'en' ? 'registration card' : '등록증'} ${formatWon(feeInfo.cardIssueFee)}`);
+    const amountText = amountBits.length ? amountBits.join(' · ') : (currentLanguage === 'en' ? 'Amount needs confirmation' : '금액 확인 필요');
     const notes = Array.isArray(feeInfo.notes) ? feeInfo.notes : [];
     return `<div class="procedure-fee-box">
-        <div class="procedure-fee-title"><span>${escapeHtml(feeInfo.label || tx('feeDefaultLabel'))}</span><span class="procedure-fee-amount">${escapeHtml(amountText)}</span></div>
+        <div class="procedure-fee-title"><span>${escapeHtml(currentLanguage === 'en' ? 'Fee' : (feeInfo.label || '수수료'))}</span><span class="procedure-fee-amount">${escapeHtml(amountText)}</span></div>
         ${notes.length ? `<ul class="procedure-fee-list">${notes.map(note => `<li>${escapeHtml(note)}</li>`).join('')}</ul>` : ''}
         <div class="procedure-fee-note">${escapeHtml(feeInfo.sourceNote || STAY_FEE_SOURCE_NOTE)}</div>
     </div>`;
@@ -6950,20 +6968,20 @@ function getManualDomains(v) {
 function renderDomainBadges(v) {
     const domains = getManualDomains(v);
     if (domains.includes('visa_issuance') && domains.includes('stay_sojourn')) {
-        return `<span class="manual-badge domain-visa">${tx('resultDomainsBoth')}</span>`;
+        return `<span class="manual-badge domain-visa">${escapeHtml(txAt('domainLabels', 0, '공통/양쪽'))}</span>`;
     }
     return domains.map(d => {
-        if (d === 'visa_issuance') return `<span class="manual-badge domain-visa">${tx('resultDomainVisa')}</span>`;
-        if (d === 'stay_sojourn') return `<span class="manual-badge domain-stay">${tx('resultDomainStay')}</span>`;
+        if (d === 'visa_issuance') return `<span class="manual-badge domain-visa">${escapeHtml(txAt('domainLabels', 1, '사증발급'))}</span>`;
+        if (d === 'stay_sojourn') return `<span class="manual-badge domain-stay">${escapeHtml(txAt('domainLabels', 2, '체류민원'))}</span>`;
         return `<span class="manual-badge">${escapeHtml(d)}</span>`;
     }).join('');
 }
 
 function renderReviewBadge(v) {
     const status = v.sourceManualStatus || {};
-    if (status.verified === true && !status.needsManualReview) return `<span class="manual-badge review-ok">${tx('reviewOk')}</span>`;
-    if (status.verified === false && status.needsManualReview === false) return `<span class="manual-badge review-needed">${tx('reviewPartial')}</span>`;
-    return `<span class="manual-badge review-needed">${tx('reviewNeeded')}</span>`;
+    if (status.verified === true && !status.needsManualReview) return `<span class="manual-badge review-ok">${escapeHtml(txAt('reviewLabels', 0, '2026.5 매뉴얼 확인됨'))}</span>`;
+    if (status.verified === false && status.needsManualReview === false) return `<span class="manual-badge review-needed">${escapeHtml(txAt('reviewLabels', 1, '일부 정보 미검증'))}</span>`;
+    return `<span class="manual-badge review-needed">${escapeHtml(txAt('reviewLabels', 2, '2026.5 매뉴얼 확인 필요'))}</span>`;
 }
 
 function getProcedure(v, cfg) {
@@ -6974,7 +6992,7 @@ function getProcedure(v, cfg) {
     const docValue = raw?.requiredDocs ?? oldDocs;
     return {
         key: cfg.key,
-        label: cfg.label,
+        label: txAt('procedureLabels', cfg.labelIndex, cfg.label),
         oldType: cfg.oldType,
         available,
         eligibility: raw?.eligibility || [],
@@ -7008,14 +7026,14 @@ function renderDocGroup(title, docs, keywords) {
 
 function renderProcedurePanel(v, proc, keywords, isActive) {
     const docsHtml = [
-        renderDocGroup(tx('commonDocs'), proc.docs.commonDocs, keywords),
-        renderDocGroup(tx('requiredDocs'), proc.docs.requiredDocs, keywords),
-        renderDocGroup(tx('additionalDocs'), proc.docs.additionalDocs, keywords),
-        renderDocGroup(tx('conditionalDocs'), proc.docs.conditionalDocs, keywords)
+        renderDocGroup(txAt('docGroupLabels', 0, '공통서류'), proc.docs.commonDocs, keywords),
+        renderDocGroup(txAt('docGroupLabels', 1, '필수서류'), proc.docs.requiredDocs, keywords),
+        renderDocGroup(txAt('docGroupLabels', 2, '추가/심사 필요 서류'), proc.docs.additionalDocs, keywords),
+        renderDocGroup(txAt('docGroupLabels', 3, '조건부 서류'), proc.docs.conditionalDocs, keywords)
     ].filter(Boolean).join('');
-    const reviewFallback = `<div class="doc-group-empty">${tx('docGroupEmpty')}</div>`;
-    const eligibilityHtml = proc.eligibility.length ? `<div class="procedure-summary"><strong>${tx('eligibilityLabel')}</strong><br>${proc.eligibility.map(x => escapeHtml(x)).join('<br>')}</div>` : '';
-    const notesHtml = proc.notes.length ? `<div class="procedure-summary"><strong>${tx('notesLabel')}</strong><br>${proc.notes.map(x => escapeHtml(x)).join('<br>')}</div>` : '';
+    const reviewFallback = `<div class="doc-group-empty">${escapeHtml(tx('docReviewFallback'))}</div>`;
+    const eligibilityHtml = proc.eligibility.length ? `<div class="procedure-summary"><strong>${escapeHtml(tx('eligibilityLabel'))}</strong><br>${proc.eligibility.map(x => escapeHtml(x)).join('<br>')}</div>` : '';
+    const notesHtml = proc.notes.length ? `<div class="procedure-summary"><strong>${escapeHtml(tx('notesLabel'))}</strong><br>${proc.notes.map(x => escapeHtml(x)).join('<br>')}</div>` : '';
     const summaryHtml = proc.summary ? `<div class="procedure-summary">${hl(proc.summary, keywords)}</div>` : '';
     const feeHtml = renderProcedureFeeBox(proc.feeInfo);
     return `<div class="procedure-panel${isActive ? ' active' : ''}" data-procedure-panel="${proc.key}">
@@ -7030,7 +7048,7 @@ function renderProcedures(v, keywords) {
     const firstActive = procedures.find(p => p.available) || procedures[0];
     const tabs = procedures.map(p => `<button type="button" class="procedure-tab${p.key === firstActive.key ? ' active' : ''}" data-action="select-procedure" data-procedure="${p.key}" ${p.available ? '' : 'disabled'}>${getProcedureLabel(p)}</button>`).join('');
     const panels = procedures.map(p => renderProcedurePanel(v, p, keywords, p.key === firstActive.key)).join('');
-    return `<div class="manual-section"><h4 class="manual-section-title">${tx('procedureTitle')}</h4><div class="procedure-tabs" role="tablist">${tabs}</div>${panels}</div>`;
+    return `<div class="manual-section"><h4 class="manual-section-title">${escapeHtml(tx('procedureSectionTitle'))}</h4><div class="procedure-tabs" role="tablist">${tabs}</div>${panels}</div>`;
 }
 
 function renderSubcodes(v, keywords, matchingSubcodes) {
@@ -7038,44 +7056,44 @@ function renderSubcodes(v, keywords, matchingSubcodes) {
     if (!subs.length) return '';
     const matchSet = new Set((matchingSubcodes || []).map(s => s.code));
     const cards = subs.map(s => {
-        const label = getLocalizedSubcodeName(s);
-        const desc = s.summary || (Array.isArray(s.eligibility) && s.eligibility[0]) || s.note || s.addReq || tx('manualReviewNeededShort');
+        const label = s.nameKo || s.name || '';
+        const desc = s.summary || (Array.isArray(s.eligibility) && s.eligibility[0]) || s.note || s.addReq || tx('manualNeedsReview');
         return `<div class="manual-subcode-card${matchSet.has(s.code) ? ' match' : ''}">
             <div class="manual-subcode-top"><span class="manual-subcode-code">${hl(s.code, keywords)}</span><span class="manual-subcode-name">${hl(label, keywords)}</span></div>
             <div class="manual-subcode-desc">${hl(desc, keywords)}</div>
         </div>`;
     }).join('');
-    return `<div class="manual-section"><h4 class="manual-section-title">${tx('subcodeTitle')}</h4><div class="manual-subcode-grid">${cards}</div></div>`;
+    return `<div class="manual-section"><h4 class="manual-section-title">${escapeHtml(tx('subcodesTitle'))}</h4><div class="manual-subcode-grid">${cards}</div></div>`;
 }
 
 function renderCommonWarnings(v) {
     const warnings = Array.isArray(v.commonWarnings) && v.commonWarnings.length ? v.commonWarnings : COMMON_MANUAL_WARNINGS;
-    return `<div class="manual-warning-box"><strong>${tx('commonWarningsTitle')}</strong><ul>${warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul></div>`;
+    return `<div class="manual-warning-box"><strong>${escapeHtml(tx('commonWarningsTitle'))}</strong><ul>${warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul></div>`;
 }
 
 function renderSourceReferences(v) {
     const refs = Array.isArray(v.manualRefs) ? [...v.manualRefs] : [];
     const status = v.sourceManualStatus || {};
     if (!refs.length) {
-        if (getManualDomains(v).includes('visa_issuance')) refs.push({ manualName: isEnglishMode() ? 'Visa Issuance Guide Manual' : '사증민원', manualVersion: status.visaManualVersion || '2026.5', pageRange: tx('pageCheckNeeded'), confidence: 'needs_review' });
-        if (getManualDomains(v).includes('stay_sojourn')) refs.push({ manualName: isEnglishMode() ? 'Foreigner Stay/Residence Guide Manual' : '체류민원', manualVersion: status.stayManualVersion || '2026.5', pageRange: tx('pageCheckNeeded'), confidence: 'needs_review' });
+        if (getManualDomains(v).includes('visa_issuance')) refs.push({ manualName: txAt('domainLabels', 1, '사증발급'), manualVersion: status.visaManualVersion || '2026.5', pageRange: tx('manualNeedsReview'), confidence: 'needs_review' });
+        if (getManualDomains(v).includes('stay_sojourn')) refs.push({ manualName: txAt('domainLabels', 2, '체류민원'), manualVersion: status.stayManualVersion || '2026.5', pageRange: tx('manualNeedsReview'), confidence: 'needs_review' });
     }
     const refItems = refs.map(ref => {
-        const bits = [ref.manualName || ref.manual || tx('sourceManualFallback'), ref.manualVersion || ref.version || '2026.5', ref.pageRange || tx('pageCheckNeeded'), ref.confidence ? `${tx('confidenceLabel')}: ${ref.confidence}` : `${tx('confidenceLabel')}: ${tx('confidenceCheckNeeded')}`];
+        const bits = [ref.manualName || ref.manual || tx('sourceManualFallback'), ref.manualVersion || ref.version || '2026.5', ref.pageRange || tx('pageNeedsReview'), ref.confidence ? `${tx('confidenceLabel')}: ${ref.confidence}` : `${tx('confidenceLabel')}: ${tx('confidenceNeedsReview')}`];
         return `<li>${bits.map(escapeHtml).join(' · ')}</li>`;
     }).join('');
-    const reviewText = status.needsManualReview === false ? tx('reviewComplete') : tx('reviewIncomplete');
-    return `<div class="manual-source-box"><div class="manual-source-title">${tx('sourceTitleResult')}</div><ul>${refItems}</ul><div style="margin-top:0.55rem;">${escapeHtml(reviewText)} ${tx('serviceDisclaimerShort')}</div></div>`;
+    const reviewText = status.needsManualReview === false ? tx('sourceReviewDone') : tx('sourceReviewPending');
+    return `<div class="manual-source-box"><div class="manual-source-title">${escapeHtml(tx('sourceTitleResult'))}</div><ul>${refItems}</ul><div style="margin-top:0.55rem;">${escapeHtml(reviewText)} ${escapeHtml(tx('sourceLegalNote'))}</div></div>`;
 }
 
 function renderManualActions(v, isVisaCode) {
     if (!isVisaCode) return '';
     return `<div class="manual-actions">
-        <button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="new"><span>${tx('actionNewDocs')}</span></button>
-        <button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="ext"><span>${tx('actionExtDocs')}</span></button>
-        <button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="change"><span>${tx('actionChangeDocs')}</span></button>
+        <button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="new"><span>${escapeHtml(txAt('manualActionLabels', 0, '사증/신규 서류'))}</span></button>
+        <button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="ext"><span>${escapeHtml(txAt('manualActionLabels', 1, '연장 서류'))}</span></button>
+        <button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="change"><span>${escapeHtml(txAt('manualActionLabels', 2, '변경 서류'))}</span></button>
         ${v.faq ? `<button type="button" class="doc-trigger-btn" data-action="open-faq-modal" data-vcode="${escapeHtml(v.code)}"><span>FAQ</span></button>` : ''}
-        <button type="button" class="ai-btn" data-action="open-ai-modal" data-visa-code="${escapeHtml(v.code)}">${tx('actionAi')}</button>
+        <button type="button" class="ai-btn" data-action="open-ai-modal" data-visa-code="${escapeHtml(v.code)}">${escapeHtml(tx('actionAi'))}</button>
     </div>`;
 }
 
@@ -7263,8 +7281,8 @@ function renderResults(query){
     let scored=VISA_DATA.map(v=>({...v,_score:calculateScore(v,kwL)})), filtered=scored.filter(v=>v._score>0).sort((a,b)=>b._score-a._score);
     let st=0; filtered.forEach(v=>{st += getVisaSubcodes(v).length;});
     if(!filtered.length){
-        box.innerHTML=`<div class="es"><div class="es-t">${tx('resultEmptyTitle')}</div><div class="es-d">${tx('resultEmptyBody', { query: escapeHtml(query) })}</div></div>`;
-        rc.textContent=tx('resultCountZero'); return;
+        box.innerHTML=`<div class="es"><div class="es-t">${escapeHtml(tx('resultEmptyTitle'))}</div><div class="es-d">${tx('resultEmptyDesc', { query: escapeHtml(query) })}</div></div>`;
+        rc.textContent=tx('resultCount', { count: 0 }); return;
     }
     const fg=document.createDocumentFragment();
     filtered.forEach((v,idx)=>{
@@ -7274,9 +7292,8 @@ function renderResults(query){
         if(kw.length&&(v._score>=50||ms.length)) c.classList.add('open');
         const periodHtml = v.period ? `<span class="manual-badge">${hl(v.period,kw)}</span>` : '';
         const dataHtml = v.dataBadge ? `<span class="manual-badge">${escapeHtml(v.dataBadge)}</span>` : '';
-        const ddHtml = v.dataDate ? `<div class="data-date">${tx('resultDataDate')} ${escapeHtml(v.dataDate)}</div>` : '';
-        const primaryName = getLocalizedVisaName(v);
-        const secondaryName = getSecondaryVisaName(v);
+        const ddHtml = v.dataDate ? `<div class="data-date">${escapeHtml(tx('resultDataDate'))} ${escapeHtml(v.dataDate)}</div>` : '';
+        const nameEn = getVisaNameEn(v);
         c.innerHTML=`
             <div class="vc-h" data-action="toggle-su">
                 <div class="manual-head-main">
@@ -7306,11 +7323,12 @@ function renderResults(query){
         fg.appendChild(c);
     });
     box.innerHTML=''; box.appendChild(fg);
-    rc.textContent=localizeResultCount(filtered.length, st);
+    rc.textContent=(st ? tx('resultCountWithSub', { count: filtered.length, subcount: st }) : tx('resultCount', { count: filtered.length })) + ` · ${VISA_DATA.length}${currentLanguage === 'en' ? ' total' : '개 전체'}`;
     const modeStr=currentSearchMode==='and'?'AND':'OR';
-    const catLabels = txObject('resultCatLabels');
-    const topCats=[...new Set(filtered.slice(0,3).map(v=>catLabels[v.cat]||v.cat))];
-    document.getElementById('rh').textContent=`${tx('resultRelated')} · ${modeStr} · ${topCats.join(', ')}`;
+    const catLabels = txArray('searchedCategoryLabels');
+    const catMap = {short:catLabels[0]||'단기',study:catLabels[1]||'유학/연수',work:catLabels[2]||'취업',invest:catLabels[3]||'투자',family:catLabels[4]||'가족/이민',other:catLabels[5]||'기타',diplo:catLabels[6]||'외교',nhis:catLabels[7]||'건강보험',faq:catLabels[8]||'안내',scn:catLabels[9]||'시나리오'};
+    const topCats=[...new Set(filtered.slice(0,3).map(v=>catMap[v.cat]||v.cat))];
+    document.getElementById('rh').textContent=tx('sortMeta', { mode: modeStr, categories: topCats.join(', ') });
 }
 
 let dt;
@@ -7428,7 +7446,30 @@ const UI_TRANSLATIONS = {
         resultCatLabels: { short: '단기', study: '유학/연수', work: '취업', invest: '투자', family: '가족/이민', other: '기타', diplo: '외교', nhis: '건강보험', faq: '안내', scn: '시나리오' },
         agentCountAll: '{filtered}개의 {noun} 표시', agentCountFiltered: '전체 {total}개 중 {filtered}개 {noun} 표시', agentSampleNoun: '샘플 항목', agentNoun: '대행기관', agentNaver: '네이버지도', agentKakao: '카카오맵', agentCopy: '주소 복사', agentPhone: '전화 {phone}', agentCopyOk: '주소를 복사했습니다.', agentCopyFail: '주소 복사에 실패했습니다. 주소를 길게 눌러 직접 복사하세요.',
         landingHints: ['체류지 변경(주민센터)', '여권 갱신(비예약)', '등록증 재발급', '만료 당일/임산부 등', '제주 무사증', 'K-ETA 발급', '숙련기능(E-7-4)', '결혼이민(F-6)', '동반(F-3) 소득요건', '결핵 제출 대상', '난민신청 절차', '오버스테이', 'D-10 구직', 'K-Trainee(D-4-2K)'],
-        quickFilters: ['체류지 변경', '비예약 업무', 'F-3 소득', 'K-ETA', '결핵 가이드', '오버스테이', '건강보험', 'B-2-2 제주', 'E-7', 'E-9', 'F-6', 'F-5', '점수제']
+        quickFilters: ['체류지 변경', '비예약 업무', 'F-3 소득', 'K-ETA', '결핵 가이드', '오버스테이', '건강보험', 'B-2-2 제주', 'E-7', 'E-9', 'F-6', 'F-5', '점수제'],
+        brandHeroTitle: '복잡한 체류,<br>Paradiso에서 손쉽게.', brandHeroSubtitle: "Korea's 39 visa categories. Unified.", brandHeroAbout: '서비스 소개', brandHeroHotline: '1345 직접 문의',
+        brandHeroStatsAria: '비자 카테고리 통계', statLabels: ['취업·전문직<br><span lang="en">Employment</span>', '유학·연수<br><span lang="en">Study</span>', '거주·결혼<br><span lang="en">Residence</span>', '방문·기타<br><span lang="en">Visit & Other</span>'],
+        brandFeatureTitle: '출입국·외국인정책본부<br>매뉴얼 기반의 정보 탐색', brandFeatureSubtitle: 'Manual-based information navigation', brandFeatureBody: '구조화된 체류자격 데이터를 토대로 공식 자료 확인을 전제로 한 정보 탐색을 보조합니다. 최종 판단과 신청 절차는 관할 출입국·외국인관서 안내 확인이 필요합니다.', brandFeatureCta: '1345 외국인종합안내센터', brandFeatureChecklistAria: '서비스 핵심 기능',
+        featureChecklist: ['<strong>39가지 체류자격 통합 탐색</strong><span lang="en">Browse all 39 stay categories</span>', '<strong>목적별 체류 경로 정리</strong><span lang="en">Path overview by purpose</span>', '<strong>관할기관 확인 흐름</strong><span lang="en">Jurisdiction lookup flow</span>', '<strong>취업 관련 직종·업종 코드 접근</strong><span lang="en">Employment occupation &amp; industry codes</span>', '<strong>결과와 근거를 함께 확인</strong><span lang="en">Results paired with sources</span>'],
+        pathwayTitle: '비자 코드보다 먼저, 생활의 경로를 봅니다.', pathwayCopy: '같은 체류자격도 목적과 시점에 따라 필요한 확인 순서가 달라집니다. 아래 경로는 기존 검색 결과로 이어지는 안전한 출발점입니다.', pathwayAria: '목적별 체류 경로',
+        pathwayTitles: ['유학·연수 <span>Study</span>', '취업·전문직 <span>Work</span>', '가족·결혼 <span>Family</span>', '사업·투자 <span>Business</span>', '예술·연구 <span>Culture &amp; Research</span>', '체류 연장 <span>Extension</span>', '자격 변경 <span>Change of status</span>', '출국·재입국 <span>Departure &amp; return</span>'],
+        pathwayDescs: ['학위 과정, 어학연수, 졸업 후 구직까지 이어지는 흐름.', '전문직 취업, 근무처 변경, 직종·업종 코드 확인.', '결혼이민, 동반 가족, 자녀와 가족 체류 확인.', '법인 설립, 투자, 무역 경영 활동과 증빙.', '공연, 연구, 교육 활동의 초청·계약 확인.', '현재 자격을 유지하며 기간을 연장할 때의 확인 순서.', '졸업, 취업, 결혼, 거주 전환처럼 자격이 바뀌는 시점.', '출국 전 확인, 재입국 가능성, 체류 공백 점검.'],
+        pathwayCodes: ['D-2', 'D-4', 'D-10', 'E-7', 'E-9', 'D-8', 'F-6', 'F-3', 'F-1', 'D-8', 'D-9', 'E-1', 'E-3', 'E-6', '연장', '서류', '변경', 'D-10', 'E-7', '재입국', '출국'],
+        howTitle: '검색에서 공식 출처 확인까지, 네 단계로 줄입니다.', howStepTitles: ['검색', '비교', '서류 점검', '공식 출처 확인'], howStepDescs: ['코드, 키워드, 상황 설명 중 가능한 방식으로 시작합니다.', '유사한 자격과 절차를 나란히 보며 차이를 좁힙니다.', '공통서류와 상황별 추가 확인 항목을 놓치지 않게 봅니다.', '하이코리아, 1345, 관할 출입국 안내로 최종 확인합니다.'],
+        sourceTitle: 'Paradiso의 문장은 출처를 향합니다.', sourceCopy: 'Paradiso는 참고용 정보 탐색 플랫폼입니다. 최종 판단은 관할 출입국·외국인관서, HiKorea, 1345 또는 자격 있는 전문가에게 확인해야 합니다.', sourceGridAria: '참고 출처',
+        sourceCardTitles: ['출입국관리법', '출입국관리매뉴얼', 'HiKorea 공지', '직업·산업분류', '1345 안내'], sourceCardDescs: ['체류자격과 기본 절차의 법령 기준.', '체류자격별 허가기준과 실무 확인 흐름.', '예약, 전자민원, 방문 안내의 최신 공지.', '한국표준직업분류와 산업분류 확인.', '외국인종합안내센터 상담 확인.'], sourceNote: 'Paradiso는 법률 자문이나 민원 대행을 제공하지 않으며, 이에 따른 어떠한 법적 책임도 지지 않습니다.',
+        toolsTitle: '필요한 도구는 흐름 가까이에 둡니다.', toolsCopy: '이미 구현된 도구는 기존 모달과 검색에 연결하고, 아직 준비 중인 기능은 계획 상태로 표시합니다.', toolTitles: ['관할 출입국 찾기', '직업·산업 코드', '서류 체크리스트', '1345 통화 스크립트'], toolDescs: ['체류지 기준으로 관할 출입국·외국인관서를 확인합니다.', '취업 신고에 필요한 직종·업종 코드를 찾아봅니다.', '체류자격별 공통서류와 추가 확인 항목으로 이동합니다.', '상황 요약을 바탕으로 상담 전 확인할 질문을 정리하는 기능입니다.'],
+        agentTitle: '가까운 행정 도움 찾기', agentCopy: '공식 등록된 출입국민원 대행기관을 지역별로 확인하고, 네이버지도 또는 카카오맵에서 위치를 열어볼 수 있습니다.', agentSourceNote: '출처: 출입국업무 민원신청대행 등록기관 현황(2026.04.30.부)', agentDisclaimer: 'Paradiso는 특정 기관을 추천하거나 업무 결과를 보증하지 않습니다. 방문 또는 의뢰 전 전화 확인, 상담 범위 및 수수료 확인을 권장합니다.',
+        agentRegionLabel: '지역', agentRegionAll: '전체 지역', agentKeywordLabel: '키워드', agentKeywordPlaceholder: '기관명·주소·전화번호 검색', agentListAria: '등록 대행기관 목록', agentEmpty: '조건에 맞는 항목이 없습니다. 지역을 바꾸거나 키워드를 비워보세요.', agentError: '데이터를 불러오지 못했습니다. 잠시 후 다시 시도하거나 하이코리아 공식 조회를 이용하세요.', agentCountFiltered: '전체 {total}개 중 {count}개 대행기관 표시', agentCountAll: '{count}개의 대행기관 표시', agentMapNaver: '네이버지도', agentMapKakao: '카카오맵', agentCopyAddress: '주소 복사', agentPhone: '전화 {phone}', agentCopied: '주소를 복사했습니다.', agentCopyFailed: '주소 복사에 실패했습니다. 주소를 길게 눌러 직접 복사하세요.',
+        reminderTitle: '놓치기 쉬운 기한은 앞으로 알림으로 관리합니다.', reminderCopy: '아래 항목은 계획 중인 기능이며, 현재 제공되는 공식 알림 서비스가 아닙니다.', reminderAria: '계획 중인 알림 항목', reminderCardTitles: ['체류기간 연장', '주소 이전 신고', '근무처 변경'], reminderCardDescs: ['만료 전 확인 시점과 서류 준비 흐름.', '전입 후 신고 기한과 관할 확인.', '변동 신고와 취업 정보 확인.'], reminderPills: ['여권정보 변경', '캘린더 내보내기', '이메일·SMS 알림', '방문 준비 카드'],
+        aboutTitle: '플랫폼 소개', anagramAria: 'Diaspora에서 Paradiso로 이어지는 애너그램', philosophyTitle: '브랜드 철학 및 어원 <span class="en-label" lang="en">— Brand Philosophy &amp; Etymology</span>', philosophyItems: ['<strong>Diaspora</strong> — \'Diaspora\'는 이주민을 뜻하는 영단어입니다.', '<strong>Paradiso</strong> — \'Paradiso\'는 이탈리아어로 "낙원(Paradise)"을 의미하며, \'Diaspora\'의 철자를 애너그램(Anagram)으로 재배치한 단어기도 합니다. 각자의 뜻과 꿈을 가지고 한국에 도착한 모든 이들에게 평안과 위로의 인사를 전합니다.'],
+        aboutStartTitle: 'Paradiso의 시작', aboutStartBody: '대한민국에는 39가지의 체류자격이 존재하지만, 관련 법령과 매뉴얼은 분산되어 있어 정보 탐색에 시간이 걸립니다. Paradiso는 흩어진 비자·체류 정보를 구조화하여 사용자 입장에서 한 번에 살펴볼 수 있는 안내 흐름을 제공하고, 정보 비대칭을 줄이는 사용자 안내 레이어를 지향합니다.', valuesTitle: '핵심 가치 및 비전', valuesBody: '단순한 정보 나열을 넘어, 구조화된 체류자격 데이터와 사용자 입력에 기반한 안내를 통해 정보 탐색 부담을 줄이고, 공식 자료 확인까지 자연스럽게 이어지도록 설계합니다.',
+        valueCardAria: ['정확성과 신뢰성', '사용자 중심 UX', 'AI 기반 안내 보조'], valueCardDescs: ['출입국·외국인정책본부 매뉴얼과 시행규칙을 1차 출처로 참고합니다.', '39개 체류자격을 목적별로 묶어 한 화면에서 비교·탐색할 수 있도록 정리합니다.', '사용자가 입력한 상황을 기반으로 살펴볼 자격과 확인 흐름을 제안하는 안내 보조입니다.'],
+        roadmapTitle: '로드맵 <span class="figma-roadmap-en" lang="en">— Project Roadmap</span>', roadmapNote: '아래 일정은 프로젝트 추진 계획이며, 공식 정책 일정이 아닙니다.', roadmapCompanies: ['2025 Q4 — 공공데이터 활용 공모전 출품 및 MVP 검증', '2026 Q1 — AI 기반 질의응답과 안내 품질 고도화', '2026 Q3 — 다국어 UI와 사용자 접근성 확대'], roadmapDetails: ['39가지 체류자격 통합 탐색 MVP 공개·실사용자 피드백 수집', '매뉴얼 기반 답변 보조와 사용자 상황별 안내 흐름 정교화', '영어·다국어 UI 도입, 1345 안내 흐름 연계 강화'],
+        footerHeroTitle: '대한민국 39가지<br>체류자격, 한 곳에서 살펴보세요.', footerChips: ['📑 매뉴얼 기반 탐색', '🧭 목적별 경로 정리', '🏛 관할기관 안내', '💼 직종·업종 코드'], footerStart: '지금 탐색 시작', footerHotline: '1345 직접 문의', footerCtaTitle: '체류 절차를 더 쉽게, 더 정확하게.', footerCtaCopy: '복잡하기만 했던 체류 행정. Paradiso와 함께라면 어렵지 않습니다.', footerCtaButtons: ['내 상황으로 시작하기', 'AI에게 묻기'], quickFiltersAria: '자주 찾는 검색어 모음', footerLegal: 'v38 · ※ 본 서비스는 베타 테스트 중이며, 제공되는 정보는 법적 효력을 갖지 않습니다. 정확한 정보는 반드시 1345(외국인종합안내센터)에 확인하시기 바랍니다.',
+        closeModal: '닫기', docModalTitle: '구비서류 확인', faqModalTitle: '💡 자주 묻는 질문 (FAQ)', aiModalTitle: 'AI 맞춤 상황 분석', aiIntro: '현재 국적, 보유 중인 체류자격(비자), 직무, 거주지 등 본인의 상황을 상세히 적어주시면, Paradiso AI가 공개 자료와 입력하신 상황을 바탕으로 관련 체류자격과 확인해야 할 절차를 정리해 드립니다. 최종 판단과 신청 절차는 관할기관 안내를 확인해 주세요.', aiInputLabel: '상황 입력', aiInputPlaceholder: '예: 미국 국적이며 현재 이태원에 거주 중입니다. 한국 대학교 4년제 학사를 졸업했고 D-10 구직 비자 상태인데 E-7으로 취업하고 싶습니다.', aiActionLabels: ['✨ 종합 상황 분석 요청', '✨ 서류 다국어 풀이 및 발급처 안내', '🏛 관할 관서 조회 & 1345 안내', '💼 취업신고용 업종/직종 코드 찾기'], jobCodeTitle: '💼 취업신고용 업종/직종 코드 찾기', jobCodeSearchLabel: '업종 또는 직종 검색', jobCodePlaceholder: '명칭 또는 상황 검색 (예: 영어 회화 강사, 중식당 종업원)', jurisdictionTitle: '🏛 관할 출입국관서 조회',
+        docGroupLabels: ['공통서류', '필수서류', '추가/심사 필요 서류', '조건부 서류'], procedureLabels: ['사증발급', '사증발급인정서', '체류자격 변경', '체류기간 연장', '체류자격 부여', '외국인등록', '자격외활동', '근무처 변경·추가', '재입국'], domainLabels: ['공통/양쪽', '사증발급', '체류민원'], reviewLabels: ['2026.5 매뉴얼 확인됨', '일부 정보 미검증', '2026.5 매뉴얼 확인 필요'],
+        manualNeedsReview: '매뉴얼 확인 필요', docReviewFallback: '매뉴얼 확인 필요: 이 절차의 구조화된 구비서류는 아직 대표 데이터에 없습니다.', eligibilityLabel: '대상/요건', notesLabel: '유의사항', procedureSectionTitle: '절차별 안내', subcodesTitle: '세부코드', commonWarningsTitle: '공통 매뉴얼 유의사항', sourceManualFallback: '출처 매뉴얼', pageNeedsReview: '페이지 확인 필요', confidenceLabel: '신뢰도', confidenceNeedsReview: '매뉴얼 확인 필요', sourceStatusTitle: '출처 및 검증 상태', sourceReviewDone: '대표 데이터 검토 완료', sourceReviewPending: '대표 데이터이며 전체 수작업 검증 전입니다.', sourceLegalNote: '본 서비스는 안내용이며 실제 허가 여부는 심사에 의해 결정됩니다.', manualActionLabels: ['사증/신규 서류', '연장 서류', '변경 서류', 'Paradiso AI 상황 분석'], resultEmptyTitle: '궤도를 이탈했습니다', resultEmptyDesc: "'{query}'에 해당하는 정보가 없습니다.<br>키워드를 줄이거나 OR 모드로 전환해 보세요.", resultCount: '{count}건', resultCountWithSub: '{count}건 (세부 {subcount}건)', sortMeta: '관련도 정렬 · {mode} · {categories}', dataDateLabel: '데이터 기준', searchedCategoryLabels: ['단기', '유학/연수', '취업', '투자', '가족/이민', '기타', '외교', '건강보험', '안내', '시나리오']
     },
     en: {
         languageButton: 'Language settings', languageMenu: 'Choose language', languageChanged: 'Language changed to English.',
@@ -7499,7 +7540,30 @@ const UI_TRANSLATIONS = {
         resultCatLabels: { short: 'Short-term', study: 'Study/training', work: 'Work', invest: 'Investment', family: 'Family/immigration', other: 'Other', diplo: 'Diplomatic', nhis: 'Health insurance', faq: 'Guide', scn: 'Scenario' },
         agentCountAll: 'Showing {filtered} {noun}', agentCountFiltered: 'Showing {filtered} of {total} {noun}', agentSampleNoun: 'sample items', agentNoun: 'agents', agentNaver: 'Naver Map', agentKakao: 'Kakao Map', agentCopy: 'Copy address', agentPhone: 'Call {phone}', agentCopyOk: 'Address copied.', agentCopyFail: 'Could not copy the address. Long-press the address and copy it manually.',
         landingHints: ['Address change', 'Passport renewal', 'ARC reissue', 'Same-day expiry / special cases', 'Jeju visa waiver', 'K-ETA', 'Skilled worker (E-7-4)', 'Marriage migrant (F-6)', 'Dependent (F-3) income', 'TB certificate requirement', 'Refugee process', 'Overstay', 'D-10 job search', 'K-Trainee (D-4-2K)'],
-        quickFilters: ['Address change', 'Walk-in services', 'F-3 income', 'K-ETA', 'TB guide', 'Overstay', 'Health insurance', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'Points system']
+        quickFilters: ['Address change', 'Walk-in services', 'F-3 income', 'K-ETA', 'TB guide', 'Overstay', 'Health insurance', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'Points system'],
+        brandHeroTitle: 'Korea residence procedures,<br>made easier with Paradiso.', brandHeroSubtitle: "Korea's 39 visa categories. Unified.", brandHeroAbout: 'About the service', brandHeroHotline: 'Call 1345',
+        brandHeroStatsAria: 'Visa category statistics', statLabels: ['Work and specialists<br><span lang="en">Employment</span>', 'Study and training<br><span lang="en">Study</span>', 'Residence and marriage<br><span lang="en">Residence</span>', 'Visits and other statuses<br><span lang="en">Visit & Other</span>'],
+        brandFeatureTitle: 'Information navigation<br>based on official immigration manuals', brandFeatureSubtitle: 'Manual-based information navigation', brandFeatureBody: 'Paradiso helps you explore structured residence-status data while keeping official-source verification at the center. Final decisions and filing steps must be confirmed with the competent immigration office.', brandFeatureCta: 'Contact the 1345 Immigration Contact Center', brandFeatureChecklistAria: 'Core service capabilities',
+        featureChecklist: ['<strong>Browse all 39 residence statuses</strong>', '<strong>Purpose-first pathway overview</strong>', '<strong>Jurisdiction lookup flow</strong>', '<strong>Occupation and industry code access</strong>', '<strong>Results paired with sources</strong>'],
+        pathwayTitle: 'Start with life pathways before visa codes.', pathwayCopy: 'The same residence status can require a different order of checks depending on purpose and timing. These pathways lead into the existing search results safely.', pathwayAria: 'Residence pathways by purpose',
+        pathwayTitles: ['Study and training <span>Study</span>', 'Work and specialists <span>Work</span>', 'Family and marriage <span>Family</span>', 'Business and investment <span>Business</span>', 'Arts and research <span>Culture &amp; Research</span>', 'Extension of stay <span>Extension</span>', 'Change of status <span>Change of status</span>', 'Departure and re-entry <span>Departure &amp; return</span>'],
+        pathwayDescs: ['Degree programs, language training, and the path into post-graduation job search.', 'Specialist employment, workplace changes, and occupation or industry code checks.', 'Marriage migration, accompanying family, children, and family stay checks.', 'Company formation, investment, trade management, and supporting evidence.', 'Performance, research, and teaching activities with invitation or contract checks.', 'The confirmation order when keeping the current status and extending the stay period.', 'The point when graduation, work, marriage, or residence conversion changes your status.', 'Checks before departure, re-entry possibility, and gaps in stay.'],
+        pathwayCodes: ['D-2', 'D-4', 'D-10', 'E-7', 'E-9', 'D-8', 'F-6', 'F-3', 'F-1', 'D-8', 'D-9', 'E-1', 'E-3', 'E-6', 'Extension', 'Documents', 'Change', 'D-10', 'E-7', 'Re-entry', 'Departure'],
+        howTitle: 'From search to official-source checks in four steps.', howStepTitles: ['Search', 'Compare', 'Check documents', 'Verify official sources'], howStepDescs: ['Start with whichever input you have: a code, keyword, or situation.', 'Compare similar statuses and procedures side by side to narrow the gap.', 'Review common documents and situation-specific additional checks.', 'Confirm final details through HiKorea, 1345, or the competent immigration office.'],
+        sourceTitle: 'Every Paradiso sentence points back to a source.', sourceCopy: 'Paradiso is a reference information platform. Final decisions should be confirmed with the competent immigration office, HiKorea, 1345, or a qualified professional.', sourceGridAria: 'Reference sources',
+        sourceCardTitles: ['Immigration Act', 'Immigration manuals', 'HiKorea notices', 'Occupation and industry classifications', '1345 guidance'], sourceCardDescs: ['Legal baseline for statuses of stay and basic procedures.', 'Working-level criteria and checks by residence status.', 'Current notices for reservations, e-applications, and visits.', 'Korean standard occupation and industry classification checks.', 'Consultation confirmation through the Immigration Contact Center.'], sourceNote: 'Paradiso does not provide legal advice or filing representation and assumes no legal responsibility from use of this reference information.',
+        toolsTitle: 'Useful tools stay close to the workflow.', toolsCopy: 'Implemented tools connect to the existing modals and search. Features still in preparation are marked as planned.', toolTitles: ['Find your immigration office', 'Occupation and industry codes', 'Document checklist', '1345 call script'], toolDescs: ['Check the competent immigration office based on residence address.', 'Find occupation and industry codes needed for employment reporting.', 'Jump to common documents and additional checks by residence status.', 'A planned helper for organizing questions before a consultation call.'],
+        agentTitle: 'Find nearby administrative help', agentCopy: 'Browse officially registered immigration civil petition proxy agencies by region and open locations in Naver Map or Kakao Map.', agentSourceNote: 'Source: Registered civil petition proxy agencies for immigration services, as of 2026-04-30.', agentDisclaimer: 'Paradiso does not recommend any specific agency or guarantee service outcomes. Before visiting or hiring an agency, confirm by phone, scope of consultation, and fees.',
+        agentRegionLabel: 'Region', agentRegionAll: 'All regions', agentKeywordLabel: 'Keyword', agentKeywordPlaceholder: 'Search agency name, address, or phone', agentListAria: 'Registered proxy agency list', agentEmpty: 'No matching entries. Change the region or clear the keyword.', agentError: 'Could not load the data. Try again later or use the official HiKorea lookup.', agentCountFiltered: 'Showing {count} of {total} registered agencies', agentCountAll: 'Showing {count} registered agencies', agentMapNaver: 'Naver Map', agentMapKakao: 'Kakao Map', agentCopyAddress: 'Copy address', agentPhone: 'Call {phone}', agentCopied: 'Address copied.', agentCopyFailed: 'Could not copy the address. Long-press the address and copy it manually.',
+        reminderTitle: 'Future reminders will help manage easy-to-miss deadlines.', reminderCopy: 'The items below are planned features and are not an official reminder service today.', reminderAria: 'Planned reminder items', reminderCardTitles: ['Extension of stay', 'Address change report', 'Workplace change'], reminderCardDescs: ['When to check before expiry and how to prepare documents.', 'Reporting deadline after moving and jurisdiction checks.', 'Change reporting and employment information checks.'], reminderPills: ['Passport information change', 'Calendar export', 'Email and SMS reminders', 'Visit preparation card'],
+        aboutTitle: 'About the platform', anagramAria: 'Diaspora to Paradiso anagram', philosophyTitle: 'Brand Philosophy &amp; Etymology', philosophyItems: ['<strong>Diaspora</strong> — A word for people living away from an original homeland or community.', '<strong>Paradiso</strong> — Italian for "paradise" and an anagram of "Diaspora"; a quiet greeting of comfort to people arriving in Korea with their own purpose and hopes.'],
+        aboutStartTitle: 'How Paradiso began', aboutStartBody: 'Korea has 39 residence statuses, but the relevant laws and manuals are spread across many sources. Paradiso structures scattered visa and residence information into a user-centered guidance flow that reduces information asymmetry.', valuesTitle: 'Core values and vision', valuesBody: 'Beyond listing information, Paradiso reduces search burden with structured residence-status data and user-centered guidance that naturally leads back to official-source confirmation.',
+        valueCardAria: ['Accuracy and reliability', 'User-centered UX', 'AI-assisted guidance'], valueCardDescs: ['Official immigration manuals and enforcement rules are treated as primary sources.', 'The 39 residence statuses are grouped by purpose so users can compare and explore them in one place.', 'The assistant suggests statuses and confirmation flows to review based on the situation the user enters.'],
+        roadmapTitle: 'Roadmap <span class="figma-roadmap-en" lang="en">— Project Roadmap</span>', roadmapNote: 'This is a project plan, not an official policy schedule.', roadmapCompanies: ['2025 Q4 — Public-data competition submission and MVP validation', '2026 Q1 — Better AI Q&A and guidance quality', '2026 Q3 — Multilingual UI and broader accessibility'], roadmapDetails: ['Release an MVP for unified exploration of 39 residence statuses and collect user feedback', 'Improve manual-grounded answer support and situation-specific guidance flows', 'Add English and multilingual UI, with stronger linkage to 1345 guidance flows'],
+        footerHeroTitle: 'Explore Korea’s 39<br>residence statuses in one place.', footerChips: ['📑 Manual-based exploration', '🧭 Purpose-first pathways', '🏛 Jurisdiction guidance', '💼 Job and industry codes'], footerStart: 'Start exploring', footerHotline: '1345 hotline', footerCtaTitle: 'Residence procedures, easier and more accurate.', footerCtaCopy: 'Korean residence administration can feel complex. Paradiso helps make the next step clearer.', footerCtaButtons: ['Start with my situation', 'Ask AI'], quickFiltersAria: 'Frequently searched keywords', footerLegal: 'v38 · Beta test service. The information provided has no legal effect. Always confirm accurate information with 1345, the Immigration Contact Center.',
+        closeModal: 'Close', docModalTitle: 'Document checklist', faqModalTitle: '💡 Frequently Asked Questions (FAQ)', aiModalTitle: 'AI situation analysis', aiIntro: 'Describe your nationality, current residence status, role, residence area, and situation. Paradiso AI will summarize relevant residence statuses and procedures based on public sources and your input. Confirm final decisions and filing steps with the competent authority.', aiInputLabel: 'Situation input', aiInputPlaceholder: 'Example: I am a U.S. citizen living in Itaewon. I graduated from a four-year Korean university and currently hold a D-10 job-seeking visa, but I want to change to E-7.', aiActionLabels: ['✨ Request full situation analysis', '✨ Explain documents and issuing offices in multiple languages', '🏛 Find jurisdiction office and 1345 guidance', '💼 Find employment occupation and industry codes'], jobCodeTitle: '💼 Find occupation and industry codes', jobCodeSearchLabel: 'Search industry or occupation', jobCodePlaceholder: 'Search by name or situation, e.g. English conversation instructor', jurisdictionTitle: '🏛 Find your immigration office',
+        docGroupLabels: ['Common documents', 'Required documents', 'Additional / review-needed documents', 'Conditional documents'], procedureLabels: ['Visa issuance', 'Certificate for confirmation of visa issuance', 'Change of status', 'Extension of stay', 'Grant of status', 'Foreigner registration', 'Activities outside status', 'Workplace change or addition', 'Re-entry'], domainLabels: ['Both tracks', 'Visa issuance', 'Stay services'], reviewLabels: ['Confirmed against the 2026.5 manual', 'Some information unverified', 'Needs 2026.5 manual review'],
+        manualNeedsReview: 'Manual review needed', docReviewFallback: 'Manual review needed: structured required documents for this procedure are not yet in representative data.', eligibilityLabel: 'Eligibility / requirements', notesLabel: 'Notes', procedureSectionTitle: 'Procedures', subcodesTitle: 'Subcodes', commonWarningsTitle: 'Common manual notes', sourceManualFallback: 'Source manual', pageNeedsReview: 'Page review needed', confidenceLabel: 'Confidence', confidenceNeedsReview: 'Manual review needed', sourceStatusTitle: 'Source and verification status', sourceReviewDone: 'Representative data reviewed', sourceReviewPending: 'Representative data; full manual verification is still pending.', sourceLegalNote: 'This service is for guidance only. Actual approval depends on official review.', manualActionLabels: ['Visa / new-application documents', 'Extension documents', 'Change documents', 'Paradiso AI situation analysis'], resultEmptyTitle: 'No matching orbit', resultEmptyDesc: "No information matches '{query}'.<br>Try fewer keywords or switch to OR mode.", resultCount: '{count} results', resultCountWithSub: '{count} results ({subcount} subcodes)', sortMeta: 'Sorted by relevance · {mode} · {categories}', dataDateLabel: 'Data date', searchedCategoryLabels: ['Short stay', 'Study / training', 'Work', 'Investment', 'Family / immigration', 'Other', 'Diplomatic', 'Health insurance', 'Guide', 'Scenario']
     },
     zh: {
         languageButton: '语言设置', languageMenu: '选择语言', languageChanged: '语言已切换为简体中文。',
@@ -7874,13 +7938,20 @@ function setIndexedHtml(selector, values) {
     });
 }
 
-function currentPack() {
-    return UI_TRANSLATIONS[currentLanguage] || UI_TRANSLATIONS.ko;
+function setIndexedAttr(selector, attr, values) {
+    document.querySelectorAll(selector).forEach((el, idx) => {
+        if (values[idx] !== undefined) el.setAttribute(attr, values[idx]);
+    });
 }
 
-function txObject(key) {
-    const pack = currentPack();
-    return pack[key] ?? UI_TRANSLATIONS.ko[key] ?? {};
+function txArray(key) {
+    const value = tx(key);
+    return Array.isArray(value) ? value : [];
+}
+
+function txAt(key, idx, fallback = '') {
+    const values = txArray(key);
+    return values[idx] !== undefined ? values[idx] : fallback;
 }
 
 function getLanguageOption(code = currentLanguage) {
@@ -7894,6 +7965,14 @@ function getStoredLanguage() {
     } catch (e) {
         return 'ko';
     }
+}
+
+function getInitialLanguage() {
+    try {
+        const requested = new URLSearchParams(window.location.search).get('lang');
+        if (LANGUAGE_OPTIONS.some(lang => lang.code === requested)) return requested;
+    } catch (e) {}
+    return getStoredLanguage();
 }
 
 function renderLanguageMenu() {
@@ -8001,75 +8080,91 @@ function applyLanguage(code, options = {}) {
     setText('.reference-disclaimer', tx('reference'));
     setHtml('#brandHeroTitle', tx('brandHeroTitle'));
     setText('.brand-hero-subtitle', tx('brandHeroSubtitle'));
+    setIndexedText('.brand-hero-buttons .btn span:first-child', txArray('brandHeroButtons'));
+    setIndexedText('.brand-hero-buttons .btn-primary span:first-child, .figma-footer-actions .btn-primary span:first-child', [tx('brandHeroAbout'), tx('footerStart')]);
+    setIndexedText('.brand-hero-buttons .btn-secondary span:first-child, .figma-footer-actions .btn-secondary span:first-child', [tx('brandHeroHotline'), tx('footerHotline')]);
     setAttr('.brand-hero-stats', 'aria-label', tx('brandHeroStatsAria'));
-    setIndexedText('.brand-hero-buttons a > span:first-child', tx('brandHeroButtons'));
-    setIndexedText('.brand-hero-buttons .btn-en', tx('brandHeroButtonSubs'));
-    setIndexedHtml('.brand-hero-stats .stat-label', tx('brandHeroStats'));
+    setIndexedHtml('.brand-hero-stats .stat-label', txArray('brandHeroStats'));
     setHtml('#brandFeatureTitle', tx('featureTitle'));
-    setText('.feature-subtitle', tx('featureSubtitle'));
+    setHtml('#brandFeatureTitle', tx('brandFeatureTitle'));
+    setText('.feature-subtitle', tx('brandFeatureSubtitle'));
     setText('.feature-body', tx('featureBody'));
-    setText('.feature-cta > span:first-child', tx('featureCta'));
-    setText('.feature-cta .btn-en', tx('featureCtaSub'));
-    setAttr('.feature-checklist', 'aria-label', tx('featureChecklistAria'));
-    setIndexedHtml('.feature-checklist .check-list li div', tx('featureChecks'));
+    setText('.feature-body', tx('brandFeatureBody'));
+    setText('.feature-cta span:first-child', tx('brandFeatureCta'));
+    setAttr('.feature-checklist', 'aria-label', tx('brandFeatureChecklistAria'));
+    setIndexedHtml('.feature-checklist li > div', txArray('featureChecklist'));
     setText('#pPathwayTitle', tx('pathwayTitle'));
     setText('.p-pathway-section .p-section-copy', tx('pathwayCopy'));
     setAttr('.p-pathway-grid', 'aria-label', tx('pathwayAria'));
-    setIndexedHtml('.p-pathway-title', tx('pathwayTitles'));
-    setIndexedText('.p-pathway-desc', tx('pathwayDescs'));
-    setIndexedText('.p-pathway-codes .p-code', tx('pathwayCodes'));
+    setIndexedHtml('.p-pathway-title', txArray('pathwayTitles'));
+    setIndexedText('.p-pathway-desc', txArray('pathwayDescs'));
+    setIndexedText('.p-pathway-codes .p-code', txArray('pathwayCodes'));
     setText('#pHowTitle', tx('howTitle'));
-    setIndexedText('.p-how-step h3', tx('howStepTitles'));
-    setIndexedText('.p-how-step p', tx('howStepBodies'));
+    setIndexedText('.p-how-step h3', txArray('howStepTitles'));
+    setIndexedText('.p-how-step p', txArray('howStepDescs'));
     setText('#pSourceTitle', tx('sourceTitle'));
     setText('.p-source-section .p-section-copy', tx('sourceCopy'));
     setAttr('.p-source-grid', 'aria-label', tx('sourceGridAria'));
-    setIndexedHtml('.p-source-card', tx('sourceCards'));
+    setIndexedText('.p-source-card h3', txArray('sourceCardTitles'));
+    setIndexedText('.p-source-card p', txArray('sourceCardDescs'));
     setText('.p-source-note', tx('sourceNote'));
     setText('#pToolsTitle', tx('toolsTitle'));
     setText('.p-tools-section .p-section-copy', tx('toolsCopy'));
-    setIndexedText('.p-tool-card h3', tx('toolTitles'));
-    setIndexedText('.p-tool-card p', tx('toolBodies'));
+    setIndexedText('.p-tool-card h3', txArray('toolTitles'));
+    setIndexedText('.p-tool-card p', txArray('toolDescs'));
     setText('#agentFinderTitle', tx('agentTitle'));
     setText('#agentFinder .p-section-copy', tx('agentSectionCopy'));
-    setHtml('#agentFinderSampleBanner', tx('agentBanner'));
-    setHtml('#agentFinderDisclaimer', `${tx('agentDisclaimerPrefix')} <a class="p-agent-finder__official-link" href="https://www.hikorea.go.kr/cvlappl/CvlapplAgentInfo.pt" target="_blank" rel="noopener noreferrer">${tx('agentOfficialLink')}</a>, ${tx('agentDisclaimerSuffix')}`);
+    setText('#agentFinder .p-section-copy', tx('agentCopy'));
+    setText('#agentFinderSourceNote', tx('agentSourceNote'));
+    setText('#agentFinderDisclaimerText', tx('agentDisclaimer'));
     setText('label[for="agentFinderRegion"]', tx('agentRegionLabel'));
-    setAttr('#agentFinderRegion', 'aria-label', tx('agentRegionAria'));
-    setText('#agentFinderRegion option[value=""]', tx('agentAllRegions'));
+    setAttr('#agentFinderRegion', 'aria-label', tx('agentRegionLabel'));
+    setText('#agentFinderRegion option[value=""]', tx('agentRegionAll'));
     setText('label[for="agentFinderKeyword"]', tx('agentKeywordLabel'));
     setAttr('#agentFinderKeyword', 'placeholder', tx('agentKeywordPlaceholder'));
     setAttr('#agentFinderList', 'aria-label', tx('agentListAria'));
     setText('#agentFinderEmpty', tx('agentEmpty'));
-    setHtml('#agentFinderError', `${tx('agentErrorPrefix')} <a class="p-agent-finder__official-link" href="https://www.hikorea.go.kr/cvlappl/CvlapplAgentInfo.pt" target="_blank" rel="noopener noreferrer">${tx('agentOfficialLink')}</a>${tx('agentErrorSuffix')}`);
+    setText('#agentFinderError', tx('agentError'));
     setText('#pReminderTitle', tx('reminderTitle'));
     setText('.p-reminder-section .p-section-copy', tx('reminderCopy'));
-    setIndexedHtml('.p-reminder-card', tx('reminderCards'));
     setAttr('.p-reminder-list', 'aria-label', tx('reminderAria'));
-    setIndexedText('.p-reminder-pill', tx('reminderPills'));
+    setIndexedText('.p-reminder-card h3', txArray('reminderCardTitles'));
+    setIndexedText('.p-reminder-card p', txArray('reminderCardDescs'));
+    setIndexedText('.p-reminder-pill', txArray('reminderPills'));
     setText('#aboutMeTitle', tx('aboutTitle'));
-    setHtml('.anagram-right h3', tx('aboutBrandTitle'));
-    setIndexedHtml('.philosophy-list li', tx('aboutPhilosophy'));
+    setAttr('#anagram', 'aria-label', tx('anagramAria'));
+    setHtml('.anagram-right h3', tx('philosophyTitle'));
+    setIndexedHtml('.philosophy-list li', txArray('philosophyItems'));
     setText('.intro-text h3', tx('aboutStartTitle'));
     setText('.intro-text p', tx('aboutStartBody'));
-    setText('.about-hobbies > h3', tx('aboutValuesTitle'));
-    setText('.about-hobbies > p', tx('aboutValuesBody'));
-    setIndexedText('.hobby-desc', tx('aboutValueDesc'));
-    document.querySelectorAll('.hobby-card').forEach((el, idx) => {
-        const labels = tx('aboutValueAria');
-        if (labels[idx]) el.setAttribute('aria-label', labels[idx]);
-    });
+    setText('.about-hobbies > h3', tx('valuesTitle'));
+    setText('.about-hobbies > p', tx('valuesBody'));
+    setIndexedAttr('.hobby-card', 'aria-label', txArray('valueCardAria'));
+    setIndexedText('.hobby-desc', txArray('valueCardDescs'));
     setHtml('.exp-heading', tx('roadmapTitle'));
     setText('.figma-roadmap-note', tx('roadmapNote'));
-    setIndexedText('.exp-company', tx('roadmapCompanies'));
-    setIndexedText('.exp-detail', tx('roadmapDetails'));
+    setIndexedText('.exp-company', txArray('roadmapCompanies'));
+    setIndexedText('.exp-detail', txArray('roadmapDetails'));
     setHtml('.figma-footer-hero-title', tx('footerHeroTitle'));
-    setIndexedText('.figma-footer-chips .footer-chip', tx('footerChips'));
-    setIndexedText('.figma-footer-actions a > span:first-child', tx('footerButtons'));
-    setIndexedText('.figma-footer-actions .btn-en', tx('footerButtonSubs'));
+    setIndexedText('.figma-footer-chips .footer-chip', txArray('footerChips'));
     setText('#pFooterCtaTitle', tx('footerCtaTitle'));
-    setText('.p-footer-cta > p', tx('footerCtaBody'));
-    setIndexedText('.p-footer-actions .p-cta-btn', tx('footerCtaButtons'));
+    setText('.p-footer-cta > p', tx('footerCtaCopy'));
+    setIndexedText('.p-footer-actions .p-cta-btn', txArray('footerCtaButtons'));
+    setAttr('#qf', 'aria-label', tx('quickFiltersAria'));
+    setHtml('.ft', `<span class="ft-logo">Paradiso</span> ${tx('footerLegal')}`);
+    setAttr('.modal-close', 'aria-label', tx('closeModal'));
+    setText('#docModalTitle', tx('docModalTitle'));
+    setHtml('#faqModalTitle', tx('faqModalTitle'));
+    setText('#aiModalTitleText', tx('aiModalTitle'));
+    setText('#aiModalOverlay .modal-body > p', tx('aiIntro'));
+    setText('label[for="aiInput"]', tx('aiInputLabel'));
+    setAttr('#aiInput', 'placeholder', tx('aiInputPlaceholder'));
+    setIndexedText('.ai-quick-actions .ai-action-btn span', txArray('aiActionLabels'));
+    setHtml('#jobCodeModalTitle', tx('jobCodeTitle'));
+    setText('label[for="jcSearchInput"]', tx('jobCodeSearchLabel'));
+    setAttr('#jcSearchInput', 'placeholder', tx('jobCodePlaceholder'));
+    setHtml('#jurisdictionModalTitle', tx('jurisdictionTitle'));
+    if (typeof updateAgentFinderLanguage === 'function') updateAgentFinderLanguage();
     setDirectSearchToggleState(document.getElementById('searchToggleBtn')?.getAttribute('aria-expanded') === 'true');
     if (document.body.classList.contains('searched') && dataReady) renderResults(qEl?.value || '');
     if (dataReady) initUI();
@@ -8154,7 +8249,7 @@ async function loadVisaData() {
 document.addEventListener('DOMContentLoaded', () => {
     ensureSearchDebugPanel();
     renderLanguageMenu();
-    applyLanguage(getStoredLanguage(), { silent: true });
+    applyLanguage(getInitialLanguage(), { silent: true });
     loadVisaData();
     if(qEl) qEl.addEventListener('input', handleInput);
 
@@ -8718,11 +8813,10 @@ function showVisaDocForAction(visaCode) {
   }
 }
 
-// ── Registered immigration agent finder (scaffold; sample data only) ──
+// ── Registered immigration agent finder ──
 (function initAgentFinder() {
   const root = document.getElementById('agentFinder');
   if (!root) return;
-  const banner = document.getElementById('agentFinderSampleBanner');
   const regionSel = document.getElementById('agentFinderRegion');
   const keywordIn = document.getElementById('agentFinderKeyword');
   const countEl = document.getElementById('agentFinderCount');
@@ -8757,18 +8851,19 @@ function showVisaDocForAction(visaCode) {
   }
   function buildCard(a) {
     const name = escapeText(a.name);
-    const region = escapeText(a.region || '');
+    const region = escapeText([a.province_short || a.region1 || a.province, a.region2 || a.city_or_district].filter(Boolean).join(' · '));
     const address = a.address ? escapeText(a.address) : '';
     const phone = (a.phone || '').trim();
+    const displayPhone = (a.display_phone || phone).trim();
     const phoneSafe = phone.replace(/[^0-9+\-]/g, '');
     const q = encodeURIComponent(a.map_query || a.address || a.name || '');
     const naverHref = 'https://map.naver.com/p/search/' + q;
     const kakaoHref = 'https://map.kakao.com/link/search/' + q;
     const phoneBtn = phone
-      ? '<a href="tel:' + escapeText(phoneSafe) + '" rel="nofollow">' + escapeText(tx('agentPhone', { phone })) + '</a>'
+      ? '<a href="tel:' + escapeText(phoneSafe) + '" rel="nofollow">' + escapeText(tx('agentPhone', { phone: displayPhone })) + '</a>'
       : '';
     const copyBtn = address
-      ? '<button type="button" data-agent-copy="' + escapeText(a.address) + '">' + escapeText(tx('agentCopy')) + '</button>'
+      ? '<button type="button" data-agent-copy="' + escapeText(a.address) + '">' + escapeText(tx('agentCopyAddress')) + '</button>'
       : '';
     return ''
       + '<li class="p-agent-finder__card">'
@@ -8788,17 +8883,15 @@ function showVisaDocForAction(visaCode) {
     const kw = (keywordIn.value || '').trim().toLowerCase();
     const total = dataset.agencies.length;
     const filtered = dataset.agencies.filter(function (a) {
-      if (region && a.region !== region) return false;
+      if (region && (a.region1 || a.province) !== region) return false;
       if (!kw) return true;
-      const hay = ((a.name || '') + ' ' + (a.address || '') + ' ' + (a.region || '')).toLowerCase();
+      const hay = (a.normalized_search_text || ((a.name || '') + ' ' + (a.address || '') + ' ' + (a.phone || '') + ' ' + (a.display_phone || '') + ' ' + (a.region1 || '') + ' ' + (a.region2 || ''))).toLowerCase();
       return hay.indexOf(kw) !== -1;
     });
-    const isSample = !!(dataset.meta && dataset.meta.is_sample);
-    const noun = isSample ? tx('agentSampleNoun') : tx('agentNoun');
     if (region || kw) {
-      countEl.textContent = tx('agentCountFiltered', { total, filtered: filtered.length, noun });
+      countEl.textContent = tx('agentCountFiltered', { total, count: filtered.length });
     } else {
-      countEl.textContent = tx('agentCountAll', { filtered: filtered.length, noun });
+      countEl.textContent = tx('agentCountAll', { count: filtered.length });
     }
     if (filtered.length === 0) {
       listEl.innerHTML = '';
@@ -8809,11 +8902,19 @@ function showVisaDocForAction(visaCode) {
     }
   }
   function populateRegions(regions) {
+    regionSel.querySelectorAll('option:not([value=""])').forEach(function (opt) { opt.remove(); });
     const opts = regions.map(function (r) {
       return '<option value="' + escapeText(r) + '">' + escapeText(r) + '</option>';
     }).join('');
     regionSel.insertAdjacentHTML('beforeend', opts);
   }
+  window.updateAgentFinderLanguage = function () {
+    if (regionSel) {
+      const allOption = regionSel.querySelector('option[value=""]');
+      if (allOption) allOption.textContent = tx('agentRegionAll');
+    }
+    if (dataset.agencies.length) applyFilter();
+  };
   function showError() {
     errorEl.hidden = false;
     listEl.innerHTML = '';
@@ -8827,16 +8928,16 @@ function showVisaDocForAction(visaCode) {
     const addr = btn.getAttribute('data-agent-copy') || '';
     if (!addr) return;
     copyToClipboard(addr).then(function () {
-      if (typeof showToast === 'function') showToast(tx('agentCopyOk'), 'success');
+      if (typeof showToast === 'function') showToast(tx('agentCopied'), 'success');
     }).catch(function () {
-      if (typeof showToast === 'function') showToast(tx('agentCopyFail'), 'warning');
+      if (typeof showToast === 'function') showToast(tx('agentCopyFailed'), 'warning');
     });
   });
   regionSel.addEventListener('change', applyFilter);
   keywordIn.addEventListener('input', applyFilter);
   window.addEventListener('paradiso-language-applied', applyFilter);
 
-  fetch('data/registered_agents.json', { cache: 'no-cache' })
+  fetch('data/agent_registry_2026-04-30.json', { cache: 'no-cache' })
     .then(function (res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
@@ -8845,8 +8946,8 @@ function showVisaDocForAction(visaCode) {
       dataset.meta = json && json._meta ? json._meta : {};
       dataset.regions = Array.isArray(json && json.regions) ? json.regions : [];
       dataset.agencies = Array.isArray(json && json.agencies) ? json.agencies : [];
-      if (dataset.meta.is_sample === true) banner.hidden = false;
       populateRegions(dataset.regions);
+      window.updateAgentFinderLanguage();
       applyFilter();
     })
     .catch(showError);
