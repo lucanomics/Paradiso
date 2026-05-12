@@ -108,24 +108,26 @@ for `/api/ask` to return answers.
 
 ### Visa data file path on Railway
 
-`/api/visas` reads from `visa_data.json`. With **Root Directory =
-backend**, the repo-root `visa_data.json` is not part of the build
-context and the endpoint will fall back to a tiny `DEFAULT_VISAS` stub
-(the response includes a `warning` field so this is observable).
+`/api/visas` reads from a JSON file. With **Root Directory = backend**,
+the repo-root `visa_data.json` is not in the build context, so the
+loader looks in three places, in order:
 
-Pick one of:
+1. `VISA_DATA_PATH` env var (absolute path, e.g. a Railway volume mount).
+2. `backend/data/visas.json` — the **committed copy** that ships with
+   the backend deploy context.
+3. `<repo-root>/visa_data.json` — used only when the backend is built
+   from the repo root.
 
-- **Option A (recommended):** copy `visa_data.json` into
-  `backend/data/visas.json` as part of your deploy pipeline. The
-  backend prefers this path automatically.
-- **Option B:** set `VISA_DATA_PATH` to an absolute path that exists at
-  runtime (for example, a Railway volume mount).
-- **Option C:** deploy without Root Directory = backend (use repo root
-  as the build context and a custom start command); the backend will
-  find the repo-root file automatically.
+The committed `backend/data/visas.json` is kept in sync with the
+canonical repo-root `visa_data.json` by `scripts/sync_visa_data.py`,
+which `scripts/check_repo.sh` runs in `--check` mode to fail CI if the
+two files drift. Update the canonical file at the repo root, then run
+`python3 scripts/sync_visa_data.py` to refresh the backend copy before
+committing.
 
-Until one of these is configured, `/api/visas` returns the stub list
-with a `warning` describing the fallback.
+`/api/visas` reports which source it served from via the `source_type`
+field: `backend-data`, `repo-root`, `explicit` (from `VISA_DATA_PATH`),
+or `fallback` (DEFAULT_VISAS, with an accompanying `warning`).
 
 ## Verification
 
@@ -142,12 +144,23 @@ curl -fsS -X POST "$BASE/api/jobcodekeywords" \
 curl -fsS -X POST "$BASE/api/ask" \
   -H 'content-type: application/json' \
   -d '{"message":"E-7 비자 갱신 요건은?"}' | jq
+curl -fsS -X POST "$BASE/api/ask" \
+  -H 'content-type: application/json' \
+  -d '{"question":"D-2 비자 연장에 필요한 서류는?","visa_code":"D-2"}' | jq
 ```
+
+`/api/ask` accepts the prompt under any of `message`, `query`, or
+`question` (resolution order: `message` → `query` → `question`). The
+frontend currently sends `question` plus optional metadata (`consent`,
+`context`, `lang`, `visa_data`); curl-driven clients can use any
+alias. Schema-only fields (`visa_code`, `visa_data`, …) are accepted
+to keep the contract stable even when they are not yet consumed by
+answer generation.
 
 `/health` should return `status: "ok"` and a `providers` map showing
 which integrations are configured. `/api/visas` should return a non-
-empty `data` array (and no `warning` field) once `visa_data.json` is
-visible to the deployed service.
+empty `data` array and `source_type: "backend-data"` (no `warning`
+field) once the deploy includes `backend/data/visas.json`.
 
 ## Wiring the frontend
 
