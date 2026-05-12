@@ -412,58 +412,185 @@
         // ==========================================
         // Visa Code Extraction & Language Detection
         // ==========================================
+        const SOURCE_MANUAL_VERSION = '2026.5';
+        const SOURCE_MANUALS = ['visa_manual_2026_05', 'stay_manual_2026_05'];
+
         // Allowed first-letter classes (single-letter Korean visa families).
-        // Multi-letter codes (K-ETA, TB-1, SCN-x, OVS-1, etc.) are intentionally
-        // excluded — they are not normal visa codes and would create false matches.
+        // K-STAR is handled explicitly because it is a local structured record.
         const VISA_LETTERS = new Set(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']);
 
-        function extractVisaCode(text) {
-            if (!text || typeof text !== 'string') return null;
-            // Match optional "(", letter, optional "-", 1-2 digits, optional "-" + alnum sub.
-            // Lookbehind prevents matches inside words like "abcF-6".
-            const re = /(?<![A-Za-z0-9])\(?\s*([A-Za-z])\s*-?\s*(\d{1,2})(?:\s*-\s*([A-Za-z0-9]{1,3}))?\s*\)?/g;
-            let m;
-            while ((m = re.exec(text)) !== null) {
-                const letter = m[1].toUpperCase();
-                if (!VISA_LETTERS.has(letter)) continue;
-                const num = m[2];
-                const sub = m[3] ? m[3].toUpperCase() : null;
-                return sub ? `${letter}-${num}-${sub}` : `${letter}-${num}`;
+        function normalizeVisaCode(input) {
+            if (!input) return null;
+            const raw = String(input).trim().toUpperCase()
+                .replace(/[‐‑‒–—―−]/g, '-')
+                .replace(/\s+/g, '');
+            if (!raw) return null;
+            if (raw === 'KSTAR' || raw === 'K-STAR') return 'K-STAR';
+            if (raw.includes('-')) {
+                const hyphenated = raw.match(/^([A-H])-?(\d{1,2})(?:-([A-Z0-9]{1,3}))?$/);
+                if (!hyphenated || !VISA_LETTERS.has(hyphenated[1])) return null;
+                return hyphenated[3] ? `${hyphenated[1]}-${hyphenated[2]}-${hyphenated[3]}` : `${hyphenated[1]}-${hyphenated[2]}`;
             }
-            return null;
+            const compact = raw.replace(/[^A-Z0-9]/g, '');
+            const match = compact.match(/^([A-H])(\d{1,2})([A-Z0-9]{0,3})$/);
+            if (!match || !VISA_LETTERS.has(match[1])) return null;
+            return match[3] ? `${match[1]}-${match[2]}-${match[3]}` : `${match[1]}-${match[2]}`;
         }
 
-        function findVisaMatch(detectedCode, dataset) {
-            if (!detectedCode) {
-                return { detected_code: null, match_found: false, reason: 'No visa code detected in user message' };
+        function extractVisaCodesFromQuestion(question) {
+            if (!question || typeof question !== 'string') return [];
+            const candidates = [];
+            const seen = new Set();
+            function add(raw) {
+                const code = normalizeVisaCode(raw);
+                if (!code || seen.has(code)) return;
+                seen.add(code);
+                candidates.push(code);
             }
+            if (/\bK[\s-]*STAR\b/i.test(question)) add('K-STAR');
+            // Match optional parentheses around normal single-letter visa codes and subcodes.
+            const re = /(^|[^A-Za-z0-9])\(?\s*([A-Za-z])\s*[-‐‑‒–—―−]?\s*(\d{1,2})(?:\s*[-‐‑‒–—―−]\s*([A-Za-z0-9]{1,3}))?\s*\)?/g;
+            let m;
+            while ((m = re.exec(question)) !== null) {
+                const letter = m[2].toUpperCase();
+                if (!VISA_LETTERS.has(letter)) continue;
+                const raw = m[4] ? `${letter}-${m[3]}-${m[4]}` : `${letter}-${m[3]}`;
+                add(raw);
+            }
+            return candidates;
+        }
+
+        function recordCode(record) {
+            return normalizeVisaCode(record && record.code);
+        }
+
+        function findSubcodeRecord(record, normalizedCode) {
+            const subs = Array.isArray(record && record.subcodes)
+                ? record.subcodes
+                : (Array.isArray(record && record.subCodes) ? record.subCodes : []);
+            return subs.find((sub) => normalizeVisaCode(sub && sub.code) === normalizedCode) || null;
+        }
+
+        function compactVisaRecord(record, detectedCode, matchedSubcode) {
+            const payload = {
+                code: record.code || null,
+                cat: record.cat || null,
+                name: record.name || record.nameKo || null,
+                nameKo: record.nameKo || record.name || null,
+                nameEn: record.nameEn || record.name_en || null,
+                period: record.period || null,
+                dataBadge: record.dataBadge || null,
+                dataDate: record.dataDate || null,
+                detected_code: detectedCode,
+                matched_code: record.code || null,
+                matched_subcode: matchedSubcode ? matchedSubcode.code : (detectedCode && detectedCode !== record.code ? detectedCode : null),
+                match_found: true,
+                match_type: matchedSubcode ? 'subcode' : (normalizeVisaCode(record.code) === detectedCode ? 'exact' : 'parent'),
+                source_manual_version: SOURCE_MANUAL_VERSION,
+                source_manuals: SOURCE_MANUALS
+            };
+            [
+                'manualDomains',
+                'sourceManualStatus',
+                'manualRefs',
+                'manualRequiredDocAudit',
+                'procedures',
+                'newReq',
+                'extReq',
+                'changeReq',
+                'faq',
+                'commonWarnings'
+            ].forEach((key) => {
+                if (record[key] !== undefined) payload[key] = record[key];
+            });
+            if (matchedSubcode) {
+                payload.matched_subcode_record = {
+                    code: matchedSubcode.code || null,
+                    name: matchedSubcode.name || matchedSubcode.nameKo || null,
+                    nameKo: matchedSubcode.nameKo || matchedSubcode.name || null,
+                    nameEn: matchedSubcode.nameEn || matchedSubcode.name_en || null,
+                    summary: matchedSubcode.summary || null,
+                    eligibility: matchedSubcode.eligibility || null,
+                    note: matchedSubcode.note || null,
+                    addReq: matchedSubcode.addReq || null
+                };
+            }
+            const subcodes = Array.isArray(record.subcodes)
+                ? record.subcodes
+                : (Array.isArray(record.subCodes) ? record.subCodes : []);
+            if (subcodes.length) {
+                payload.subcodes = subcodes.map((sub) => ({
+                    code: sub.code || null,
+                    name: sub.name || sub.nameKo || null,
+                    nameKo: sub.nameKo || sub.name || null,
+                    nameEn: sub.nameEn || sub.name_en || null,
+                    summary: sub.summary || null
+                }));
+            }
+            return payload;
+        }
+
+        function findVisaRecordForQuestion(question, dataset) {
+            const detectedCodes = extractVisaCodesFromQuestion(question);
             if (!Array.isArray(dataset) || dataset.length === 0) {
-                return { detected_code: detectedCode, match_found: false, reason: 'Local visa_data not loaded' };
+                return {
+                    detected_code: detectedCodes[0] || null,
+                    detected_codes: detectedCodes,
+                    match_found: false,
+                    reason: 'Local visa_data not loaded',
+                    source_manual_version: SOURCE_MANUAL_VERSION,
+                    source_manuals: SOURCE_MANUALS
+                };
             }
-            const upper = detectedCode.toUpperCase();
-            const exact = dataset.find(r => r && typeof r.code === 'string' && r.code.toUpperCase() === upper);
-            if (exact) {
-                return Object.assign({}, exact, {
-                    detected_code: detectedCode,
-                    matched_code: exact.code,
-                    match_type: 'exact',
-                    match_found: true
-                });
+            if (!detectedCodes.length) {
+                return {
+                    detected_code: null,
+                    detected_codes: [],
+                    match_found: false,
+                    reason: 'No visa code detected in user message',
+                    source_manual_version: SOURCE_MANUAL_VERSION,
+                    source_manuals: SOURCE_MANUALS
+                };
             }
-            const parts = upper.split('-');
-            if (parts.length >= 3) {
-                const parentCode = `${parts[0]}-${parts[1]}`;
-                const parent = dataset.find(r => r && typeof r.code === 'string' && r.code.toUpperCase() === parentCode);
+
+            for (const detectedCode of detectedCodes) {
+                const exact = dataset.find((r) => recordCode(r) === detectedCode);
+                if (exact) {
+                    return Object.assign(compactVisaRecord(exact, detectedCode, null), {
+                        detected_codes: detectedCodes
+                    });
+                }
+
+                const parentCode = detectedCode.split('-').slice(0, 2).join('-');
+                const parent = dataset.find((r) => recordCode(r) === parentCode);
                 if (parent) {
-                    return Object.assign({}, parent, {
-                        detected_code: detectedCode,
-                        matched_code: parent.code,
-                        match_type: 'parent',
-                        match_found: true
+                    const matchedSubcode = findSubcodeRecord(parent, detectedCode);
+                    return Object.assign(compactVisaRecord(parent, detectedCode, matchedSubcode), {
+                        detected_codes: detectedCodes
                     });
                 }
             }
-            return { detected_code: detectedCode, match_found: false, reason: 'No matching local visa_data entry' };
+
+            return {
+                detected_code: detectedCodes[0] || null,
+                detected_codes: detectedCodes,
+                match_found: false,
+                reason: 'No matching local visa_data entry',
+                source_manual_version: SOURCE_MANUAL_VERSION,
+                source_manuals: SOURCE_MANUALS
+            };
+        }
+
+        function buildVisaDataPayload(question, dataset) {
+            return findVisaRecordForQuestion(question, dataset);
+        }
+
+        function extractVisaCode(text) {
+            return extractVisaCodesFromQuestion(text)[0] || null;
+        }
+
+        function findVisaMatch(detectedCode, dataset) {
+            return findVisaRecordForQuestion(detectedCode || '', dataset);
         }
 
         function detectUserLang(text) {
@@ -632,8 +759,7 @@
             
             try {
                 const userLang = detectUserLang(text);
-                const detectedCode = extractVisaCode(text);
-                const visaPayload = findVisaMatch(detectedCode, VISA_DATA);
+                const visaPayload = buildVisaDataPayload(text, VISA_DATA);
                 const contextText = buildAskContext(userLang);
                 const response = await fetch(`${API_BASE}/api/ask`, {
                     method: 'POST',

@@ -8,6 +8,8 @@
  *   2. Array values shared by `en` and `ko` have the same length.
  *   3. `en` string values contain no Hangul characters.
  *   4. No `en` string value is empty.
+ *   5. Known lower-landing/search-result Korean UI regions have explicit
+ *      translation keys and apply/render wiring.
  *
  * Designed to be robust to formatting tweaks (object-literal commas, trailing
  * commas, single-quoted strings) without bringing in a full JS parser.
@@ -196,6 +198,54 @@ function main() {
       });
     } else if (isEmptyString(value)) {
       fail(`Empty string in en.${key}`);
+    }
+  }
+
+  const targetedCoverage = [
+    {
+      label: 'lower landing hero',
+      hardcoded: '복잡한 체류,<br>Paradiso에서 손쉽게.',
+      keys: ['brandHeroTitle', 'brandHeroButtons', 'brandHeroStats', 'featureTitle', 'featureBody'],
+      wiring: ['brandHeroTitle', 'brandHeroButtons', 'brandHeroStats', 'featureTitle', 'featureBody']
+    },
+    {
+      label: 'pathway/how/source/tools sections',
+      hardcoded: '비자 코드보다 먼저, 생활의 경로를 봅니다.',
+      keys: ['pathwayTitle', 'pathwayTitles', 'pathwayDescs', 'howTitle', 'sourceTitle', 'toolsTitle'],
+      wiring: ['pathwayTitle', 'pathwayTitles', 'pathwayDescs', 'howTitle', 'sourceTitle', 'toolsTitle']
+    },
+    {
+      label: 'agent finder',
+      hardcoded: '가까운 행정 도움 찾기',
+      keys: ['agentTitle', 'agentSectionCopy', 'agentRegionLabel', 'agentKeywordLabel', 'agentEmpty', 'agentNaver', 'agentKakao'],
+      wiring: ['agentTitle', 'agentSectionCopy', 'agentRegionLabel', 'agentKeywordLabel', 'agentEmpty', 'agentNaver', 'agentKakao']
+    },
+    {
+      label: 'footer CTA',
+      hardcoded: '내 체류 상황을 직접 검색해보세요.',
+      keys: ['footerCtaTitle', 'footerCtaBody', 'footerCtaButtons', 'footerLinks'],
+      wiring: ['footerCtaTitle', 'footerCtaBody', 'footerCtaButtons', 'footerLinks']
+    },
+    {
+      label: 'search result labels',
+      hardcoded: '데이터 기준:',
+      keys: ['resultDataDate', 'resultSubtypes', 'resultCount', 'resultEmptyTitle', 'sourceTitleResult', 'actionAi'],
+      wiring: ['resultDataDate', 'resultSubtypes', 'resultCount', 'resultEmptyTitle', 'sourceTitleResult', 'actionAi']
+    }
+  ];
+
+  for (const item of targetedCoverage) {
+    if (!html.includes(item.hardcoded)) continue;
+    for (const key of item.keys) {
+      if (!koKeys.has(key) || !enKeys.has(key)) {
+        fail(`Targeted i18n coverage for ${item.label} is missing key "${key}"`);
+      }
+    }
+    for (const key of item.wiring) {
+      const keyRef = new RegExp(`['"\`]${key}['"\`]`);
+      if (!keyRef.test(html)) {
+        fail(`Targeted i18n coverage for ${item.label} is missing apply/render wiring for "${key}"`);
+      }
     }
   }
 

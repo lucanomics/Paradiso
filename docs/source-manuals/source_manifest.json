@@ -1,0 +1,24 @@
+{
+  "current": {
+    "visa_issuance_manual": {
+      "title_ko": "사증발급 안내매뉴얼",
+      "title_en": "Visa Issuance Guide Manual",
+      "version": "2026.5",
+      "authority": "법무부 출입국·외국인정책본부",
+      "pages": 484,
+      "file": "docs/source-manuals/2026-05/visa_manual_2026_05.pdf",
+      "role": "visa_issuance_manual",
+      "status": "current"
+    },
+    "stay_residence_manual": {
+      "title_ko": "외국인체류 안내매뉴얼",
+      "title_en": "Foreigner Stay/Residence Guide Manual",
+      "version": "2026.5",
+      "authority": "법무부 출입국·외국인정책본부",
+      "pages": 774,
+      "file": "docs/source-manuals/2026-05/stay_manual_2026_05.pdf",
+      "role": "stay_residence_manual",
+      "status": "current"
+    }
+  }
+}
