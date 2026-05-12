@@ -7083,7 +7083,7 @@ function renderSourceReferences(v) {
         return `<li>${bits.map(escapeHtml).join(' · ')}</li>`;
     }).join('');
     const reviewText = status.needsManualReview === false ? tx('sourceReviewDone') : tx('sourceReviewPending');
-    return `<div class="manual-source-box"><div class="manual-source-title">${escapeHtml(tx('sourceStatusTitle'))}</div><ul>${refItems}</ul><div style="margin-top:0.55rem;">${escapeHtml(reviewText)} ${escapeHtml(tx('sourceLegalNote'))}</div></div>`;
+    return `<div class="manual-source-box"><div class="manual-source-title">${escapeHtml(tx('sourceTitleResult'))}</div><ul>${refItems}</ul><div style="margin-top:0.55rem;">${escapeHtml(reviewText)} ${escapeHtml(tx('sourceLegalNote'))}</div></div>`;
 }
 
 function renderManualActions(v, isVisaCode) {
@@ -7093,7 +7093,7 @@ function renderManualActions(v, isVisaCode) {
         <button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="ext"><span>${escapeHtml(txAt('manualActionLabels', 1, '연장 서류'))}</span></button>
         <button type="button" class="doc-trigger-btn" data-action="open-doc-modal" data-vcode="${escapeHtml(v.code)}" data-type="change"><span>${escapeHtml(txAt('manualActionLabels', 2, '변경 서류'))}</span></button>
         ${v.faq ? `<button type="button" class="doc-trigger-btn" data-action="open-faq-modal" data-vcode="${escapeHtml(v.code)}"><span>FAQ</span></button>` : ''}
-        <button type="button" class="ai-btn" data-action="open-ai-modal" data-visa-code="${escapeHtml(v.code)}">${escapeHtml(txAt('manualActionLabels', 3, 'Paradiso AI 상황 분석'))}</button>
+        <button type="button" class="ai-btn" data-action="open-ai-modal" data-visa-code="${escapeHtml(v.code)}">${escapeHtml(tx('actionAi'))}</button>
     </div>`;
 }
 
@@ -7292,7 +7292,7 @@ function renderResults(query){
         if(kw.length&&(v._score>=50||ms.length)) c.classList.add('open');
         const periodHtml = v.period ? `<span class="manual-badge">${hl(v.period,kw)}</span>` : '';
         const dataHtml = v.dataBadge ? `<span class="manual-badge">${escapeHtml(v.dataBadge)}</span>` : '';
-        const ddHtml = v.dataDate ? `<div class="data-date">${escapeHtml(tx('dataDateLabel'))}: ${escapeHtml(v.dataDate)}</div>` : '';
+        const ddHtml = v.dataDate ? `<div class="data-date">${escapeHtml(tx('resultDataDate'))} ${escapeHtml(v.dataDate)}</div>` : '';
         const nameEn = getVisaNameEn(v);
         c.innerHTML=`
             <div class="vc-h" data-action="toggle-su">
@@ -8080,12 +8080,15 @@ function applyLanguage(code, options = {}) {
     setText('.reference-disclaimer', tx('reference'));
     setHtml('#brandHeroTitle', tx('brandHeroTitle'));
     setText('.brand-hero-subtitle', tx('brandHeroSubtitle'));
+    setIndexedText('.brand-hero-buttons .btn span:first-child', txArray('brandHeroButtons'));
     setIndexedText('.brand-hero-buttons .btn-primary span:first-child, .figma-footer-actions .btn-primary span:first-child', [tx('brandHeroAbout'), tx('footerStart')]);
     setIndexedText('.brand-hero-buttons .btn-secondary span:first-child, .figma-footer-actions .btn-secondary span:first-child', [tx('brandHeroHotline'), tx('footerHotline')]);
     setAttr('.brand-hero-stats', 'aria-label', tx('brandHeroStatsAria'));
-    setIndexedHtml('.brand-hero-stats .stat-label', txArray('statLabels'));
+    setIndexedHtml('.brand-hero-stats .stat-label', txArray('brandHeroStats'));
+    setHtml('#brandFeatureTitle', tx('featureTitle'));
     setHtml('#brandFeatureTitle', tx('brandFeatureTitle'));
     setText('.feature-subtitle', tx('brandFeatureSubtitle'));
+    setText('.feature-body', tx('featureBody'));
     setText('.feature-body', tx('brandFeatureBody'));
     setText('.feature-cta span:first-child', tx('brandFeatureCta'));
     setAttr('.feature-checklist', 'aria-label', tx('brandFeatureChecklistAria'));
@@ -8110,6 +8113,7 @@ function applyLanguage(code, options = {}) {
     setIndexedText('.p-tool-card h3', txArray('toolTitles'));
     setIndexedText('.p-tool-card p', txArray('toolDescs'));
     setText('#agentFinderTitle', tx('agentTitle'));
+    setText('#agentFinder .p-section-copy', tx('agentSectionCopy'));
     setText('#agentFinder .p-section-copy', tx('agentCopy'));
     setText('#agentFinderSourceNote', tx('agentSourceNote'));
     setText('#agentFinderDisclaimerText', tx('agentDisclaimer'));
@@ -8867,8 +8871,8 @@ function showVisaDocForAction(visaCode) {
       +   '<h3>' + name + '</h3>'
       +   (address ? '<address>' + address + '</address>' : '')
       +   '<div class="p-agent-finder__actions">'
-      +     '<a href="' + naverHref + '" target="_blank" rel="noopener noreferrer">' + escapeText(tx('agentMapNaver')) + '</a>'
-      +     '<a href="' + kakaoHref + '" target="_blank" rel="noopener noreferrer">' + escapeText(tx('agentMapKakao')) + '</a>'
+      +     '<a href="' + naverHref + '" target="_blank" rel="noopener noreferrer">' + escapeText(tx('agentNaver')) + '</a>'
+      +     '<a href="' + kakaoHref + '" target="_blank" rel="noopener noreferrer">' + escapeText(tx('agentKakao')) + '</a>'
       +     copyBtn
       +     phoneBtn
       +   '</div>'
