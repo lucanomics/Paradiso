@@ -4211,6 +4211,489 @@ body:not(.searched) #visaManualSection::before {
   .p-agent-finder__controls { grid-template-columns: 1fr; }
 }
 
+/* ============================================================
+   FIGMA LANGUAGE MIGRATION (additive)
+   Translates the Figma Make candidate's design language onto
+   existing markup. CSS-only — no functional IDs/classes touched.
+   Scope is namespaced by existing classes (.sbar, .lh,
+   .p-pathway-card, etc.) so behavior is preserved.
+   ============================================================ */
+
+/* — Shared Figma tokens (additive only) — */
+:root {
+  --fig-glass-bg:        rgba(255, 255, 255, 0.13);
+  --fig-glass-bg-hi:     rgba(255, 255, 255, 0.18);
+  --fig-glass-border:    rgba(255, 255, 255, 0.20);
+  --fig-glass-border-hi: rgba(255, 255, 255, 0.36);
+  --fig-glass-blur:      20px;
+  --fig-glass-shadow:    0 16px 48px -8px rgba(0, 0, 0, 0.28),
+                         inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  --fig-card-shadow:     0 14px 38px -12px rgba(14, 31, 26, 0.18),
+                         0 2px 6px rgba(14, 31, 26, 0.04);
+  --fig-card-shadow-hi:  0 26px 60px -16px rgba(14, 31, 26, 0.30),
+                         0 4px 10px rgba(14, 31, 26, 0.06);
+  --fig-green-glow:      0 8px 22px rgba(14, 163, 123, 0.40);
+  --fig-coral-glow:      0 6px 20px rgba(255, 107, 91, 0.35);
+  --fig-ease-out:        cubic-bezier(0.16, 1, 0.30, 1);
+}
+
+/* — Hero search bar : glassmorphism over photo (landing only) — */
+body:not(.searched) .sbar {
+  background: var(--fig-glass-bg) !important;
+  border-color: var(--fig-glass-border) !important;
+  border-radius: 9999px;
+  backdrop-filter: blur(var(--fig-glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--fig-glass-blur)) saturate(140%);
+  box-shadow: var(--fig-glass-shadow);
+  padding: 4px 6px 4px 4px;
+  transition: background 240ms var(--fig-ease-out),
+              border-color 240ms var(--fig-ease-out),
+              box-shadow 240ms var(--fig-ease-out),
+              transform 240ms var(--fig-ease-out);
+}
+body:not(.searched) .sbar:focus-within {
+  background: var(--fig-glass-bg-hi) !important;
+  border-color: var(--fig-glass-border-hi) !important;
+  box-shadow: var(--fig-glass-shadow), 0 0 0 3px rgba(125, 216, 184, 0.18);
+  transform: translateY(-1px);
+}
+body:not(.searched) .sbar #q {
+  padding: 0.95rem 0.6rem 0.95rem 2.9rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+body:not(.searched) .sbar #q::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+}
+
+/* Search "go" — Figma's solid green pill with green glow */
+body:not(.searched) .sbar .sbar-go {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-radius: 9999px;
+  padding: 0 0.95rem;
+  height: 38px;
+  margin: 2px;
+  box-shadow: var(--fig-green-glow);
+  transition: background 200ms var(--fig-ease-out),
+              transform 200ms var(--fig-ease-out),
+              box-shadow 200ms var(--fig-ease-out);
+}
+body:not(.searched) .sbar .sbar-go:hover:not(:disabled) {
+  background: var(--color-primary-ink);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(14, 163, 123, 0.50);
+}
+body:not(.searched) .sbar .sbar-go:disabled {
+  background: rgba(125, 216, 184, 0.32);
+  color: rgba(255, 255, 255, 0.85);
+  box-shadow: none;
+}
+
+/* — Direct-search toggle button (the dashed entry button) — */
+body:not(.searched) .hero-action-btn.search-toggle-btn {
+  border-radius: 14px;
+  border-style: dashed;
+  border-width: 1.5px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
+  transition: background 220ms var(--fig-ease-out),
+              border-color 220ms var(--fig-ease-out),
+              transform 220ms var(--fig-ease-out),
+              box-shadow 220ms var(--fig-ease-out);
+}
+body:not(.searched) .hero-action-btn.search-toggle-btn:hover,
+body:not(.searched) .hero-action-btn.search-toggle-btn.active {
+  background: rgba(14, 163, 123, 0.18);
+  border-color: rgba(125, 216, 184, 0.55);
+  border-style: solid;
+  color: var(--color-primary-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(14, 163, 123, 0.22);
+}
+
+/* — Quick action grid: glass tiles with mint hover — */
+body:not(.searched) .qa-main .hero-action-btn {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+  transition: background 220ms var(--fig-ease-out),
+              border-color 220ms var(--fig-ease-out),
+              transform 220ms var(--fig-ease-out),
+              box-shadow 220ms var(--fig-ease-out);
+}
+body:not(.searched) .qa-main .hero-action-btn:hover {
+  background: rgba(14, 163, 123, 0.16);
+  border-color: rgba(125, 216, 184, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22),
+              0 0 0 1px rgba(125, 216, 184, 0.22) inset;
+}
+
+/* — Keyword chips : mint-on-hover treatment from Figma — */
+body:not(.searched) .lh {
+  border-radius: 9999px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  padding: 0 0.85rem;
+  height: 30px;
+  transition: background 180ms var(--fig-ease-out),
+              border-color 180ms var(--fig-ease-out),
+              color 180ms var(--fig-ease-out),
+              transform 180ms var(--fig-ease-out),
+              box-shadow 180ms var(--fig-ease-out);
+}
+body:not(.searched) .lh:hover {
+  background: rgba(14, 163, 123, 0.20) !important;
+  border-color: rgba(125, 216, 184, 0.55) !important;
+  color: var(--color-primary-soft) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(14, 163, 123, 0.18);
+}
+
+/* Compact-header (.searched) keyword chip + search bar : keep tone consistent */
+body.searched .sbar { border-radius: 14px; }
+body.searched .lh { border-radius: 9999px; font-weight: 600; }
+
+/* — Hero proof chips & eyebrow polish — */
+.p-proof-chip {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 0.7rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 180ms var(--fig-ease-out),
+              border-color 180ms var(--fig-ease-out),
+              color 180ms var(--fig-ease-out);
+}
+.p-proof-chip:hover {
+  border-color: rgba(125, 216, 184, 0.42);
+  color: var(--color-primary-soft);
+  background: rgba(14, 163, 123, 0.14);
+}
+
+.p-hero-eyebrow {
+  letter-spacing: 0.22em;
+  font-weight: 800;
+}
+
+/* — A/B entry rail : richer glass + green hover tint — */
+.p-entry-card {
+  border-radius: 18px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 220ms var(--fig-ease-out),
+              border-color 220ms var(--fig-ease-out),
+              background 220ms var(--fig-ease-out),
+              box-shadow 220ms var(--fig-ease-out);
+}
+.p-entry-card:hover,
+.p-entry-card:focus-visible {
+  border-color: rgba(125, 216, 184, 0.50);
+  background: rgba(14, 163, 123, 0.16);
+  box-shadow: 0 24px 52px rgba(0, 0, 0, 0.28),
+              0 0 0 1px rgba(125, 216, 184, 0.22) inset;
+}
+.p-entry-card:hover .p-entry-mark,
+.p-entry-card:focus-visible .p-entry-mark {
+  border-color: rgba(125, 216, 184, 0.70);
+  color: #ffffff;
+  background: rgba(14, 163, 123, 0.30);
+}
+.p-entry-mark {
+  transition: background 180ms var(--fig-ease-out),
+              border-color 180ms var(--fig-ease-out),
+              color 180ms var(--fig-ease-out);
+}
+
+/* — Section kickers / titles : tighten to Figma tracking — */
+.p-kicker {
+  letter-spacing: 0.18em;
+  font-weight: 900;
+}
+.p-section-title {
+  letter-spacing: -0.024em;
+}
+
+/* — Pathway / tool / source / how / reminder cards : Figma elevation + lift — */
+.p-pathway-card,
+.p-tool-card,
+.p-source-card,
+.p-how-step,
+.p-reminder-card {
+  transition: transform 220ms var(--fig-ease-out),
+              box-shadow 220ms var(--fig-ease-out),
+              border-color 220ms var(--fig-ease-out),
+              background 220ms var(--fig-ease-out);
+}
+.p-pathway-card:hover,
+.p-pathway-card:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: var(--fig-card-shadow-hi);
+  border-color: color-mix(in srgb, var(--p-green) 30%, var(--p-line));
+}
+.p-tool-card:hover,
+.p-tool-card:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: var(--fig-card-shadow-hi);
+  border-color: color-mix(in srgb, var(--p-green) 36%, var(--p-line));
+}
+.p-source-card,
+.p-how-step,
+.p-reminder-card {
+  box-shadow: var(--fig-card-shadow);
+}
+.p-source-card:hover,
+.p-how-step:hover,
+.p-reminder-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--fig-card-shadow-hi);
+}
+
+/* Tool card LIVE/PLANNED status pills tighter */
+.p-status {
+  letter-spacing: 0.10em;
+  font-weight: 900;
+  padding: 0 0.65rem;
+}
+
+/* — Pathway code chips inherit Figma's brand-deep palette — */
+.p-code {
+  letter-spacing: 0.02em;
+  background: color-mix(in srgb, var(--p-mint-soft) 80%, white);
+  color: var(--color-primary-ink);
+}
+
+/* — Source panel : richer Figma gradient + token border — */
+.p-source-panel {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--p-mint-soft) 70%, #ffffff) 0%,
+      color-mix(in srgb, var(--p-paper) 85%, #ffffff) 60%,
+      color-mix(in srgb, var(--p-coral-soft) 35%, #ffffff) 100%);
+  border-color: color-mix(in srgb, var(--p-green) 22%, var(--p-line));
+  box-shadow: var(--fig-card-shadow);
+}
+
+/* — Roadmap (.exp-row) : Figma's ringed-dot + hover scale — */
+.about-experience .exp-row {
+  transition: background 220ms var(--fig-ease-out),
+              transform 220ms var(--fig-ease-out);
+}
+.about-experience .exp-dot {
+  background: var(--color-accent);
+  box-shadow: 0 0 0 5px rgba(255, 184, 168, 0.32),
+              0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: transform 240ms var(--fig-ease-out),
+              box-shadow 240ms var(--fig-ease-out);
+}
+.about-experience .exp-row:hover .exp-dot {
+  transform: scale(1.18);
+  box-shadow: 0 0 0 7px rgba(255, 184, 168, 0.42),
+              0 4px 10px rgba(0, 0, 0, 0.08);
+}
+.about-experience .exp-year {
+  background: rgba(255, 250, 244, 0.85);
+  border: 1px solid var(--p-line-2);
+  box-shadow: var(--p-shadow-1);
+  letter-spacing: 0.02em;
+  font-weight: 900;
+}
+
+/* — Stat cards : Figma's ABS-coral big number + chip refinement — */
+.brand-hero-stats .stat-num {
+  color: var(--color-accent);
+  letter-spacing: -0.04em;
+  text-shadow: 0 2px 12px rgba(255, 107, 91, 0.18);
+}
+.brand-hero-stats .stat-card {
+  transition: transform 240ms var(--fig-ease-out),
+              box-shadow 240ms var(--fig-ease-out);
+}
+.brand-hero-stats .stat-card:hover {
+  transform: translateY(-4px);
+}
+.brand-hero-stats .stat-code-chip {
+  border-radius: 9999px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: color-mix(in srgb, var(--p-paper-2) 85%, white);
+  color: var(--color-primary-ink);
+  border: 1px solid var(--p-line-2);
+}
+
+/* — Hobby/value cards : add Figma's hover-lift + inner highlight — */
+.about-hobbies .hobby-card {
+  transition: transform 280ms var(--fig-ease-out),
+              box-shadow 280ms var(--fig-ease-out);
+}
+.about-hobbies .hobby-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--fig-card-shadow-hi);
+}
+
+/* — Brand-hero CTA buttons : Figma's white pill + lift — */
+.brand-hero .btn-primary,
+.brand-hero .btn-secondary {
+  border-radius: 14px;
+  letter-spacing: -0.005em;
+  transition: transform 200ms var(--fig-ease-out),
+              box-shadow 200ms var(--fig-ease-out),
+              background 200ms var(--fig-ease-out);
+}
+.brand-hero .btn-primary {
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+}
+.brand-hero .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22);
+}
+
+/* — Footer CTA panel : Figma's deep-green panel + coral primary glow — */
+.p-footer-cta {
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(14, 163, 123, 0.32), transparent 60%),
+    linear-gradient(135deg, rgba(11, 42, 36, 0.98), rgba(31, 79, 61, 0.96));
+  border: 1px solid rgba(125, 216, 184, 0.18);
+}
+.p-cta-btn {
+  letter-spacing: -0.005em;
+  transition: transform 200ms var(--fig-ease-out),
+              box-shadow 200ms var(--fig-ease-out),
+              background 200ms var(--fig-ease-out),
+              border-color 200ms var(--fig-ease-out);
+}
+.p-cta-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(244, 238, 224, 0.18);
+  border-color: rgba(244, 238, 224, 0.50);
+}
+.p-cta-btn.primary {
+  box-shadow: var(--fig-coral-glow);
+}
+.p-cta-btn.primary:hover {
+  background: var(--p-coral-deep);
+  border-color: var(--p-coral-deep);
+  box-shadow: 0 12px 28px rgba(255, 107, 91, 0.45);
+}
+
+/* — Figma footer hero (about-footer) : strengthen chip glass + title weight — */
+.figma-footer-hero-title {
+  letter-spacing: -0.024em;
+}
+.figma-footer-chips .footer-chip {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  letter-spacing: -0.005em;
+  font-weight: 700;
+  transition: background 180ms var(--fig-ease-out),
+              border-color 180ms var(--fig-ease-out),
+              color 180ms var(--fig-ease-out),
+              transform 180ms var(--fig-ease-out);
+}
+.figma-footer-chips .footer-chip:hover {
+  background: rgba(125, 216, 184, 0.20);
+  border-color: rgba(125, 216, 184, 0.45);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* — Reference disclaimer : softer cream tone over photo hero — */
+body:not(.searched) .reference-disclaimer {
+  color: rgba(244, 238, 224, 0.62);
+  letter-spacing: -0.005em;
+}
+
+/* — AI secondary link : Figma's coral-tinted pill — */
+body:not(.searched) .hero-ai-secondary .hero-ai-link {
+  background: rgba(255, 184, 168, 0.14);
+  border: 1px solid rgba(255, 184, 168, 0.30);
+  color: rgba(255, 210, 200, 0.92);
+  border-radius: 9999px;
+  padding: 0.45rem 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  transition: background 200ms var(--fig-ease-out),
+              border-color 200ms var(--fig-ease-out),
+              color 200ms var(--fig-ease-out),
+              transform 200ms var(--fig-ease-out);
+}
+body:not(.searched) .hero-ai-secondary .hero-ai-link:hover {
+  background: rgba(255, 184, 168, 0.26);
+  border-color: rgba(255, 184, 168, 0.55);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* — Visa-track cards in hero : align hover with Figma's mint-glow — */
+body:not(.searched) .visa-track-card {
+  border-radius: 18px;
+  transition: background 220ms var(--fig-ease-out),
+              border-color 220ms var(--fig-ease-out),
+              transform 220ms var(--fig-ease-out),
+              box-shadow 220ms var(--fig-ease-out);
+}
+body:not(.searched) .visa-track-card:hover {
+  background: rgba(14, 163, 123, 0.18) !important;
+  border-color: rgba(125, 216, 184, 0.50) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+}
+
+/* — Responsive polish : keep the search bar comfortable on small screens — */
+@media (max-width: 640px) {
+  body:not(.searched) .sbar {
+    border-radius: 18px;
+    padding: 6px;
+  }
+  body:not(.searched) .sbar .sbar-go {
+    height: 40px;
+    border-radius: 12px;
+    padding: 0 0.85rem;
+  }
+  body:not(.searched) .sbar #q {
+    padding: 0.85rem 0.5rem 0.85rem 2.6rem;
+    font-size: 0.95rem;
+  }
+  .p-proof-chip { font-size: 0.66rem; }
+  .figma-footer-chips .footer-chip { font-size: 0.78rem; padding: 0.4rem 0.8rem; }
+}
+
+/* — Reduced motion : disable hover lifts/transforms for the new rules — */
+@media (prefers-reduced-motion: reduce) {
+  body:not(.searched) .sbar:focus-within,
+  body:not(.searched) .sbar .sbar-go:hover:not(:disabled),
+  body:not(.searched) .hero-action-btn.search-toggle-btn:hover,
+  body:not(.searched) .qa-main .hero-action-btn:hover,
+  body:not(.searched) .lh:hover,
+  .p-entry-card:hover,
+  .p-pathway-card:hover,
+  .p-tool-card:hover,
+  .p-source-card:hover,
+  .p-how-step:hover,
+  .p-reminder-card:hover,
+  .brand-hero-stats .stat-card:hover,
+  .about-hobbies .hobby-card:hover,
+  .brand-hero .btn-primary:hover,
+  .p-cta-btn:hover,
+  .figma-footer-chips .footer-chip:hover,
+  body:not(.searched) .hero-ai-secondary .hero-ai-link:hover,
+  body:not(.searched) .visa-track-card:hover {
+    transform: none;
+  }
+}
+/* ============================================================
+   END FIGMA LANGUAGE MIGRATION
+   ============================================================ */
+
 </style>
 <script>
   window.PARADISO_BACKEND_URL = window.PARADISO_BACKEND_URL || "";
