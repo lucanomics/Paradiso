@@ -2903,6 +2903,28 @@ body:not(.searched) {
   background:
     linear-gradient(180deg, #f7f3eb 0%, #eef7f3 42%, #fff8f3 100%) !important;
 }
+/* Interactive cursor/touch spotlight on landing */
+body:not(.searched)::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      600px circle at var(--mx, 50%) var(--my, 35%),
+      color-mix(in srgb, var(--ac) 22%, transparent) 0%,
+      color-mix(in srgb, var(--cy) 14%, transparent) 35%,
+      transparent 70%
+    );
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  will-change: background-position;
+}
+body:not(.searched).bg-ready::before { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  body:not(.searched)::before { display: none; }
+}
 body:not(.searched) #starCanvas {
   opacity: 0 !important;
 }
@@ -5502,6 +5524,30 @@ body:not(.searched) .visa-track-card:hover {
 <a href="ai.html" class="ai-fab"><span class="fab-spark" aria-hidden="true">✦</span> AI로 더 자세히 묻기 <strong>Paradiso.ai</strong></a>
 
 <script>
+(() => {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const root = document.body;
+  let raf = 0, tx = 50, ty = 35, cx = 50, cy = 35;
+  const set = (x, y) => {
+    tx = (x / innerWidth) * 100;
+    ty = (y / innerHeight) * 100;
+    if (!raf) raf = requestAnimationFrame(tick);
+  };
+  const tick = () => {
+    cx += (tx - cx) * 0.12;
+    cy += (ty - cy) * 0.12;
+    root.style.setProperty('--mx', cx + '%');
+    root.style.setProperty('--my', cy + '%');
+    raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.1
+      ? requestAnimationFrame(tick) : 0;
+  };
+  addEventListener('pointermove', e => set(e.clientX, e.clientY), { passive: true });
+  addEventListener('touchmove', e => {
+    const t = e.touches[0]; if (t) set(t.clientX, t.clientY);
+  }, { passive: true });
+  requestAnimationFrame(() => root.classList.add('bg-ready'));
+})();
+
 // --- UI Helpers ---
 function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; }
 function escapeRegExp(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
