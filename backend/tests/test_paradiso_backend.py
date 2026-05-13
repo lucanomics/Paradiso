@@ -82,6 +82,35 @@ class VisasEndpointTests(unittest.TestCase):
         codes = {v.get("code") for v in resp.json().get("data", [])}
         self.assertIn("D-2", codes)
 
+    def test_response_declares_utf8_charset(self):
+        """Without an explicit charset, some legacy clients decode the
+        UTF-8 body as latin-1 and render Korean text as mojibake."""
+        client, _ = _client()
+        resp = client.get("/api/visas")
+        ctype = resp.headers.get("content-type", "")
+        self.assertIn("application/json", ctype.lower())
+        self.assertIn("charset=utf-8", ctype.lower())
+
+    def test_korean_text_round_trips_unchanged(self):
+        """The first record (K-ETA) ships with Korean text; any
+        encoding round-trip bug would replace those Hangul syllables
+        with mojibake or U+FFFD replacement characters."""
+        client, _ = _client()
+        resp = client.get("/api/visas")
+        # Strict UTF-8 decode of the raw body, then JSON parse.
+        body_bytes = resp.content
+        self.assertEqual(body_bytes.count("�".encode("utf-8")), 0,
+                         "response body contains U+FFFD replacement characters")
+        import json as _json
+        body = _json.loads(body_bytes.decode("utf-8"))
+        records = {v.get("code"): v for v in body.get("data", [])}
+        self.assertIn("K-ETA", records, "K-ETA record must be present")
+        self.assertEqual(
+            records["K-ETA"].get("name"),
+            "전자여행허가 (K-ETA) 종합 가이드",
+            "Korean name field on K-ETA must round-trip exactly",
+        )
+
 
 class AskEndpointSchemaTests(unittest.TestCase):
     """No LLM keys are set, so /api/ask returns 503 once the prompt
