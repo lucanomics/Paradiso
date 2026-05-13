@@ -77,13 +77,16 @@ if errors:
     raise SystemExit("\\n".join(errors))
 PY
 
-echo "[3/8] Validating current source manuals..."
+echo "[3/9] Checking visa data text integrity..."
+python3 scripts/check_visa_data_text_integrity.py
+
+echo "[4/9] Validating current source manuals..."
 python3 scripts/check_source_manuals.py
 
-echo "[4/8] Running git diff --check..."
+echo "[5/9] Running git diff --check..."
 git diff --check -- index.html ai.html visa_data.json doc_master.json scripts/check_repo.sh scripts/check_source_manuals.py scripts/check_i18n.js scripts/smoke_ai_payload.js docs/data docs/design docs/source-manuals docs/i18n docs/backend
 
-echo "[5/8] Validating EN/KO UI translations..."
+echo "[6/9] Validating EN/KO UI translations..."
 if [[ -f scripts/check_i18n.js ]]; then
   if command -v node >/dev/null 2>&1; then
     node scripts/check_i18n.js
@@ -96,7 +99,7 @@ else
   echo "INFO: scripts/check_i18n.js not present; skipping i18n validation."
 fi
 
-echo "[6/8] Scanning key user-facing files for forbidden branding strings..."
+echo "[7/9] Scanning key user-facing files for forbidden branding strings..."
 KEY_FILES=(
   "index.html"
   "ai.html"
@@ -132,10 +135,10 @@ else
   fi
 fi
 
-echo "[7/8] Verifying backend deploy-context visa data file is in sync..."
+echo "[8/9] Verifying backend deploy-context visa data file is in sync..."
 python3 scripts/sync_visa_data.py --check
 
-echo "[8/8] Running backend regression tests..."
+echo "[9/9] Running backend regression tests..."
 python3 backend/tests/test_paradiso_backend.py
 
 echo "Success: repository validation passed. JSON is valid, representative manual schema is valid, source manuals are registered, git diff check is clean, and no forbidden branding strings were found in existing key user-facing files."

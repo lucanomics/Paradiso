@@ -82,6 +82,34 @@ class VisasEndpointTests(unittest.TestCase):
         codes = {v.get("code") for v in resp.json().get("data", [])}
         self.assertIn("D-2", codes)
 
+    def test_no_replacement_character_in_response_strings(self):
+        client, _ = _client()
+        resp = client.get("/api/visas")
+        self.assertEqual(resp.status_code, 200)
+        body = resp.json()
+
+        def _iter_strings(value):
+            if isinstance(value, str):
+                yield value
+            elif isinstance(value, dict):
+                for v in value.values():
+                    yield from _iter_strings(v)
+            elif isinstance(value, list):
+                for item in value:
+                    yield from _iter_strings(item)
+
+        corrupted = [s for s in _iter_strings(body) if "\uFFFD" in s]
+        self.assertFalse(corrupted, f"/api/visas contains replacement char in strings: {corrupted[:3]!r}")
+
+    def test_keta_name_contains_korean_text(self):
+        client, _ = _client()
+        resp = client.get("/api/visas")
+        self.assertEqual(resp.status_code, 200)
+        rows = resp.json().get("data", [])
+        keta = next((row for row in rows if row.get("code") == "K-ETA"), None)
+        self.assertIsNotNone(keta, "K-ETA record must exist")
+        self.assertIn("전자여행허가", keta.get("name", ""))
+
 
 class AskEndpointSchemaTests(unittest.TestCase):
     """No LLM keys are set, so /api/ask returns 503 once the prompt
