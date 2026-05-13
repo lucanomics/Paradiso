@@ -470,10 +470,17 @@ def _normalize_visa_code(code: Optional[str]) -> Optional[str]:
 
     Examples:
         'd2', 'D2', 'd-2', 'D 2' -> 'D-2'
+        'd10', 'D10', 'd-10', 'D 10' -> 'D-10'
         'D-2-1' -> 'D-2-1'  (subcode preserved)
-        'd-2-1' -> 'D-2-1'
+        'D-10-1' -> 'D-10-1'
 
-    Codes that do not match the simple Letter+digits pattern (e.g. K-STAR,
+    The main number captures all consecutive digits, so two-digit codes
+    like D-10 / F-10 are preserved. A subcode is only recognized when an
+    explicit separator (hyphen or space) precedes it; without a separator,
+    digits are treated as part of the main code (e.g. 'd10' -> 'D-10',
+    not 'D-1-0').
+
+    Codes that do not match the Letter+digits pattern (e.g. K-STAR,
     REGION-S) pass through after strip+upper. Empty/None returns None.
     Scope is deliberately narrow: only letter+digit reshaping, no other
     alias resolution.
@@ -484,7 +491,7 @@ def _normalize_visa_code(code: Optional[str]) -> Optional[str]:
     if not cleaned:
         return None
     import re
-    match = re.match(r"^([A-Z])[\s\-]?(\d)(?:[\s\-]?(\d+))?$", cleaned)
+    match = re.match(r"^([A-Z])[\s\-]?(\d+)(?:[\s\-](\d+))?$", cleaned)
     if match:
         letter, num, subnum = match.group(1), match.group(2), match.group(3)
         if subnum:

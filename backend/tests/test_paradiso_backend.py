@@ -320,9 +320,28 @@ class VisaCodeNormalizationTests(unittest.TestCase):
             "  d-2  ": "D-2",
             "D-2-1": "D-2-1",
             "d-2-1": "D-2-1",
-            "d21": "D-2-1",
             "F-5": "F-5",
             "f5": "F-5",
+        }
+        for raw, expected in cases.items():
+            self.assertEqual(mod._normalize_visa_code(raw), expected, f"input={raw!r}")
+
+    def test_normalize_preserves_multi_digit_main_codes(self):
+        """Regression guard: D-10 / F-10 must not be split into D-1-0."""
+        _, mod = _client()
+        cases = {
+            "D-10": "D-10",
+            "d-10": "D-10",
+            "D10": "D-10",
+            "d10": "D-10",
+            "D 10": "D-10",
+            "F10": "F-10",
+            "f-10": "F-10",
+            "H-2": "H-2",
+            # Subcodes on multi-digit main codes still parse when an
+            # explicit separator precedes the subcode.
+            "D-10-1": "D-10-1",
+            "d-10-1": "D-10-1",
         }
         for raw, expected in cases.items():
             self.assertEqual(mod._normalize_visa_code(raw), expected, f"input={raw!r}")
