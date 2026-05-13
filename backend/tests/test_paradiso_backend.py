@@ -327,7 +327,8 @@ class VisaCodeNormalizationTests(unittest.TestCase):
             self.assertEqual(mod._normalize_visa_code(raw), expected, f"input={raw!r}")
 
     def test_normalize_preserves_multi_digit_main_codes(self):
-        """Regression guard: D-10 / F-10 must not be split into D-1-0."""
+        """Regression guard for the Codex P1 finding: D-10 / E-10 / F-10
+        must not be rewritten to D-1-0 / E-1-0 / F-1-0."""
         _, mod = _client()
         cases = {
             "D-10": "D-10",
@@ -335,16 +336,34 @@ class VisaCodeNormalizationTests(unittest.TestCase):
             "D10": "D-10",
             "d10": "D-10",
             "D 10": "D-10",
+            "d 10": "D-10",
+            "E10": "E-10",
+            "E-10": "E-10",
             "F10": "F-10",
+            "F-10": "F-10",
             "f-10": "F-10",
             "H-2": "H-2",
             # Subcodes on multi-digit main codes still parse when an
             # explicit separator precedes the subcode.
             "D-10-1": "D-10-1",
             "d-10-1": "D-10-1",
+            # Subcodes on single-digit main codes parse with or without
+            # a leading separator before the main number.
+            "d2-1": "D-2-1",
+            "D2-1": "D-2-1",
         }
         for raw, expected in cases.items():
             self.assertEqual(mod._normalize_visa_code(raw), expected, f"input={raw!r}")
+
+    def test_normalize_does_not_split_multi_digit_into_subcode(self):
+        """Explicit anti-regression: 'D-10' must never come out as 'D-1-0'."""
+        _, mod = _client()
+        for raw in ("D-10", "d-10", "D10", "d10", "E10", "E-10", "F10", "F-10"):
+            self.assertNotEqual(
+                mod._normalize_visa_code(raw),
+                f"{raw[0].upper()}-1-0",
+                f"input={raw!r} was incorrectly split into a subcode",
+            )
 
     def test_normalize_passes_through_special_codes(self):
         _, mod = _client()
