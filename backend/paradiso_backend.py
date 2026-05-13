@@ -22,7 +22,17 @@ from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
+
+
+class UTF8JSONResponse(JSONResponse):
+    # Starlette only auto-appends `charset=utf-8` to text/* media types,
+    # so the default application/json response carries no charset and
+    # legacy clients (older browsers, some proxies, terminal viewers)
+    # may decode the UTF-8 body as latin-1 and render Korean text as
+    # mojibake. JSON is always UTF-8 (RFC 8259); say so explicitly.
+    media_type = "application/json; charset=utf-8"
 
 try:  # httpx is listed in requirements.txt; guard so the file still imports
     import httpx  # type: ignore
@@ -64,7 +74,11 @@ CORS_ALLOW_ORIGINS = [
 # App
 # ---------------------------------------------------------------------------
 
-app = FastAPI(title="Paradiso Backend", version="0.1.0")
+app = FastAPI(
+    title="Paradiso Backend",
+    version="0.1.0",
+    default_response_class=UTF8JSONResponse,
+)
 
 app.add_middleware(
     CORSMiddleware,

@@ -82,33 +82,34 @@ class VisasEndpointTests(unittest.TestCase):
         codes = {v.get("code") for v in resp.json().get("data", [])}
         self.assertIn("D-2", codes)
 
-    def test_no_replacement_character_in_response_strings(self):
+    def test_response_declares_utf8_charset(self):
+        """Without an explicit charset, some legacy clients decode the
+        UTF-8 body as latin-1 and render Korean text as mojibake."""
         client, _ = _client()
         resp = client.get("/api/visas")
-        self.assertEqual(resp.status_code, 200)
-        body = resp.json()
+        ctype = resp.headers.get("content-type", "")
+        self.assertIn("application/json", ctype.lower())
+        self.assertIn("charset=utf-8", ctype.lower())
 
-        def _iter_strings(value):
-            if isinstance(value, str):
-                yield value
-            elif isinstance(value, dict):
-                for v in value.values():
-                    yield from _iter_strings(v)
-            elif isinstance(value, list):
-                for item in value:
-                    yield from _iter_strings(item)
-
-        corrupted = [s for s in _iter_strings(body) if "\uFFFD" in s]
-        self.assertFalse(corrupted, f"/api/visas contains replacement char in strings: {corrupted[:3]!r}")
-
-    def test_keta_name_contains_korean_text(self):
+    def test_korean_text_round_trips_unchanged(self):
+        """The first record (K-ETA) ships with Korean text; any
+        encoding round-trip bug would replace those Hangul syllables
+        with mojibake or U+FFFD replacement characters."""
         client, _ = _client()
         resp = client.get("/api/visas")
-        self.assertEqual(resp.status_code, 200)
-        rows = resp.json().get("data", [])
-        keta = next((row for row in rows if row.get("code") == "K-ETA"), None)
-        self.assertIsNotNone(keta, "K-ETA record must exist")
-        self.assertIn("전자여행허가", keta.get("name", ""))
+        # Strict UTF-8 decode of the raw body, then JSON parse.
+        body_bytes = resp.content
+        self.assertEqual(body_bytes.count("�".encode("utf-8")), 0,
+                         "response body contains U+FFFD replacement characters")
+        import json as _json
+        body = _json.loads(body_bytes.decode("utf-8"))
+        records = {v.get("code"): v for v in body.get("data", [])}
+        self.assertIn("K-ETA", records, "K-ETA record must be present")
+        self.assertEqual(
+            records["K-ETA"].get("name"),
+            "전자여행허가 (K-ETA) 종합 가이드",
+            "Korean name field on K-ETA must round-trip exactly",
+        )
 
 
 class AskEndpointSchemaTests(unittest.TestCase):
