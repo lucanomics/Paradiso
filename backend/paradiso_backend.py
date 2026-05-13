@@ -465,18 +465,53 @@ def _reset_grounding_cache_for_tests() -> None:
     _GROUNDING_CACHE = None
 
 
+def _normalize_visa_code(code: Optional[str]) -> Optional[str]:
+    """Normalize a visa code to the canonical 'A-N' form.
+
+    Examples:
+        'd2', 'D2', 'd-2', 'D 2' -> 'D-2'
+        'd10', 'D10', 'd-10', 'D 10' -> 'D-10'
+        'D-2-1' -> 'D-2-1'  (subcode preserved)
+        'D-10-1' -> 'D-10-1'
+
+    The main number captures all consecutive digits, so two-digit codes
+    like D-10 / F-10 are preserved. A subcode is only recognized when an
+    explicit separator (hyphen or space) precedes it; without a separator,
+    digits are treated as part of the main code (e.g. 'd10' -> 'D-10',
+    not 'D-1-0').
+
+    Codes that do not match the Letter+digits pattern (e.g. K-STAR,
+    REGION-S) pass through after strip+upper. Empty/None returns None.
+    Scope is deliberately narrow: only letter+digit reshaping, no other
+    alias resolution.
+    """
+    if not isinstance(code, str):
+        return None
+    cleaned = code.strip().upper()
+    if not cleaned:
+        return None
+    import re
+    match = re.match(r"^([A-Z])[\s\-]?(\d+)(?:[\s\-](\d+))?$", cleaned)
+    if match:
+        letter, num, subnum = match.group(1), match.group(2), match.group(3)
+        if subnum:
+            return f"{letter}-{num}-{subnum}"
+        return f"{letter}-{num}"
+    return cleaned
+
+
 def _detect_visa_code(payload_code: Optional[str], visa_data: Optional[Dict[str, Any]], text: str) -> Optional[str]:
     """Best-effort visa code detection.
 
     Priority: explicit visa_code -> visa_data.code -> regex match in text.
-    The regex only matches the small set of codes we currently ground for;
-    add to it deliberately, not opportunistically.
+    Explicit payload values are normalized so 'd2', 'D2', 'd-2' all resolve
+    to 'D-2' before the grounding lookup runs.
     """
     import re
 
     for candidate in (payload_code, (visa_data or {}).get("code") if visa_data else None):
         if isinstance(candidate, str) and candidate.strip():
-            return candidate.strip().upper()
+            return _normalize_visa_code(candidate)
     if not text:
         return None
     # Match "D-2", "D2", "유학(D-2)" etc., case-insensitive.
@@ -520,13 +555,34 @@ def _select_grounding(visa_code: Optional[str], task_type: Optional[str]) -> Opt
     return None
 
 
-def _build_grounded_prompt(user_prompt: str, grounding: Dict[str, Any], bundle: Dict[str, Any]) -> str:
+def _answer_language_instruction(lang: Optional[str]) -> str:
+    """Map a request lang hint to a one-line answer-language instruction.
+
+    The grounding content (제출서류, 출처) is Korea-specific regardless of
+    answer language. Only the language the model writes the answer in
+    varies.
+    """
+    normalized = (lang or "").strip().lower()
+    if normalized == "ko":
+        return "- 한국어로 답하십시오."
+    if normalized == "en":
+        return "- Answer in English."
+    return "- Answer in the same language as the user's question."
+
+
+def _build_grounded_prompt(
+    user_prompt: str,
+    grounding: Dict[str, Any],
+    bundle: Dict[str, Any],
+    lang: Optional[str] = None,
+) -> str:
     """Inject Korea-specific manual context into the user prompt.
 
     The wording explicitly instructs the model to stay within Korean
     immigration scope and to cite the manual, which guards against generic
     global-immigration boilerplate (USCIS, Home Office, etc.) and keeps the
-    answer aligned with the source.
+    answer aligned with the source. The answer language is taken from the
+    request `lang` field — Korea-specific grounding is preserved regardless.
     """
     docs = grounding.get("required_documents", []) or []
     caveats = grounding.get("caveats", []) or []
@@ -539,6 +595,7 @@ def _build_grounded_prompt(user_prompt: str, grounding: Dict[str, Any], bundle: 
 
     docs_block = "\n".join(f"- {item}" for item in docs)
     caveats_block = "\n".join(f"- {item}" for item in caveats)
+    answer_language_line = _answer_language_instruction(lang)
 
     return (
         "당신은 대한민국 출입국·외국인정책본부의 공식 매뉴얼을 근거로 답하는 한국 비자 안내 도우미입니다.\n"
@@ -556,7 +613,7 @@ def _build_grounded_prompt(user_prompt: str, grounding: Dict[str, Any], bundle: 
         "[사용자 질문]\n"
         f"{user_prompt}\n\n"
         "[답변 지침]\n"
-        "- 한국어로 답하십시오.\n"
+        f"{answer_language_line}\n"
         "- 위 제출서류와 유의사항을 명시적으로 인용하십시오.\n"
         f"- 출처를 다음과 같이 명시하십시오: {source_title} ({source_date}), {issuing_body}.\n"
         "- 관할 출입국·외국인청/사무소/출장소가 개별 사안에 따라 서류를 추가하거나 면제할 수 있다는 점을 명시하십시오."
@@ -643,7 +700,7 @@ async def ask(req: AskRequest) -> AskResponse:
     final_prompt = prompt
     if grounding is not None:
         bundle = _load_stay_manual_grounding() or {}
-        final_prompt = _build_grounded_prompt(prompt, grounding, bundle)
+        final_prompt = _build_grounded_prompt(prompt, grounding, bundle, lang=req.lang)
         grounding_sources = [_grounding_source_summary(grounding, bundle)]
 
     if OPENROUTER_API_KEY:

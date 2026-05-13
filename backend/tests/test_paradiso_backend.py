@@ -305,5 +305,165 @@ class GroundingHelperTests(unittest.TestCase):
             self.assertNotIn(forbidden, built)
 
 
+class VisaCodeNormalizationTests(unittest.TestCase):
+    """The grounding lookup expects 'D-2'; payloads in the wild send d2,
+    D2, d-2, etc. _normalize_visa_code must reshape those equivalently."""
+
+    def test_normalize_variants(self):
+        _, mod = _client()
+        cases = {
+            "D-2": "D-2",
+            "d-2": "D-2",
+            "D2": "D-2",
+            "d2": "D-2",
+            "D 2": "D-2",
+            "  d-2  ": "D-2",
+            "D-2-1": "D-2-1",
+            "d-2-1": "D-2-1",
+            "F-5": "F-5",
+            "f5": "F-5",
+        }
+        for raw, expected in cases.items():
+            self.assertEqual(mod._normalize_visa_code(raw), expected, f"input={raw!r}")
+
+    def test_normalize_preserves_multi_digit_main_codes(self):
+        """Regression guard for the Codex P1 finding: D-10 / E-10 / F-10
+        must not be rewritten to D-1-0 / E-1-0 / F-1-0."""
+        _, mod = _client()
+        cases = {
+            "D-10": "D-10",
+            "d-10": "D-10",
+            "D10": "D-10",
+            "d10": "D-10",
+            "D 10": "D-10",
+            "d 10": "D-10",
+            "E10": "E-10",
+            "E-10": "E-10",
+            "F10": "F-10",
+            "F-10": "F-10",
+            "f-10": "F-10",
+            "H-2": "H-2",
+            # Subcodes on multi-digit main codes still parse when an
+            # explicit separator precedes the subcode.
+            "D-10-1": "D-10-1",
+            "d-10-1": "D-10-1",
+            # Subcodes on single-digit main codes parse with or without
+            # a leading separator before the main number.
+            "d2-1": "D-2-1",
+            "D2-1": "D-2-1",
+        }
+        for raw, expected in cases.items():
+            self.assertEqual(mod._normalize_visa_code(raw), expected, f"input={raw!r}")
+
+    def test_normalize_does_not_split_multi_digit_into_subcode(self):
+        """Explicit anti-regression: 'D-10' must never come out as 'D-1-0'."""
+        _, mod = _client()
+        for raw in ("D-10", "d-10", "D10", "d10", "E10", "E-10", "F10", "F-10"):
+            self.assertNotEqual(
+                mod._normalize_visa_code(raw),
+                f"{raw[0].upper()}-1-0",
+                f"input={raw!r} was incorrectly split into a subcode",
+            )
+
+    def test_normalize_passes_through_special_codes(self):
+        _, mod = _client()
+        # K-STAR and REGION-S are not Letter+digits; they pass through.
+        self.assertEqual(mod._normalize_visa_code("K-STAR"), "K-STAR")
+        self.assertEqual(mod._normalize_visa_code("k-star"), "K-STAR")
+        self.assertEqual(mod._normalize_visa_code("REGION-S"), "REGION-S")
+
+    def test_normalize_empty_and_none(self):
+        _, mod = _client()
+        self.assertIsNone(mod._normalize_visa_code(None))
+        self.assertIsNone(mod._normalize_visa_code(""))
+        self.assertIsNone(mod._normalize_visa_code("   "))
+
+
+class AskEndpointVisaCodeNormalizationTests(unittest.TestCase):
+    """End-to-end: lowercase / no-hyphen variants of D-2 must still trip
+    the grounding selector."""
+
+    PROMPT = "유학 비자로 체류 중인데 연장 신청 서류가 무엇인가요?"
+
+    def _post(self, payload):
+        client, _ = _client()
+        return client.post("/api/ask", json=payload)
+
+    def test_lowercase_d2_payload_triggers_grounding(self):
+        resp = self._post({"question": self.PROMPT, "visa_code": "d2"})
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-2")
+
+    def test_uppercase_no_hyphen_d2_payload_triggers_grounding(self):
+        resp = self._post({"question": self.PROMPT, "visa_code": "D2"})
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-2")
+
+    def test_lowercase_visa_data_code_triggers_grounding(self):
+        resp = self._post({
+            "question": self.PROMPT,
+            "visa_data": {"code": "d2", "name": "유학"},
+        })
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-2")
+
+
+class GroundedPromptLanguageTests(unittest.TestCase):
+    """The Korea-specific grounding content stays the same, but the
+    'answer language' instruction must follow req.lang."""
+
+    USER_Q = "What documents do I need to extend my D-2 student visa stay?"
+
+    def _built(self, lang):
+        _, mod = _client()
+        bundle = mod._load_stay_manual_grounding()
+        grounding = mod._select_grounding("D-2", "extension")
+        return mod._build_grounded_prompt(self.USER_Q, grounding, bundle, lang=lang)
+
+    def test_lang_en_instructs_english_not_korean(self):
+        built = self._built("en")
+        self.assertIn("Answer in English.", built)
+        self.assertNotIn("한국어로 답하십시오.", built)
+        # Korea-specific source attribution still present.
+        self.assertIn("외국인체류 안내매뉴얼", built)
+        self.assertIn("법무부 출입국·외국인정책본부", built)
+
+    def test_lang_ko_instructs_korean(self):
+        built = self._built("ko")
+        self.assertIn("한국어로 답하십시오.", built)
+        self.assertNotIn("Answer in English.", built)
+        self.assertIn("외국인체류 안내매뉴얼", built)
+
+    def test_unknown_lang_falls_back_to_user_language(self):
+        built = self._built(None)
+        self.assertIn("Answer in the same language as the user's question.", built)
+        self.assertNotIn("한국어로 답하십시오.", built)
+        self.assertNotIn("Answer in English.", built)
+        # Korea-specific source attribution unchanged.
+        self.assertIn("외국인체류 안내매뉴얼", built)
+
+    def test_unrecognized_lang_value_also_falls_back(self):
+        built = self._built("fr")
+        self.assertIn("Answer in the same language as the user's question.", built)
+
+    def test_answer_language_helper_directly(self):
+        _, mod = _client()
+        self.assertEqual(mod._answer_language_instruction("ko"), "- 한국어로 답하십시오.")
+        self.assertEqual(mod._answer_language_instruction("KO"), "- 한국어로 답하십시오.")
+        self.assertEqual(mod._answer_language_instruction("en"), "- Answer in English.")
+        self.assertEqual(mod._answer_language_instruction("EN"), "- Answer in English.")
+        for unknown in (None, "", "fr", "ja", "x"):
+            self.assertEqual(
+                mod._answer_language_instruction(unknown),
+                "- Answer in the same language as the user's question.",
+            )
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
