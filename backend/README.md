@@ -157,6 +157,55 @@ alias. Schema-only fields (`visa_code`, `visa_data`, …) are accepted
 to keep the contract stable even when they are not yet consumed by
 answer generation.
 
+### Narrow manual grounding (D-2 체류기간 연장허가)
+
+`/api/ask` ships a single, deterministic grounding path for the
+**D-2 (유학) 체류기간 연장허가** question. This is intentionally narrow
+and is **not** a full RAG pipeline:
+
+- The backend detects `visa_code = "D-2"` (from payload, `visa_data.code`,
+  or a regex match in the prompt) and `task_type = "extension"` (from
+  Korean/English wording such as "체류기간 연장", "연장 신청",
+  "extension", "renew visa").
+- When both fire, the prompt is wrapped with a Korea-specific context
+  block built from
+  `backend/data/manual_grounding/stay_manual_grounding_2026_05.json`,
+  which mirrors the 제출서류 listed in the
+  *외국인체류 안내매뉴얼 (2026.5)* — 법무부 출입국·외국인정책본부.
+- The response carries grounding metadata on the top-level
+  `AskResponse`:
+
+  ```json
+  {
+    "answer": "...",
+    "provider": "openrouter",
+    "model": "...",
+    "grounding_used": true,
+    "grounding_sources": [
+      {
+        "source_file": "docs/source-manuals/2026-05/stay_manual_2026_05.pdf",
+        "source_title": "외국인체류 안내매뉴얼",
+        "source_date": "2026.5",
+        "issuing_body": "법무부 출입국·외국인정책본부",
+        "visa_code": "D-2",
+        "procedure_type": "체류기간 연장허가",
+        "section": "유학(D-2)",
+        "page_range": "43-44",
+        "source_verification_status": "verified_locally",
+        "source_confidence": "high"
+      }
+    ],
+    "visa_code_detected": "D-2",
+    "task_type_detected": "extension"
+  }
+  ```
+
+  When no LLM provider is configured, the same metadata is returned
+  inside the 503 `detail`.
+
+- All other questions fall through to the existing ungrounded path with
+  `grounding_used: false`. No law API, no manual chunking, no full RAG.
+
 `/health` should return `status: "ok"` and a `providers` map showing
 which integrations are configured. `/api/visas` should return a non-
 empty `data` array and `source_type: "backend-data"` (no `warning`
