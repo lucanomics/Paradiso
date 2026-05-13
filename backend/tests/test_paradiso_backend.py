@@ -39,6 +39,7 @@ def _client():
     import paradiso_backend  # noqa: WPS433 — late import after sys.path setup
 
     paradiso_backend._reset_visas_cache_for_tests()
+    paradiso_backend._reset_grounding_cache_for_tests()
     return TestClient(paradiso_backend.app), paradiso_backend
 
 
@@ -139,6 +140,169 @@ class AskEndpointSchemaTests(unittest.TestCase):
             "question": "tertiary",
         })
         self.assertEqual(resp.status_code, 503, resp.text)
+
+
+class GroundingFixtureTests(unittest.TestCase):
+    """The grounding fixture is shipped with the deploy context, must be
+    valid JSON, and must contain honest, non-fabricated metadata."""
+
+    FIXTURE = BACKEND_DIR / "data" / "manual_grounding" / "stay_manual_grounding_2026_05.json"
+
+    def test_fixture_present(self):
+        self.assertTrue(self.FIXTURE.is_file(), f"missing fixture: {self.FIXTURE}")
+
+    def test_fixture_metadata_is_korea_specific(self):
+        import json as _json
+        data = _json.loads(self.FIXTURE.read_text(encoding="utf-8"))
+        self.assertEqual(data.get("source_file"), "docs/source-manuals/2026-05/stay_manual_2026_05.pdf")
+        self.assertEqual(data.get("source_title"), "외국인체류 안내매뉴얼")
+        self.assertEqual(data.get("source_date"), "2026.5")
+        self.assertEqual(data.get("issuing_body"), "법무부 출입국·외국인정책본부")
+        groundings = data.get("groundings") or []
+        self.assertTrue(groundings, "groundings list must not be empty")
+        d2_ext = next(
+            (g for g in groundings
+             if g.get("visa_code") == "D-2"
+             and g.get("procedure_type") == "체류기간 연장허가"),
+            None,
+        )
+        self.assertIsNotNone(d2_ext, "D-2 체류기간 연장허가 grounding entry missing")
+        self.assertEqual(d2_ext.get("section"), "유학(D-2)")
+        # page_range must be either null (unverified) or a non-empty string.
+        page_range = d2_ext.get("page_range")
+        self.assertTrue(page_range is None or (isinstance(page_range, str) and page_range.strip()))
+        # Verification metadata must be present and explicit.
+        self.assertIn(d2_ext.get("source_verification_status"), {"verified_locally", "unverified", "pending_verification"})
+        self.assertIsInstance(d2_ext.get("verification_note"), str)
+        self.assertTrue(d2_ext["verification_note"].strip())
+
+    def test_fixture_documents_are_korea_specific_and_conservative(self):
+        import json as _json
+        data = _json.loads(self.FIXTURE.read_text(encoding="utf-8"))
+        d2_ext = next(
+            g for g in data["groundings"]
+            if g.get("visa_code") == "D-2"
+            and g.get("procedure_type") == "체류기간 연장허가"
+        )
+        docs = " ".join(d2_ext.get("required_documents", []))
+        # Must include Korea-specific stay-manual items.
+        for needle in ("신청서", "여권", "외국인등록증", "수수료", "재정입증", "체류지 입증서류"):
+            self.assertIn(needle, docs, f"expected '{needle}' in required_documents")
+        # Must NOT include generic global immigration items.
+        forbidden = (
+            "USCIS",
+            "Home Office",
+            "embassy",
+            "consulate",
+            "해당 국가",
+            "본인이 체류 중인 국가",
+        )
+        haystack = docs + " " + " ".join(d2_ext.get("caveats", []))
+        for needle in forbidden:
+            self.assertNotIn(
+                needle, haystack,
+                f"grounding must not contain generic/global wording: {needle!r}",
+            )
+
+
+class AskEndpointGroundingTests(unittest.TestCase):
+    """Verify that D-2 + 체류기간 연장 questions select the grounding,
+    and unrelated questions do not. With no LLM keys we still get a 503,
+    but the response detail carries the grounding metadata."""
+
+    def _post(self, payload):
+        client, _ = _client()
+        return client.post("/api/ask", json=payload)
+
+    def test_d2_extension_korean_question_selects_grounding(self):
+        resp = self._post({
+            "question": "D-2 비자로 체류중인 경우에는 비자 연장 신청시 서류가 무엇이 필요합니까?",
+            "visa_code": "D-2",
+            "lang": "ko",
+        })
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-2")
+        self.assertEqual(detail.get("task_type_detected"), "extension")
+        sources = detail.get("grounding_sources") or []
+        self.assertEqual(len(sources), 1)
+        src = sources[0]
+        self.assertEqual(src.get("source_file"), "docs/source-manuals/2026-05/stay_manual_2026_05.pdf")
+        self.assertEqual(src.get("source_title"), "외국인체류 안내매뉴얼")
+        self.assertEqual(src.get("source_date"), "2026.5")
+        self.assertEqual(src.get("visa_code"), "D-2")
+        self.assertEqual(src.get("procedure_type"), "체류기간 연장허가")
+
+    def test_d2_extension_detection_from_text_only(self):
+        """No explicit visa_code in payload; detection must still fire."""
+        resp = self._post({
+            "question": "유학(D-2) 자격으로 체류 중인데 체류기간 연장허가 신청에 필요한 서류는?",
+        })
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-2")
+        self.assertEqual(detail.get("task_type_detected"), "extension")
+
+    def test_d2_extension_english_wording(self):
+        resp = self._post({
+            "question": "What documents do I need to extend my D-2 student visa stay?",
+            "visa_code": "D-2",
+        })
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-2")
+        self.assertEqual(detail.get("task_type_detected"), "extension")
+
+    def test_non_d2_question_does_not_use_grounding(self):
+        resp = self._post({
+            "question": "E-7 비자 연장 서류는?",
+            "visa_code": "E-7",
+        })
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("grounding_sources"), [])
+        # Task is still detected as extension; only the grounding gate is narrow.
+        self.assertEqual(detail.get("visa_code_detected"), "E-7")
+        self.assertEqual(detail.get("task_type_detected"), "extension")
+
+    def test_d2_non_extension_question_does_not_use_grounding(self):
+        resp = self._post({
+            "question": "D-2 자격 신청에 필요한 학력 증빙은 무엇인가요?",
+            "visa_code": "D-2",
+        })
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-2")
+        self.assertIsNone(detail.get("task_type_detected"))
+
+
+class GroundingHelperTests(unittest.TestCase):
+    """Unit tests for the pure helpers — no FastAPI client involved."""
+
+    def test_grounded_prompt_includes_source_attribution_and_documents(self):
+        client, mod = _client()
+        bundle = mod._load_stay_manual_grounding()
+        self.assertIsNotNone(bundle)
+        grounding = mod._select_grounding("D-2", "extension")
+        self.assertIsNotNone(grounding)
+        user_q = "D-2 연장 서류 알려줘"
+        built = mod._build_grounded_prompt(user_q, grounding, bundle)
+        self.assertIn(user_q, built)
+        self.assertIn("외국인체류 안내매뉴얼", built)
+        self.assertIn("2026.5", built)
+        self.assertIn("법무부 출입국·외국인정책본부", built)
+        self.assertIn("유학(D-2)", built)
+        self.assertIn("체류기간 연장허가", built)
+        self.assertIn("재정입증 서류", built)
+        self.assertIn("체류지 입증서류", built)
+        # Guardrails against generic/global content.
+        for forbidden in ("USCIS", "Home Office", "해당 국가"):
+            self.assertNotIn(forbidden, built)
 
 
 if __name__ == "__main__":
