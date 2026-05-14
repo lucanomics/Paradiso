@@ -449,10 +449,14 @@ def _reset_visas_cache_for_tests() -> None:
 # Manual grounding (narrow, deterministic)
 # ---------------------------------------------------------------------------
 #
-# This is intentionally a single-file lookup, not a full RAG pipeline. The
-# only currently-supported (visa_code, procedure_type) pair is
-# ("D-2", "체류기간 연장허가"). Anything else falls through to the
-# ungrounded path so behavior is unchanged for unrelated questions.
+# This is intentionally a single-file lookup, not a full RAG pipeline. Each
+# supported (visa_code, procedure_type) pair must be backed by a verified
+# entry in the stay_manual_grounding_2026_05.json fixture. Currently grounded:
+#   - ("D-2", "체류기간 연장허가")
+#   - ("D-4", "체류기간 연장허가")  # 어학연수생(D-4-1, D-4-7) only
+#   - ("E-7", "체류기간 연장허가")
+# Anything else falls through to the ungrounded path so behavior is unchanged
+# for questions outside the verified scope.
 
 _STAY_MANUAL_GROUNDING_FILE = "stay_manual_grounding_2026_05.json"
 _GROUNDING_CACHE: Optional[Dict[str, Any]] = None
@@ -521,12 +525,22 @@ def _normalize_visa_code(code: Optional[str]) -> Optional[str]:
     return cleaned
 
 
+# Visa codes for which a deterministic grounding entry exists. Used to
+# bound the text-detection regex so we never claim detection for a code
+# that has no backing grounding entry.
+_GROUNDED_VISA_CODES: tuple = ("D-2", "D-4", "E-7")
+
+
 def _detect_visa_code(payload_code: Optional[str], visa_data: Optional[Dict[str, Any]], text: str) -> Optional[str]:
     """Best-effort visa code detection.
 
     Priority: explicit visa_code -> visa_data.code -> regex match in text.
     Explicit payload values are normalized so 'd2', 'D2', 'd-2' all resolve
-    to 'D-2' before the grounding lookup runs.
+    to 'D-2' before the grounding lookup runs. Text detection is restricted
+    to visa codes that currently have a verified grounding entry; codes
+    outside that set still resolve from explicit payload fields but are
+    not inferred from free-text alone (so an unrelated mention of, say,
+    'F-2' in a prompt does not trigger a phantom detection).
     """
     import re
 
@@ -535,10 +549,13 @@ def _detect_visa_code(payload_code: Optional[str], visa_data: Optional[Dict[str,
             return _normalize_visa_code(candidate)
     if not text:
         return None
-    # Match "D-2", "D2", "유학(D-2)" etc., case-insensitive.
-    match = re.search(r"\bD[\s-]?2\b", text, flags=re.IGNORECASE)
-    if match:
-        return "D-2"
+    # Match "D-2", "D2", "유학(D-2)" etc. (and equivalents for D-4 / E-7),
+    # case-insensitive. The 1-9 digit class avoids accidental two-digit
+    # matches like 'D-22' or 'E-71'.
+    for letter, digit in (("D", "2"), ("D", "4"), ("E", "7")):
+        pattern = rf"\b{letter}[\s-]?{digit}\b(?!-?\d)"
+        if re.search(pattern, text, flags=re.IGNORECASE):
+            return f"{letter}-{digit}"
     return None
 
 
@@ -564,14 +581,25 @@ def _detect_task_type(text: str) -> Optional[str]:
 
 
 def _select_grounding(visa_code: Optional[str], task_type: Optional[str]) -> Optional[Dict[str, Any]]:
-    """Return the grounding record for the given (visa_code, task_type), or None."""
-    if visa_code != "D-2" or task_type != "extension":
+    """Return the grounding record for the given (visa_code, task_type), or None.
+
+    Only (grounded_visa_code, "extension") pairs select a grounding entry.
+    The procedure_type stored on each entry must match "체류기간 연장허가"
+    for the extension task. Codes outside _GROUNDED_VISA_CODES return None
+    so unrelated visa categories are unaffected.
+    """
+    if task_type != "extension":
+        return None
+    if visa_code not in _GROUNDED_VISA_CODES:
         return None
     bundle = _load_stay_manual_grounding()
     if not bundle:
         return None
     for entry in bundle.get("groundings", []):
-        if entry.get("visa_code") == "D-2" and entry.get("procedure_type") == "체류기간 연장허가":
+        if (
+            entry.get("visa_code") == visa_code
+            and entry.get("procedure_type") == "체류기간 연장허가"
+        ):
             return entry
     return None
 
@@ -618,13 +646,16 @@ def _build_grounded_prompt(
     caveats_block = "\n".join(f"- {item}" for item in caveats)
     answer_language_line = _answer_language_instruction(lang)
 
+    section_label = grounding.get("section") or grounding.get("visa_code", "")
+    procedure_label = grounding.get("procedure_type", "체류기간 연장허가")
     return (
         "당신은 대한민국 출입국·외국인정책본부의 공식 매뉴얼을 근거로 답하는 한국 비자 안내 도우미입니다.\n"
         "아래 '참고 자료' 범위 안에서만 답하고, 다른 나라의 이민 절차나 일반적인 글로벌 이민 안내로"
         " 확장하지 마십시오. 모호한 표현 대신 한국의 출입국 제도를 구체적으로 적시하고,"
-        " 매뉴얼에 없는 항목을 임의로 추가하지 마십시오.\n\n"
+        " 매뉴얼에 없는 항목을 임의로 추가하지 마십시오. 본 매뉴얼 발췌에 포함되지 않은 다른 체류자격(비자)의"
+        " 제출서류를 끌어와 답변에 섞지 마십시오.\n\n"
         f"[참고 자료] {source_title} ({source_date}) — {issuing_body}{page_label}\n"
-        f"섹션: {grounding.get('section', '유학(D-2)')} / {grounding.get('procedure_type', '체류기간 연장허가')}\n\n"
+        f"섹션: {section_label} / {procedure_label}\n\n"
         "제출서류 (매뉴얼 발췌):\n"
         f"{docs_block}\n\n"
         "유의사항:\n"

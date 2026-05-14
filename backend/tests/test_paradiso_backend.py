@@ -339,17 +339,19 @@ class AskEndpointGroundingTests(unittest.TestCase):
         self.assertEqual(detail.get("visa_code_detected"), "D-2")
         self.assertEqual(detail.get("task_type_detected"), "extension")
 
-    def test_non_d2_question_does_not_use_grounding(self):
+    def test_ungrounded_visa_question_does_not_use_grounding(self):
+        """A visa code without a verified grounding entry must fall through
+        the grounding path even when the task is recognized as extension."""
         resp = self._post({
-            "question": "E-7 비자 연장 서류는?",
-            "visa_code": "E-7",
+            "question": "F-2 비자 연장 서류는?",
+            "visa_code": "F-2",
         })
         self.assertEqual(resp.status_code, 503, resp.text)
         detail = resp.json()["detail"]
         self.assertFalse(detail.get("grounding_used"))
         self.assertEqual(detail.get("grounding_sources"), [])
         # Task is still detected as extension; only the grounding gate is narrow.
-        self.assertEqual(detail.get("visa_code_detected"), "E-7")
+        self.assertEqual(detail.get("visa_code_detected"), "F-2")
         self.assertEqual(detail.get("task_type_detected"), "extension")
 
     def test_d2_non_extension_question_does_not_use_grounding(self):
@@ -362,6 +364,224 @@ class AskEndpointGroundingTests(unittest.TestCase):
         self.assertFalse(detail.get("grounding_used"))
         self.assertEqual(detail.get("visa_code_detected"), "D-2")
         self.assertIsNone(detail.get("task_type_detected"))
+
+
+class ExpandedGroundingFixtureTests(unittest.TestCase):
+    """The first batch of manual-grounding expansion beyond D-2:
+    D-4 (어학연수생 D-4-1/D-4-7) and E-7 체류기간 연장허가."""
+
+    FIXTURE = BACKEND_DIR / "data" / "manual_grounding" / "stay_manual_grounding_2026_05.json"
+
+    def _entries(self):
+        import json as _json
+        data = _json.loads(self.FIXTURE.read_text(encoding="utf-8"))
+        return {
+            (g.get("visa_code"), g.get("procedure_type")): g
+            for g in data.get("groundings", [])
+        }
+
+    def test_d4_and_e7_entries_present(self):
+        entries = self._entries()
+        self.assertIn(("D-4", "체류기간 연장허가"), entries)
+        self.assertIn(("E-7", "체류기간 연장허가"), entries)
+
+    def test_d4_entry_metadata_verified(self):
+        entry = self._entries()[("D-4", "체류기간 연장허가")]
+        self.assertEqual(entry.get("page_range"), "90-91")
+        self.assertEqual(entry.get("source_verification_status"), "verified_locally")
+        self.assertEqual(entry.get("source_confidence"), "high")
+        self.assertTrue((entry.get("verification_note") or "").strip())
+        # Section label should explicitly scope to 어학연수생 to avoid implying
+        # coverage of all D-4 sub-codes.
+        self.assertIn("어학연수생", entry.get("section", ""))
+        # Korea-specific 어학연수 documents.
+        docs = " ".join(entry.get("required_documents", []))
+        for needle in ("신청서", "여권", "외국인등록증", "수수료", "재학을 입증", "재정입증", "체류지 입증서류"):
+            self.assertIn(needle, docs, f"expected '{needle}' in D-4 required_documents")
+
+    def test_e7_entry_metadata_verified(self):
+        entry = self._entries()[("E-7", "체류기간 연장허가")]
+        self.assertEqual(entry.get("page_range"), "226")
+        self.assertEqual(entry.get("source_verification_status"), "verified_locally")
+        self.assertEqual(entry.get("source_confidence"), "high")
+        self.assertTrue((entry.get("verification_note") or "").strip())
+        self.assertIn("특정활동", entry.get("section", ""))
+        docs = " ".join(entry.get("required_documents", []))
+        # E-7 extension is employment-track; the source page lists 고용계약서
+        # and 소득금액 증명 alongside the common 신청서/여권/외국인등록증/수수료.
+        for needle in (
+            "신청서", "여권", "외국인등록증", "수수료",
+            "고용계약서", "개인 소득금액 증명",
+            "사업자등록증", "체류지 입증서류",
+        ):
+            self.assertIn(needle, docs, f"expected '{needle}' in E-7 required_documents")
+
+    def test_no_generic_global_wording_in_new_entries(self):
+        forbidden = (
+            "USCIS",
+            "Home Office",
+            "embassy",
+            "consulate",
+            "해당 국가",
+            "본인이 체류 중인 국가",
+        )
+        for key in (("D-4", "체류기간 연장허가"), ("E-7", "체류기간 연장허가")):
+            entry = self._entries()[key]
+            haystack = " ".join(entry.get("required_documents", [])) + " " + " ".join(entry.get("caveats", []))
+            for needle in forbidden:
+                self.assertNotIn(
+                    needle, haystack,
+                    f"{key} grounding must not contain generic/global wording: {needle!r}",
+                )
+
+
+class AskEndpointExpandedGroundingTests(unittest.TestCase):
+    """End-to-end: D-4 (어학연수생) and E-7 extension questions must trip
+    the grounding selector with the correct source metadata."""
+
+    def _post(self, payload):
+        client, _ = _client()
+        return client.post("/api/ask", json=payload)
+
+    # ---- D-4 ----
+    def test_d4_extension_korean_question_selects_grounding(self):
+        resp = self._post({
+            "question": "D-4 어학연수 자격으로 체류 중인데 체류기간 연장에 필요한 서류는 무엇입니까?",
+            "visa_code": "D-4",
+            "lang": "ko",
+        })
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-4")
+        self.assertEqual(detail.get("task_type_detected"), "extension")
+        src = (detail.get("grounding_sources") or [{}])[0]
+        self.assertEqual(src.get("visa_code"), "D-4")
+        self.assertEqual(src.get("procedure_type"), "체류기간 연장허가")
+        self.assertEqual(src.get("page_range"), "90-91")
+        self.assertEqual(src.get("source_file"), "docs/source-manuals/2026-05/stay_manual_2026_05.pdf")
+
+    def test_d4_extension_english_question_selects_grounding(self):
+        resp = self._post({
+            "question": "What documents do I need to extend my D-4 language-training stay in Korea?",
+            "visa_code": "D-4",
+        })
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-4")
+        self.assertEqual(detail.get("task_type_detected"), "extension")
+
+    def test_d4_payload_variants_normalize(self):
+        for raw in ("d4", "D4", "d-4", "D 4"):
+            resp = self._post({
+                "question": "체류기간 연장 신청에 필요한 서류는?",
+                "visa_code": raw,
+            })
+            self.assertEqual(resp.status_code, 503, resp.text)
+            detail = resp.json()["detail"]
+            self.assertTrue(detail.get("grounding_used"), f"raw={raw!r} did not ground")
+            self.assertEqual(detail.get("visa_code_detected"), "D-4")
+
+    def test_d4_non_extension_question_does_not_use_grounding(self):
+        resp = self._post({
+            "question": "D-4 자격 신청에 필요한 학력 증빙은 무엇인가요?",
+            "visa_code": "D-4",
+        })
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-4")
+        self.assertIsNone(detail.get("task_type_detected"))
+
+    # ---- E-7 ----
+    def test_e7_extension_korean_question_selects_grounding(self):
+        resp = self._post({
+            "question": "E-7 특정활동 자격으로 체류 중인데 체류기간 연장허가 신청에 필요한 서류는 무엇입니까?",
+            "visa_code": "E-7",
+            "lang": "ko",
+        })
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "E-7")
+        self.assertEqual(detail.get("task_type_detected"), "extension")
+        src = (detail.get("grounding_sources") or [{}])[0]
+        self.assertEqual(src.get("visa_code"), "E-7")
+        self.assertEqual(src.get("procedure_type"), "체류기간 연장허가")
+        self.assertEqual(src.get("page_range"), "226")
+
+    def test_e7_extension_english_question_selects_grounding(self):
+        resp = self._post({
+            "question": "What documents do I need to extend my E-7 specially-designated activity status in Korea?",
+            "visa_code": "E7",
+        })
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "E-7")
+        self.assertEqual(detail.get("task_type_detected"), "extension")
+
+    def test_e7_payload_variants_normalize(self):
+        for raw in ("e7", "E7", "e-7", "E 7"):
+            resp = self._post({
+                "question": "체류기간 연장에 필요한 서류는?",
+                "visa_code": raw,
+            })
+            self.assertEqual(resp.status_code, 503, resp.text)
+            detail = resp.json()["detail"]
+            self.assertTrue(detail.get("grounding_used"), f"raw={raw!r} did not ground")
+            self.assertEqual(detail.get("visa_code_detected"), "E-7")
+
+    def test_e7_non_extension_question_does_not_use_grounding(self):
+        resp = self._post({
+            "question": "E-7 자격으로 변경할 수 있는 조건은 무엇인가요?",
+            "visa_code": "E-7",
+        })
+        self.assertEqual(resp.status_code, 503, resp.text)
+        detail = resp.json()["detail"]
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "E-7")
+        self.assertIsNone(detail.get("task_type_detected"))
+
+    # ---- Text-only detection ----
+    def test_text_only_detection_for_d4_and_e7(self):
+        resp = self._post({
+            "question": "일반연수(D-4) 자격으로 체류기간 연장허가 신청에 필요한 서류는?",
+        })
+        detail = resp.json()["detail"]
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-4")
+
+        resp = self._post({
+            "question": "특정활동(E-7) 자격으로 체류기간 연장허가 신청 시 제출서류가 무엇인지 알려주세요.",
+        })
+        detail = resp.json()["detail"]
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "E-7")
+
+    # ---- Cross-contamination guards ----
+    def test_d4_grounding_does_not_contain_e7_documents(self):
+        _, mod = _client()
+        bundle = mod._load_stay_manual_grounding()
+        d4 = mod._select_grounding("D-4", "extension")
+        built = mod._build_grounded_prompt("D-4 연장 서류?", d4, bundle, lang="ko")
+        # E-7 specific item (고용계약서 / 소득금액 증명) must not bleed into D-4 prompt.
+        self.assertNotIn("고용계약서", built)
+        self.assertNotIn("소득금액 증명원", built)
+        # D-4-specific item must be present.
+        self.assertIn("재학을 입증", built)
+
+    def test_e7_grounding_does_not_contain_d2_specific_documents(self):
+        _, mod = _client()
+        bundle = mod._load_stay_manual_grounding()
+        e7 = mod._select_grounding("E-7", "extension")
+        built = mod._build_grounded_prompt("E-7 연장 서류?", e7, bundle, lang="ko")
+        # D-2-specific 'wording 지도교수' must not appear in E-7 prompt.
+        self.assertNotIn("지도교수", built)
+        # E-7 specific items present.
+        self.assertIn("고용계약서", built)
+        self.assertIn("소득금액", built)
 
 
 class GroundingHelperTests(unittest.TestCase):
