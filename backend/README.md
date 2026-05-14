@@ -7,10 +7,17 @@ lookup flows.
 
 | Method | Path                    | Purpose                                                       |
 | ------ | ----------------------- | ------------------------------------------------------------- |
+| GET    | `/`                     | Service descriptor for humans hitting the bare backend URL.   |
 | GET    | `/health`               | Liveness probe; reports which providers are configured.       |
 | GET    | `/api/visas`            | Returns the visa catalog used by the frontend visa explorer.  |
 | POST   | `/api/ask`              | Chatbot endpoint. Routes to OpenRouter or Groq if configured. |
 | POST   | `/api/jobcodekeywords`  | Extracts keywords from a job-code search query.               |
+
+> The Paradiso backend is **API-only**. The human-facing frontend
+> (`index.html`, `ai.html`) is deployed separately (currently GitHub
+> Pages at `lucanomics.github.io/Paradiso/`). `GET /` returns a small
+> JSON descriptor instead of a bare 404 so anyone — especially mobile
+> users — who opens the Railway URL directly sees where to go next.
 
 ## Local development
 
@@ -52,6 +59,7 @@ into the image. See `.env.example` for the full list.
 | `GROQ_MODEL`            | optional  | Defaults to `llama-3.1-8b-instant`.                      |
 | `SITE_URL`              | optional  | Sent as `HTTP-Referer` to OpenRouter; set to your frontend origin. |
 | `SITE_TITLE`            | optional  | Sent as `X-Title` to OpenRouter. Defaults to `Paradiso`. |
+| `FRONTEND_URL`          | optional  | Surfaced by `GET /` so a user who opens the bare backend URL sees where the real app lives. |
 | `LAW_API_KEY`           | optional  | Reserved for future law-data integration.                |
 | `DATABASE_URL`          | optional  | Reserved for future Postgres integration.                |
 | `SUPABASE_URL`          | optional  | Reserved for future Supabase integration.                |
@@ -136,6 +144,7 @@ After deploying (or when running locally), verify each route:
 ```bash
 BASE=https://your-paradiso-backend.up.railway.app   # or http://localhost:8000
 
+curl -fsS "$BASE/" | jq           # service descriptor (200 OK, not 404)
 curl -fsS "$BASE/health" | jq
 curl -fsS "$BASE/api/visas" | jq '.count, .warning // "ok"'
 curl -fsS -X POST "$BASE/api/jobcodekeywords" \

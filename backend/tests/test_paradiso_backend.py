@@ -57,6 +57,60 @@ class BackendImportTests(unittest.TestCase):
         )
 
 
+class RootEndpointTests(unittest.TestCase):
+    """GET / must return a friendly service descriptor, not a raw 404.
+
+    Mobile users who open the bare backend URL were previously greeted
+    by `{"detail":"Not Found"}`. The root route gives them an actionable
+    payload pointing at the real frontend (when FRONTEND_URL is set) and
+    the available API endpoints.
+    """
+
+    def test_root_returns_200_with_service_info(self):
+        os.environ.pop("FRONTEND_URL", None)
+        client, _ = _client()
+        resp = client.get("/")
+        self.assertEqual(resp.status_code, 200, resp.text)
+        body = resp.json()
+        self.assertEqual(body.get("service"), "paradiso-backend")
+        self.assertEqual(body.get("status"), "ok")
+        self.assertIn("Paradiso backend is running", body.get("message", ""))
+        self.assertIn("/health", body.get("message", ""))
+        self.assertIn("/api/visas", body.get("message", ""))
+        self.assertIn("/api/ask", body.get("message", ""))
+        self.assertIsNone(body.get("frontend"))
+
+    def test_root_includes_frontend_url_when_configured(self):
+        os.environ["FRONTEND_URL"] = "https://lucanomics.github.io/Paradiso/"
+        try:
+            # FRONTEND_URL is read at import; reload to pick up env override.
+            import importlib
+            import paradiso_backend  # noqa: WPS433
+            importlib.reload(paradiso_backend)
+            paradiso_backend._reset_visas_cache_for_tests()
+            paradiso_backend._reset_grounding_cache_for_tests()
+            from fastapi.testclient import TestClient  # type: ignore
+            client = TestClient(paradiso_backend.app)
+            resp = client.get("/")
+            self.assertEqual(resp.status_code, 200, resp.text)
+            self.assertEqual(
+                resp.json().get("frontend"),
+                "https://lucanomics.github.io/Paradiso/",
+            )
+        finally:
+            os.environ.pop("FRONTEND_URL", None)
+            import importlib
+            import paradiso_backend  # noqa: WPS433
+            importlib.reload(paradiso_backend)
+
+    def test_root_declares_utf8_charset(self):
+        client, _ = _client()
+        resp = client.get("/")
+        ctype = resp.headers.get("content-type", "")
+        self.assertIn("application/json", ctype.lower())
+        self.assertIn("charset=utf-8", ctype.lower())
+
+
 class VisasEndpointTests(unittest.TestCase):
     def test_returns_real_data_not_default(self):
         client, _ = _client()

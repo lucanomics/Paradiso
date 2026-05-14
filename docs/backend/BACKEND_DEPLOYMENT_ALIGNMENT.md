@@ -19,11 +19,19 @@ strategy, and what is intentionally deferred._
 **Routes registered** (verified via `importlib`):
 
 ```
+GET  /
 GET  /health
 GET  /api/visas
 POST /api/ask
 POST /api/jobcodekeywords
 ```
+
+`GET /` is a friendly service descriptor, not a static frontend. The
+backend is API-only; a human who opens the Railway URL on a phone now
+sees a small JSON pointer (`service`, `status`, `message`, `frontend`)
+instead of FastAPI's raw `{"detail":"Not Found"}` 404. The optional
+`FRONTEND_URL` env var is echoed under `frontend` so operators can point
+visitors at the real GitHub Pages app.
 
 **Deployment provider:** Railway is the only deployment configuration present (`backend/Procfile` + `backend/railway.json`). No alternative provider (Render, Fly, Vercel, etc.) is configured in this repo. To deploy, set Railway **Root Directory** to `backend` (per `backend/README.md`).
 
