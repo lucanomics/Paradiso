@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "generated_for": "Paradiso AI safe automation — PR A (source monitoring skeleton)",
+  "notes": [
+    "This registry is the allow-list of official sources Paradiso monitors.",
+    "It is read by scripts/check_source_updates.py only. No production code",
+    "path reads this file. Adding or removing an entry never changes /api/ask",
+    "behavior on its own — a separate, human-reviewed PR is required to",
+    "promote any source-derived content into the active grounding fixture.",
+    "URLs marked status=not_configured are placeholders that must be",
+    "confirmed by a human reviewer before any HTTP fetch is attempted.",
+    "Scripts must skip such entries unless an explicit --allow-network",
+    "flag is passed."
+  ],
+  "sources": [
+    {
+      "id": "stay_manual_2026_05_pdf",
+      "type": "pdf_manual",
+      "title": "외국인체류 안내매뉴얼 (2026.5)",
+      "title_en": "Foreigner Stay/Residence Guide Manual (2026.5)",
+      "authority": "법무부 출입국·외국인정책본부",
+      "version": "2026.5",
+      "local_path": "docs/source-manuals/2026-05/stay_manual_2026_05.pdf",
+      "url": null,
+      "last_known_hash": "sha256:0492683698fdb2ba614b3c3aa791c462d03a68437e730093943e96ea15f7b3ba",
+      "last_checked_at": null,
+      "update_frequency": "irregular",
+      "status": "active",
+      "notes": "Primary source for stay/extension manual grounding (schema 1.2)."
+    },
+    {
+      "id": "visa_manual_2026_05_pdf",
+      "type": "pdf_manual",
+      "title": "사증발급 안내매뉴얼 (2026.5)",
+      "title_en": "Visa Issuance Guide Manual (2026.5)",
+      "authority": "법무부 출입국·외국인정책본부",
+      "version": "2026.5",
+      "local_path": "docs/source-manuals/2026-05/visa_manual_2026_05.pdf",
+      "url": null,
+      "last_known_hash": "sha256:5a191aedd7d896b2f60a4065b7646a3ccda3e46abeacf9d34dc3802a19184063",
+      "last_checked_at": null,
+      "update_frequency": "irregular",
+      "status": "active",
+      "notes": "Visa-issuance manual; not used for stay grounding today, monitored for change detection."
+    },
+    {
+      "id": "law_api_placeholder",
+      "type": "law_api",
+      "title": "국가법령정보센터 OPEN API — 출입국관리법 외",
+      "title_en": "Korea Law Information Center OPEN API — Immigration Control Act et al.",
+      "authority": "법제처 국가법령정보센터",
+      "version": null,
+      "local_path": null,
+      "url": "https://www.law.go.kr/",
+      "last_known_hash": null,
+      "last_checked_at": null,
+      "update_frequency": "on_amendment",
+      "status": "not_configured",
+      "notes": "Placeholder. Requires LAW_API_KEY in operator environment. Skipped without --allow-network. No live retrieval reachable from /api/ask."
+    },
+    {
+      "id": "hikorea_notice_placeholder",
+      "type": "notice_index",
+      "title": "HiKorea 공지사항",
+      "title_en": "HiKorea notice board",
+      "authority": "법무부 출입국·외국인정책본부",
+      "version": null,
+      "local_path": null,
+      "url": "https://www.hikorea.go.kr/",
+      "last_known_hash": null,
+      "last_checked_at": null,
+      "update_frequency": "weekly",
+      "status": "not_configured",
+      "notes": "Placeholder. No scraping by default. Confirm exact notice-index URL before enabling. Respect robots.txt and rate limits when enabled."
+    },
+    {
+      "id": "moj_immigration_notice_placeholder",
+      "type": "notice_index",
+      "title": "법무부 출입국·외국인정책본부 공지/보도자료",
+      "title_en": "Ministry of Justice — Immigration Service notices",
+      "authority": "법무부 출입국·외국인정책본부",
+      "version": null,
+      "local_path": null,
+      "url": "https://www.moj.go.kr/",
+      "last_known_hash": null,
+      "last_checked_at": null,
+      "update_frequency": "irregular",
+      "status": "not_configured",
+      "notes": "Placeholder. No scraping by default. Confirm exact notice-index URL before enabling."
+    }
+  ]
+}
