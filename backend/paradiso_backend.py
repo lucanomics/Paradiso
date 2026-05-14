@@ -2,6 +2,7 @@
 
 FastAPI application exposing the routes used by the Paradiso frontend:
 
+- GET  /
 - GET  /health
 - GET  /api/visas
 - POST /api/ask
@@ -62,6 +63,12 @@ GROQ_MODEL: str = os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant")
 
 SITE_URL: str = os.environ.get("SITE_URL", "")
 SITE_TITLE: str = os.environ.get("SITE_TITLE", "Paradiso")
+
+# Optional pointer to the human-facing Paradiso frontend (e.g. the
+# GitHub Pages deployment). Surfaced by GET / so that a person who hits
+# the bare Railway URL on a phone is not greeted by a raw 404 detail
+# blob with no hint where the actual app lives.
+FRONTEND_URL: str = os.environ.get("FRONTEND_URL", "").strip()
 
 CORS_ALLOW_ORIGINS = [
     origin.strip()
@@ -658,6 +665,27 @@ def _grounding_source_summary(grounding: Dict[str, Any], bundle: Dict[str, Any])
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
+
+@app.get("/")
+async def root() -> Dict[str, Any]:
+    """Service-info page for humans who hit the bare backend URL.
+
+    The Paradiso backend is API-only; the human-facing frontend is
+    served elsewhere (currently GitHub Pages). Without this route,
+    FastAPI returns a bare `{"detail":"Not Found"}` for `GET /`, which
+    is confusing for anyone (especially mobile users) who opens the
+    Railway URL directly. Returns a small JSON descriptor instead.
+    """
+    return {
+        "service": "paradiso-backend",
+        "status": "ok",
+        "message": (
+            "Paradiso backend is running. "
+            "Use /health, /api/visas, /api/ask."
+        ),
+        "frontend": FRONTEND_URL or None,
+    }
+
 
 @app.get("/health")
 async def health() -> Dict[str, Any]:
