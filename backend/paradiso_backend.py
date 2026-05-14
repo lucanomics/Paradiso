@@ -127,6 +127,7 @@ class AskResponse(BaseModel):
     grounding_used: bool = False
     grounding_sources: List[Dict[str, Any]] = Field(default_factory=list)
     visa_code_detected: Optional[str] = None
+    visa_sub_code_detected: Optional[str] = None
     task_type_detected: Optional[str] = None
 
 
@@ -490,25 +491,48 @@ def _reset_grounding_cache_for_tests() -> None:
     _GROUNDING_CACHE = None
 
 
-def _normalize_visa_code(code: Optional[str]) -> Optional[str]:
-    """Normalize a visa code to the canonical 'A-N' form.
+# Valid top-level main codes the normalizer recognizes. Used as a parsing
+# oracle to disambiguate contiguous letter+digit inputs like 'd101' (D-10-1
+# vs D-1-0-1) or 'd42k' (D-4-2K vs D-42-K). Two-digit forms like F-10 and
+# E-10 are included to preserve the existing regression-guard behavior even
+# though F-10 is not a real Korean visa category.
+_VALID_MAIN_CODES: frozenset = frozenset(
+    [
+        "A-1", "A-2", "A-3",
+        "B-1", "B-2",
+        "C-1", "C-3", "C-4",
+        "D-1", "D-2", "D-3", "D-4", "D-5", "D-6", "D-7", "D-8", "D-9", "D-10",
+        "E-1", "E-2", "E-3", "E-4", "E-5", "E-6", "E-7", "E-8", "E-9", "E-10",
+        "F-1", "F-2", "F-3", "F-4", "F-5", "F-6", "F-10",
+        "G-1",
+        "H-1", "H-2",
+    ]
+)
 
-    Examples:
+
+def _normalize_visa_code(code: Optional[str]) -> Optional[str]:
+    """Normalize a visa code to the canonical 'A-N' or 'A-N-SUB' form.
+
+    Examples (main codes):
         'd2', 'D2', 'd-2', 'D 2' -> 'D-2'
         'd10', 'D10', 'd-10', 'D 10' -> 'D-10'
-        'D-2-1' -> 'D-2-1'  (subcode preserved)
-        'D-10-1' -> 'D-10-1'
+        'K-ETA', 'k-eta' -> 'K-ETA' (no digits, pass through)
 
-    The main number captures all consecutive digits, so two-digit codes
-    like D-10 / F-10 are preserved. A subcode is only recognized when an
-    explicit separator (hyphen or space) precedes it; without a separator,
-    digits are treated as part of the main code (e.g. 'd10' -> 'D-10',
-    not 'D-1-0').
+    Examples (sub-codes):
+        'D-2-1', 'd2-1' -> 'D-2-1'
+        'D-10-1', 'D10-1', 'd101' -> 'D-10-1'
+        'D-4-2K', 'D4-2K', 'd42k' -> 'D-4-2K'
+        'F-6-1', 'F6-1', 'f61' -> 'F-6-1'
+        'E-7-4', 'E7-4', 'e74' -> 'E-7-4'
 
-    Codes that do not match the Letter+digits pattern (e.g. K-STAR,
+    For contiguous inputs (no separator between main and sub), the parser
+    uses a static list of known main codes (_VALID_MAIN_CODES) to choose
+    the longest valid main-code prefix. This is the only way to tell
+    'd10' (main code D-10) apart from 'd101' (sub-code D-10-1) without
+    explicit separators.
+
+    Codes that do not start with letter+digits (e.g. K-ETA, K-STAR,
     REGION-S) pass through after strip+upper. Empty/None returns None.
-    Scope is deliberately narrow: only letter+digit reshaping, no other
-    alias resolution.
     """
     if not isinstance(code, str):
         return None
@@ -516,13 +540,71 @@ def _normalize_visa_code(code: Optional[str]) -> Optional[str]:
     if not cleaned:
         return None
     import re
-    match = re.match(r"^([A-Z])[\s\-]?(\d+)(?:[\s\-](\d+))?$", cleaned)
-    if match:
-        letter, num, subnum = match.group(1), match.group(2), match.group(3)
-        if subnum:
-            return f"{letter}-{num}-{subnum}"
-        return f"{letter}-{num}"
-    return cleaned
+
+    # Letter-only prefixed codes with no digits anywhere (K-ETA, K-STAR,
+    # REGION-S) keep their canonical form after upper-casing.
+    if not re.search(r"\d", cleaned):
+        return cleaned
+
+    # Must start with a single letter followed (optionally via separator)
+    # by a digit. Anything else (e.g. a bare number, weird inputs) falls
+    # through unchanged.
+    head = re.match(r"^([A-Z])[\s\-]?(\d.*)$", cleaned)
+    if not head:
+        return cleaned
+    letter = head.group(1)
+    body = head.group(2)
+
+    # Capture the first contiguous digit run, then whatever remains.
+    digit_run = re.match(r"^(\d+)(.*)$", body)
+    leading_digits = digit_run.group(1)
+    tail = digit_run.group(2)
+    # Strip any leading separator(s) between main digits and the sub part.
+    tail = re.sub(r"^[\s\-]+", "", tail)
+
+    # Choose the longest valid main-code prefix from the leading digits.
+    # _VALID_MAIN_CODES is bounded to 1-2 digit forms, so iterate from 2
+    # down to 1 to prefer 'D-10' over 'D-1' when both are valid.
+    main_digits = leading_digits
+    sub_from_digits = ""
+    for prefix_len in range(min(len(leading_digits), 2), 0, -1):
+        candidate = f"{letter}-{leading_digits[:prefix_len]}"
+        if candidate in _VALID_MAIN_CODES:
+            main_digits = leading_digits[:prefix_len]
+            sub_from_digits = leading_digits[prefix_len:]
+            break
+
+    sub_raw = sub_from_digits + tail
+    # Internal separators in the sub-code segment collapse to a single hyphen.
+    sub_normalized = re.sub(r"[\s\-]+", "-", sub_raw)
+    sub_normalized = sub_normalized.strip("-")
+
+    if sub_normalized:
+        return f"{letter}-{main_digits}-{sub_normalized}"
+    return f"{letter}-{main_digits}"
+
+
+def _split_visa_code(normalized: Optional[str]) -> tuple:
+    """Split a normalized code into (top_visa_code, visa_sub_code).
+
+    'D-4-2K' -> ('D-4', 'D-4-2K')
+    'D-10-1' -> ('D-10', 'D-10-1')
+    'D-2'    -> ('D-2', None)
+    'K-ETA'  -> ('K-ETA', None)  (only one '-' segment after the letter)
+    None     -> (None, None)
+
+    A sub-code is recognized when the normalized form has three or more
+    hyphen-separated segments where the first looks like 'L' and the
+    second looks like a number — i.e. 'L-NN-...'. This keeps non-digit
+    compound codes (K-ETA, REGION-S) from being mis-split.
+    """
+    if not isinstance(normalized, str) or not normalized:
+        return None, None
+    parts = normalized.split("-")
+    if len(parts) >= 3 and len(parts[0]) == 1 and parts[1].isdigit():
+        top = f"{parts[0]}-{parts[1]}"
+        return top, normalized
+    return normalized, None
 
 
 # Visa codes for which a deterministic grounding entry exists. Used to
@@ -532,31 +614,55 @@ _GROUNDED_VISA_CODES: tuple = ("D-2", "D-4", "E-7")
 
 
 def _detect_visa_code(payload_code: Optional[str], visa_data: Optional[Dict[str, Any]], text: str) -> Optional[str]:
-    """Best-effort visa code detection.
+    """Best-effort visa code detection (top-level only).
 
-    Priority: explicit visa_code -> visa_data.code -> regex match in text.
-    Explicit payload values are normalized so 'd2', 'D2', 'd-2' all resolve
-    to 'D-2' before the grounding lookup runs. Text detection is restricted
-    to visa codes that currently have a verified grounding entry; codes
-    outside that set still resolve from explicit payload fields but are
-    not inferred from free-text alone (so an unrelated mention of, say,
-    'F-2' in a prompt does not trigger a phantom detection).
+    Backwards-compatible wrapper around _detect_visa_codes that returns
+    just the top-level visa_code, for callers that do not need sub-code
+    routing. New code should call _detect_visa_codes directly.
+    """
+    top, _sub = _detect_visa_codes(payload_code, visa_data, text)
+    return top
+
+
+def _detect_visa_codes(
+    payload_code: Optional[str],
+    visa_data: Optional[Dict[str, Any]],
+    text: str,
+) -> tuple:
+    """Return ``(top_visa_code, visa_sub_code)``.
+
+    Priority: explicit ``visa_code`` -> ``visa_data.code`` -> regex match in
+    text. Explicit payload values are normalized so ``d2``, ``D2``, ``d-2``
+    all resolve to ``D-2`` and ``d42k``, ``D4-2K``, ``D-4-2K`` all resolve
+    to ``D-4-2K`` (top ``D-4``, sub ``D-4-2K``).
+
+    Sub-code detection is intentionally **payload-only**. Free-text
+    detection still returns ``(top, None)`` even if the prompt mentions a
+    sub-code in passing — sub-code routing is a binding declaration about
+    *which* document list applies and must come from the caller, not from
+    a free-text guess.
+
+    Text detection is restricted to visa codes that currently have a
+    verified grounding entry; codes outside that set still resolve from
+    explicit payload fields but are not inferred from free-text alone.
     """
     import re
 
     for candidate in (payload_code, (visa_data or {}).get("code") if visa_data else None):
         if isinstance(candidate, str) and candidate.strip():
-            return _normalize_visa_code(candidate)
+            normalized = _normalize_visa_code(candidate)
+            return _split_visa_code(normalized)
     if not text:
-        return None
+        return None, None
     # Match "D-2", "D2", "유학(D-2)" etc. (and equivalents for D-4 / E-7),
     # case-insensitive. The 1-9 digit class avoids accidental two-digit
-    # matches like 'D-22' or 'E-71'.
+    # matches like 'D-22' or 'E-71'. The (?!-?\d) lookahead also avoids
+    # claiming 'D-4' for a 'D-4-2' substring.
     for letter, digit in (("D", "2"), ("D", "4"), ("E", "7")):
         pattern = rf"\b{letter}[\s-]?{digit}\b(?!-?\d)"
         if re.search(pattern, text, flags=re.IGNORECASE):
-            return f"{letter}-{digit}"
-    return None
+            return f"{letter}-{digit}", None
+    return None, None
 
 
 def _detect_task_type(text: str) -> Optional[str]:
@@ -580,13 +686,29 @@ def _detect_task_type(text: str) -> Optional[str]:
     return None
 
 
-def _select_grounding(visa_code: Optional[str], task_type: Optional[str]) -> Optional[Dict[str, Any]]:
-    """Return the grounding record for the given (visa_code, task_type), or None.
+def _select_grounding(
+    visa_code: Optional[str],
+    task_type: Optional[str],
+    visa_sub_code: Optional[str] = None,
+) -> Optional[Dict[str, Any]]:
+    """Return the grounding record for the request, or None.
 
-    Only (grounded_visa_code, "extension") pairs select a grounding entry.
-    The procedure_type stored on each entry must match "체류기간 연장허가"
-    for the extension task. Codes outside _GROUNDED_VISA_CODES return None
-    so unrelated visa categories are unaffected.
+    The selector is sub-code-aware:
+
+    1. If ``visa_sub_code`` is set, prefer an entry whose
+       ``visa_sub_code`` matches exactly.
+    2. Otherwise fall back to a "general" entry (``visa_sub_code`` is
+       null) **only** when that general entry explicitly lists the
+       requested sub-code in ``sub_codes_covered``. A general entry that
+       does not declare coverage is treated as not covering the sub-code,
+       so e.g. an E-7-4 request never silently inherits the general E-7
+       document list.
+    3. If ``visa_sub_code`` is not provided, only entries with
+       ``visa_sub_code`` null are eligible.
+
+    Codes outside _GROUNDED_VISA_CODES return None so unrelated visa
+    categories — including any sub-code whose top-level is not yet
+    grounded (D-10, F-6) — are unaffected.
     """
     if task_type != "extension":
         return None
@@ -595,10 +717,35 @@ def _select_grounding(visa_code: Optional[str], task_type: Optional[str]) -> Opt
     bundle = _load_stay_manual_grounding()
     if not bundle:
         return None
-    for entry in bundle.get("groundings", []):
+    entries = bundle.get("groundings", []) or []
+
+    if visa_sub_code:
+        # 1. Exact sub-code match wins.
+        for entry in entries:
+            if (
+                entry.get("visa_code") == visa_code
+                and entry.get("procedure_type") == "체류기간 연장허가"
+                and entry.get("visa_sub_code") == visa_sub_code
+            ):
+                return entry
+        # 2. Fall back to a general entry only if it explicitly covers this sub-code.
+        for entry in entries:
+            if (
+                entry.get("visa_code") == visa_code
+                and entry.get("procedure_type") == "체류기간 연장허가"
+                and entry.get("visa_sub_code") in (None, "")
+            ):
+                covered = entry.get("sub_codes_covered") or []
+                if isinstance(covered, list) and visa_sub_code in covered:
+                    return entry
+        return None
+
+    # 3. No sub-code supplied: only general entries are eligible.
+    for entry in entries:
         if (
             entry.get("visa_code") == visa_code
             and entry.get("procedure_type") == "체류기간 연장허가"
+            and entry.get("visa_sub_code") in (None, "")
         ):
             return entry
     return None
@@ -766,9 +913,13 @@ async def ask(req: AskRequest) -> AskResponse:
             },
         )
 
-    visa_code_detected = _detect_visa_code(req.visa_code, req.visa_data, prompt)
+    visa_code_detected, visa_sub_code_detected = _detect_visa_codes(
+        req.visa_code, req.visa_data, prompt
+    )
     task_type_detected = _detect_task_type(prompt)
-    grounding = _select_grounding(visa_code_detected, task_type_detected)
+    grounding = _select_grounding(
+        visa_code_detected, task_type_detected, visa_sub_code_detected
+    )
     grounding_sources: List[Dict[str, Any]] = []
     final_prompt = prompt
     if grounding is not None:
@@ -785,6 +936,7 @@ async def ask(req: AskRequest) -> AskResponse:
             grounding_used=bool(grounding),
             grounding_sources=grounding_sources,
             visa_code_detected=visa_code_detected,
+            visa_sub_code_detected=visa_sub_code_detected,
             task_type_detected=task_type_detected,
         )
     if GROQ_API_KEY:
@@ -796,6 +948,7 @@ async def ask(req: AskRequest) -> AskResponse:
             grounding_used=bool(grounding),
             grounding_sources=grounding_sources,
             visa_code_detected=visa_code_detected,
+            visa_sub_code_detected=visa_sub_code_detected,
             task_type_detected=task_type_detected,
         )
 
@@ -810,6 +963,7 @@ async def ask(req: AskRequest) -> AskResponse:
             "grounding_used": bool(grounding),
             "grounding_sources": grounding_sources,
             "visa_code_detected": visa_code_detected,
+            "visa_sub_code_detected": visa_sub_code_detected,
             "task_type_detected": task_type_detected,
         },
     )

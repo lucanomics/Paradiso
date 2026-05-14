@@ -189,6 +189,15 @@ agreement tracks), and the planned next batches.
   Korean/English wording such as "체류기간 연장", "연장 신청",
   "extension", "renew visa"). Payload variants like `d4`, `D4`,
   `e7`, `E-7` normalize to `D-4` / `E-7`.
+- Sub-code variants (e.g. `D-4-2K`, `d42k`, `D-10-1`, `d101`, `F-6-1`,
+  `f61`, `E-7-4`, `e74`) are also normalized and reported back as
+  `visa_sub_code_detected`. Sub-code routing is governed by the
+  fixture's `visa_sub_code` and `sub_codes_covered` fields (schema
+  1.2), so a `D-4-2K` request does NOT silently borrow the general
+  D-4 어학연수생 document list, and an `E-7-4` request does NOT borrow
+  the general E-7 document list. See
+  `docs/manual_grounding_expansion_plan.md` § "Schema 1.2" for the
+  exact selector rules.
 - When both fire, the prompt is wrapped with a Korea-specific context
   block built from
   `backend/data/manual_grounding/stay_manual_grounding_2026_05.json`,
@@ -218,6 +227,7 @@ agreement tracks), and the planned next batches.
       }
     ],
     "visa_code_detected": "D-2",
+    "visa_sub_code_detected": null,
     "task_type_detected": "extension"
   }
   ```
