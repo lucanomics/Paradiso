@@ -101,10 +101,86 @@ The shipped E-7 entry covers the **general 제출서류** list on PDF page
 | E-7-4 숙련기능인력 점수제 안내매뉴얼                       | The stay manual itself refers readers to a separate "숙련기능인력(E-7-4) 안내매뉴얼" not in this repository.                            |
 
 These will be added in subsequent batches as separate
-`(visa_code, procedure_type)` entries — possibly differentiating by
-sub-code via an additional `visa_sub_code` field — only when each page
-range and document list can be verified end-to-end against the
-committed PDF.
+`(visa_code, visa_sub_code, procedure_type)` entries — only when each
+page range and document list can be verified end-to-end against the
+committed PDF. The `visa_sub_code` field and sub-code-aware selector
+landed in schema version 1.2 (see "Schema 1.2: sub-code and scenario
+metadata" below) so future batches do not need a fresh architectural
+change.
+
+## Schema 1.2: sub-code and scenario metadata
+
+Version 1.2 of `stay_manual_grounding_2026_05.json` adds optional fields
+to each grounding entry without changing the behavior of existing
+records. All three currently shipped entries (D-2, D-4 어학연수생, E-7
+general) explicitly populate the new fields with the conservative
+defaults documented below.
+
+| Field                                              | Purpose                                                                                                                              | Example values                                  |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| `visa_sub_code`                                    | Sub-code that an entry is specifically scoped to. Null for "general" entries.                                                        | `"D-4-2K"` (future), `null` (current entries)   |
+| `sub_codes_covered`                                | Explicit allow-list of sub-codes a general entry covers. `null` means "no sub-code coverage" — sub-code requests fall through.        | `["D-4-1", "D-4-7"]`, `null`                    |
+| `scenario`                                         | Distinguishes scenarios within a single (visa_code, visa_sub_code), e.g. initial vs. follow-up extension, humanitarian cases.        | `"general"`, `"initial"`, `"follow_up"`, `null` |
+| `scenarios_covered`                                | Explicit allow-list of scenarios a general entry covers.                                                                              | `["general"]`, `null`                           |
+| `requires_clarification_when_missing_subcode`      | When true, a request whose sub-code/scenario cannot be determined should NOT silently fall through to the general entry.              | `false` (current default)                       |
+
+### Selector behavior
+
+`_select_grounding(visa_code, task_type, visa_sub_code=None)` resolves
+in this order:
+
+1. **Top-level gate** — only `("extension", code-in-_GROUNDED_VISA_CODES)`
+   pairs are considered. Codes whose top-level is not grounded (e.g.
+   `D-10`, `F-6`) return `None` regardless of sub-code.
+2. **Exact sub-code match** — when `visa_sub_code` is set, an entry
+   whose `visa_sub_code` matches exactly is preferred.
+3. **General-entry fallback** — if no exact match exists, a general
+   entry (`visa_sub_code is null`) is considered **only** when the
+   requested sub-code appears in that entry's `sub_codes_covered` list.
+   A general entry with `sub_codes_covered = null` is treated as
+   covering no specific sub-codes; sub-code requests then fall through
+   with `grounding_used = false`.
+4. **No-subcode request** — when `visa_sub_code` is null, only general
+   entries (`visa_sub_code is null`) are eligible. The existing D-2 /
+   D-4 / E-7 top-level paths continue to ground exactly as before.
+
+### Normalization
+
+`_normalize_visa_code` accepts sub-code variants with or without
+separators by using a static list (`_VALID_MAIN_CODES`) as a parsing
+oracle. Examples:
+
+| Input        | Normalized   |
+| ------------ | ------------ |
+| `d4`         | `D-4`        |
+| `D-4-2K`     | `D-4-2K`     |
+| `d42k`       | `D-4-2K`     |
+| `D4-2K`      | `D-4-2K`     |
+| `d43`        | `D-4-3`      |
+| `d10`        | `D-10`       |
+| `d101`       | `D-10-1`     |
+| `D-10-T`     | `D-10-T`     |
+| `f61`        | `F-6-1`      |
+| `F6-1`       | `F-6-1`      |
+| `e74`        | `E-7-4`      |
+| `K-ETA`      | `K-ETA`      |
+
+`_detect_visa_codes` returns a `(top_visa_code, visa_sub_code)` tuple.
+Sub-code detection is **payload-only** — free-text mentions of a
+sub-code in the user prompt are not parsed. The `/api/ask` response
+gains an additive `visa_sub_code_detected` field (null when no sub-code
+is supplied).
+
+### Warning: top-level visa codes must not overgeneralize
+
+The biggest hazard in expanding the fixture is using a single
+`visa_code` entry to answer a request whose sub-code has a materially
+different document list. The shipped D-4 어학연수생 entry is the
+canonical example: it explicitly enumerates
+`sub_codes_covered = ["D-4-1", "D-4-7"]` so that a D-4-2K, D-4-3, D-4-5,
+or D-4-6 request returns no grounding rather than silently borrowing the
+어학연수생 document list. New entries must follow the same discipline —
+either ship a sub-code-specific entry or leave the request ungrounded.
 
 ## Why not full RAG yet?
 
@@ -159,10 +235,25 @@ pdftotext -layout -f 226 -l 226 docs/source-manuals/2026-05/stay_manual_2026_05.
 
 ## Next batches (suggested order)
 
-1. D-10 일반구직(D-10-1) 체류기간 연장허가, then sub-code variants.
-2. F-6-1 국민의 배우자 체류기간 연장허가 (최초 + 후속).
-3. Remaining D-4 sub-codes (D-4-3 외국인유학생, D-4-6 우수사설교육기관, etc.).
-4. F-2 (거주) 체류기간 연장허가.
+With schema 1.2 in place, the recommended next batches are:
+
+1. **D-10-1 점수제 적용 체류기간 연장허가** — separate sub-code entries
+   for D-10-1, D-10-2, D-10-3, D-10-T. Each entry carries
+   `visa_sub_code` set to the specific code so the selector chooses the
+   right document list per request.
+2. **F-6-1 국민의 배우자 체류기간 연장허가** with an `initial` vs.
+   `follow_up` (and humanitarian) split using the `scenario` field;
+   F-6-2 and F-6-3 follow as separate entries.
+3. **Remaining D-4 sub-codes** (D-4-2K K-Trainee, D-4-3 외국인유학생,
+   D-4-5 한식조리연수생, D-4-6 우수사설교육기관) — each as its own
+   `visa_sub_code`-scoped entry. The current D-4 어학연수생 entry stays
+   as-is.
+4. **E-7 협정 특례 tracks** (한·인도 CEPA 독립전문가, 한·러 협정,
+   외국법자문법률사무소) — separate entries; do not extend the general
+   E-7 entry's `sub_codes_covered`. **E-7-4 숙련기능인력 is deliberately
+   out of scope** — it depends on a separate external manual not
+   committed to this repository.
+5. F-2 (거주) 체류기간 연장허가.
 
 Each batch must include:
 

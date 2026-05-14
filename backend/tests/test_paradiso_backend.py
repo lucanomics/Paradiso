@@ -768,5 +768,376 @@ class GroundedPromptLanguageTests(unittest.TestCase):
             )
 
 
+class SubCodeNormalizationTests(unittest.TestCase):
+    """Sub-code-aware normalization: D-4-2K, D-10-1, F-6-1, E-7-4 and
+    contiguous variants (d42k, d101, f61, e74) must resolve to canonical
+    'L-N-SUB' form. Existing main-code variants must not regress."""
+
+    def test_normalize_sub_codes_with_and_without_separators(self):
+        _, mod = _client()
+        cases = {
+            # D-4 family
+            "D-4-2K": "D-4-2K",
+            "D4-2K": "D-4-2K",
+            "d4-2k": "D-4-2K",
+            "d42k": "D-4-2K",
+            "D-4-3": "D-4-3",
+            "D4-3": "D-4-3",
+            "d43": "D-4-3",
+            "D-4-5": "D-4-5",
+            "D4-5": "D-4-5",
+            "d45": "D-4-5",
+            "D-4-6": "D-4-6",
+            "d46": "D-4-6",
+            # D-10 family — must split correctly (D-10 main code, not D-1-01)
+            "D-10": "D-10",
+            "d10": "D-10",
+            "D-10-1": "D-10-1",
+            "D10-1": "D-10-1",
+            "d10-1": "D-10-1",
+            "d101": "D-10-1",
+            "D-10-2": "D-10-2",
+            "d102": "D-10-2",
+            "D-10-T": "D-10-T",
+            "d10t": "D-10-T",
+            "d10-t": "D-10-T",
+            # F-6 family
+            "F-6": "F-6",
+            "f6": "F-6",
+            "F-6-1": "F-6-1",
+            "F6-1": "F-6-1",
+            "f6-1": "F-6-1",
+            "f61": "F-6-1",
+            "F-6-2": "F-6-2",
+            "f62": "F-6-2",
+            "F-6-3": "F-6-3",
+            "f63": "F-6-3",
+            # E-7 family
+            "E-7": "E-7",
+            "e7": "E-7",
+            "E-7-4": "E-7-4",
+            "E7-4": "E-7-4",
+            "e7-4": "E-7-4",
+            "e74": "E-7-4",
+        }
+        for raw, expected in cases.items():
+            self.assertEqual(
+                mod._normalize_visa_code(raw),
+                expected,
+                f"input={raw!r}",
+            )
+
+    def test_normalize_keta_passes_through(self):
+        _, mod = _client()
+        for raw, expected in (
+            ("K-ETA", "K-ETA"),
+            ("k-eta", "K-ETA"),
+            ("K-eta", "K-ETA"),
+            ("  k-eta  ", "K-ETA"),
+        ):
+            self.assertEqual(mod._normalize_visa_code(raw), expected, f"input={raw!r}")
+
+    def test_normalize_d10_does_not_split_into_subcode_when_alone(self):
+        """Regression: 'D-10' / 'd10' as the entire input must stay D-10."""
+        _, mod = _client()
+        for raw in ("D-10", "d-10", "D10", "d10", "D 10"):
+            self.assertEqual(mod._normalize_visa_code(raw), "D-10", f"input={raw!r}")
+
+    def test_split_visa_code_helper(self):
+        _, mod = _client()
+        self.assertEqual(mod._split_visa_code("D-4"), ("D-4", None))
+        self.assertEqual(mod._split_visa_code("D-4-2K"), ("D-4", "D-4-2K"))
+        self.assertEqual(mod._split_visa_code("D-10"), ("D-10", None))
+        self.assertEqual(mod._split_visa_code("D-10-1"), ("D-10", "D-10-1"))
+        self.assertEqual(mod._split_visa_code("F-6-1"), ("F-6", "F-6-1"))
+        self.assertEqual(mod._split_visa_code("E-7-4"), ("E-7", "E-7-4"))
+        # K-ETA must NOT be split into a sub-code (ETA is alpha, not a number).
+        self.assertEqual(mod._split_visa_code("K-ETA"), ("K-ETA", None))
+        self.assertEqual(mod._split_visa_code("REGION-S"), ("REGION-S", None))
+        self.assertEqual(mod._split_visa_code(None), (None, None))
+        self.assertEqual(mod._split_visa_code(""), (None, None))
+
+
+class GroundingSelectorSubCodeTests(unittest.TestCase):
+    """Selector must not overgeneralize: requests carrying a sub-code that
+    is NOT covered by the general entry must return no grounding."""
+
+    def test_d4_general_request_still_selects_d4_entry(self):
+        _, mod = _client()
+        entry = mod._select_grounding("D-4", "extension", None)
+        self.assertIsNotNone(entry)
+        self.assertEqual(entry.get("visa_code"), "D-4")
+        self.assertIsNone(entry.get("visa_sub_code"))
+
+    def test_d4_subcode_in_sub_codes_covered_uses_general_entry(self):
+        """D-4-1 and D-4-7 are explicitly in sub_codes_covered."""
+        _, mod = _client()
+        for sub in ("D-4-1", "D-4-7"):
+            entry = mod._select_grounding("D-4", "extension", sub)
+            self.assertIsNotNone(entry, f"sub={sub!r} should have grounded via D-4")
+            self.assertEqual(entry.get("visa_code"), "D-4")
+
+    def test_d4_2k_does_not_use_d4_grounding(self):
+        _, mod = _client()
+        self.assertIsNone(mod._select_grounding("D-4", "extension", "D-4-2K"))
+
+    def test_d4_3_does_not_use_d4_grounding(self):
+        _, mod = _client()
+        self.assertIsNone(mod._select_grounding("D-4", "extension", "D-4-3"))
+
+    def test_d4_5_does_not_use_d4_grounding(self):
+        _, mod = _client()
+        self.assertIsNone(mod._select_grounding("D-4", "extension", "D-4-5"))
+
+    def test_d4_6_does_not_use_d4_grounding(self):
+        _, mod = _client()
+        self.assertIsNone(mod._select_grounding("D-4", "extension", "D-4-6"))
+
+    def test_e7_general_request_still_selects_e7_entry(self):
+        _, mod = _client()
+        entry = mod._select_grounding("E-7", "extension", None)
+        self.assertIsNotNone(entry)
+        self.assertEqual(entry.get("visa_code"), "E-7")
+        self.assertIsNone(entry.get("visa_sub_code"))
+
+    def test_e7_4_does_not_use_general_e7_grounding(self):
+        """E-7-4 점수제 has a separate manual; the general E-7 entry must
+        not be used as a fallback."""
+        _, mod = _client()
+        self.assertIsNone(mod._select_grounding("E-7", "extension", "E-7-4"))
+
+    def test_d10_subcode_returns_none(self):
+        """No D-10 fixture exists yet; any D-10 request returns None."""
+        _, mod = _client()
+        self.assertIsNone(mod._select_grounding("D-10", "extension", None))
+        self.assertIsNone(mod._select_grounding("D-10", "extension", "D-10-1"))
+        self.assertIsNone(mod._select_grounding("D-10", "extension", "D-10-2"))
+        self.assertIsNone(mod._select_grounding("D-10", "extension", "D-10-T"))
+
+    def test_f6_subcode_returns_none(self):
+        """No F-6 fixture exists yet; any F-6 request returns None."""
+        _, mod = _client()
+        self.assertIsNone(mod._select_grounding("F-6", "extension", None))
+        for sub in ("F-6-1", "F-6-2", "F-6-3"):
+            self.assertIsNone(mod._select_grounding("F-6", "extension", sub))
+
+
+class AskEndpointSubCodeRoutingTests(unittest.TestCase):
+    """End-to-end: payloads carrying sub-code-specific visa codes must
+    not overgeneralize. The response should expose visa_sub_code_detected
+    and grounding_used appropriately."""
+
+    def _post(self, payload):
+        client, _ = _client()
+        return client.post("/api/ask", json=payload)
+
+    def _detail(self, resp):
+        self.assertEqual(resp.status_code, 503, resp.text)
+        return resp.json()["detail"]
+
+    # ---- D-4 sub-code routing ----
+    def test_d4_2k_payload_does_not_use_d4_grounding(self):
+        detail = self._detail(self._post({
+            "question": "체류기간 연장에 필요한 서류는?",
+            "visa_code": "D-4-2K",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("grounding_sources"), [])
+        self.assertEqual(detail.get("visa_code_detected"), "D-4")
+        self.assertEqual(detail.get("visa_sub_code_detected"), "D-4-2K")
+        self.assertEqual(detail.get("task_type_detected"), "extension")
+
+    def test_d4_2k_lowercase_no_separator_payload_normalizes(self):
+        detail = self._detail(self._post({
+            "question": "체류기간 연장 신청 서류?",
+            "visa_code": "d42k",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-4")
+        self.assertEqual(detail.get("visa_sub_code_detected"), "D-4-2K")
+
+    def test_d4_3_payload_does_not_use_d4_grounding(self):
+        detail = self._detail(self._post({
+            "question": "체류기간 연장 신청 서류?",
+            "visa_code": "D-4-3",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-4")
+        self.assertEqual(detail.get("visa_sub_code_detected"), "D-4-3")
+
+    def test_d4_1_payload_does_use_d4_grounding(self):
+        """D-4-1 is explicitly in sub_codes_covered, so the general D-4
+        entry IS the right grounding for D-4-1 requests."""
+        detail = self._detail(self._post({
+            "question": "체류기간 연장 신청 서류?",
+            "visa_code": "D-4-1",
+        }))
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-4")
+        self.assertEqual(detail.get("visa_sub_code_detected"), "D-4-1")
+
+    def test_d4_top_level_payload_still_grounds(self):
+        """Existing behavior: a plain D-4 + extension question grounds."""
+        detail = self._detail(self._post({
+            "question": "D-4 어학연수 체류기간 연장 서류?",
+            "visa_code": "D-4",
+            "lang": "ko",
+        }))
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-4")
+        self.assertIsNone(detail.get("visa_sub_code_detected"))
+
+    # ---- E-7 sub-code routing ----
+    def test_e7_4_payload_does_not_use_general_e7_grounding(self):
+        detail = self._detail(self._post({
+            "question": "체류기간 연장 신청 서류?",
+            "visa_code": "E-7-4",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("grounding_sources"), [])
+        self.assertEqual(detail.get("visa_code_detected"), "E-7")
+        self.assertEqual(detail.get("visa_sub_code_detected"), "E-7-4")
+
+    def test_e74_contiguous_payload_does_not_use_general_e7_grounding(self):
+        detail = self._detail(self._post({
+            "question": "체류기간 연장 신청 서류?",
+            "visa_code": "e74",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "E-7")
+        self.assertEqual(detail.get("visa_sub_code_detected"), "E-7-4")
+
+    def test_e7_top_level_payload_still_grounds(self):
+        detail = self._detail(self._post({
+            "question": "E-7 체류기간 연장 서류?",
+            "visa_code": "E-7",
+        }))
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "E-7")
+        self.assertIsNone(detail.get("visa_sub_code_detected"))
+
+    # ---- D-10 (no fixture yet) ----
+    def test_d10_top_level_returns_no_grounding(self):
+        detail = self._detail(self._post({
+            "question": "체류기간 연장 서류?",
+            "visa_code": "D-10",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("grounding_sources"), [])
+
+    def test_d10_1_payload_returns_no_grounding(self):
+        detail = self._detail(self._post({
+            "question": "체류기간 연장 서류?",
+            "visa_code": "D-10-1",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-10")
+        self.assertEqual(detail.get("visa_sub_code_detected"), "D-10-1")
+
+    def test_d101_contiguous_payload_normalizes_and_returns_no_grounding(self):
+        detail = self._detail(self._post({
+            "question": "체류기간 연장 서류?",
+            "visa_code": "d101",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-10")
+        self.assertEqual(detail.get("visa_sub_code_detected"), "D-10-1")
+
+    # ---- F-6 (no fixture yet) ----
+    def test_f6_1_payload_returns_no_grounding(self):
+        detail = self._detail(self._post({
+            "question": "체류기간 연장 서류?",
+            "visa_code": "F-6-1",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "F-6")
+        self.assertEqual(detail.get("visa_sub_code_detected"), "F-6-1")
+
+    def test_f61_contiguous_payload_normalizes_and_returns_no_grounding(self):
+        detail = self._detail(self._post({
+            "question": "체류기간 연장 서류?",
+            "visa_code": "f61",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "F-6")
+        self.assertEqual(detail.get("visa_sub_code_detected"), "F-6-1")
+
+    def test_f6_top_level_returns_no_grounding_either(self):
+        """F-6 top-level extension also has no fixture yet."""
+        detail = self._detail(self._post({
+            "question": "체류기간 연장 서류?",
+            "visa_code": "F-6",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+
+    # ---- Non-extension gating still works for sub-codes ----
+    def test_d4_2k_non_extension_task_returns_no_grounding(self):
+        detail = self._detail(self._post({
+            "question": "D-4 자격 신청에 필요한 학력 증빙은 무엇인가요?",
+            "visa_code": "D-4-2K",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertIsNone(detail.get("task_type_detected"))
+
+    # ---- Schema version + no generic global wording bleed-through ----
+    def test_no_generic_global_wording_after_subcode_routing(self):
+        """When sub-code routing kicks in (and returns no fixture), the
+        existing pass-through path must not introduce any global immigration
+        wording. The 503 detail carries no grounding so nothing is injected."""
+        detail = self._detail(self._post({
+            "question": "체류기간 연장 서류?",
+            "visa_code": "D-4-2K",
+        }))
+        for forbidden in (
+            "USCIS", "Home Office", "embassy", "consulate",
+            "해당 국가", "본인이 체류 중인 국가",
+        ):
+            self.assertNotIn(forbidden, str(detail), f"forbidden token: {forbidden!r}")
+
+
+class GroundingFixtureSchemaV12Tests(unittest.TestCase):
+    """schema_version is bumped to 1.2 and entries carry the new optional
+    sub-code / scenario fields."""
+
+    FIXTURE = BACKEND_DIR / "data" / "manual_grounding" / "stay_manual_grounding_2026_05.json"
+
+    def _data(self):
+        import json as _json
+        return _json.loads(self.FIXTURE.read_text(encoding="utf-8"))
+
+    def test_schema_version_is_1_2(self):
+        self.assertEqual(self._data().get("schema_version"), "1.2")
+
+    def test_d2_entry_has_null_subcode_fields(self):
+        groundings = {g.get("visa_code"): g for g in self._data().get("groundings", [])}
+        d2 = groundings.get("D-2")
+        self.assertIsNotNone(d2)
+        self.assertIsNone(d2.get("visa_sub_code"))
+        self.assertIsNone(d2.get("sub_codes_covered"))
+        self.assertIsNone(d2.get("scenario"))
+        self.assertIsNone(d2.get("scenarios_covered"))
+        self.assertFalse(d2.get("requires_clarification_when_missing_subcode"))
+
+    def test_d4_entry_sub_codes_covered_only_d4_1_and_d4_7(self):
+        groundings = {g.get("visa_code"): g for g in self._data().get("groundings", [])}
+        d4 = groundings.get("D-4")
+        self.assertIsNotNone(d4)
+        self.assertIsNone(d4.get("visa_sub_code"))
+        self.assertEqual(sorted(d4.get("sub_codes_covered") or []), ["D-4-1", "D-4-7"])
+        # Section label still scopes explicitly to 어학연수생 so the entry
+        # cannot be misread as covering all D-4 sub-codes.
+        self.assertIn("어학연수생", d4.get("section", ""))
+
+    def test_e7_entry_general_scenario(self):
+        groundings = {g.get("visa_code"): g for g in self._data().get("groundings", [])}
+        e7 = groundings.get("E-7")
+        self.assertIsNotNone(e7)
+        self.assertIsNone(e7.get("visa_sub_code"))
+        # E-7 entry must NOT imply coverage of E-7-4 or E-7 협정 특례 tracks.
+        self.assertIsNone(e7.get("sub_codes_covered"))
+        self.assertEqual(e7.get("scenario"), "general")
+        self.assertEqual(e7.get("scenarios_covered"), ["general"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

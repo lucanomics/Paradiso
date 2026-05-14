@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "source_file": "docs/source-manuals/2026-05/stay_manual_2026_05.pdf",
   "source_title": "외국인체류 안내매뉴얼",
   "source_date": "2026.5",
@@ -8,6 +8,11 @@
     {
       "grounding_id": "d2_extension_2026_05",
       "visa_code": "D-2",
+      "visa_sub_code": null,
+      "sub_codes_covered": null,
+      "scenario": null,
+      "scenarios_covered": null,
+      "requires_clarification_when_missing_subcode": false,
       "procedure_type": "체류기간 연장허가",
       "section": "유학(D-2)",
       "page_range": "43-44",
@@ -38,6 +43,11 @@
     {
       "grounding_id": "d4_extension_2026_05",
       "visa_code": "D-4",
+      "visa_sub_code": null,
+      "sub_codes_covered": ["D-4-1", "D-4-7"],
+      "scenario": null,
+      "scenarios_covered": null,
+      "requires_clarification_when_missing_subcode": false,
       "procedure_type": "체류기간 연장허가",
       "section": "일반연수(D-4) — 1. 어학연수생(D-4-1, D-4-7)에 대한 체류기간 연장허가",
       "page_range": "90-91",
@@ -46,7 +56,6 @@
       "source_confidence": "high",
       "language": "ko",
       "country_scope": "KR",
-      "sub_codes_covered": ["D-4-1", "D-4-7"],
       "required_documents": [
         "신청서 (별지 34호 서식)",
         "여권",
@@ -69,6 +78,11 @@
     {
       "grounding_id": "e7_extension_2026_05",
       "visa_code": "E-7",
+      "visa_sub_code": null,
+      "sub_codes_covered": null,
+      "scenario": "general",
+      "scenarios_covered": ["general"],
+      "requires_clarification_when_missing_subcode": false,
       "procedure_type": "체류기간 연장허가",
       "section": "특정활동(E-7) — 1. 제출 서류 및 확인사항",
       "page_range": "226",
