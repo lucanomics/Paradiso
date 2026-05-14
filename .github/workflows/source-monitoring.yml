@@ -1,0 +1,31 @@
+name: Source Monitoring
+
+# Manual-trigger only. No push, no schedule, no pull_request.
+# This workflow is report-only:
+# - it reads data/source_registry.json,
+# - it walks backend/data/manual_grounding/candidates/,
+# - it never writes to the repo,
+# - it never makes a network call,
+# - it does not consume any secret.
+on:
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Source updates (local-only, report mode)
+        run: python3 scripts/check_source_updates.py --local-only
+
+      - name: Manual-grounding candidate validation
+        run: python3 scripts/validate_manual_grounding_candidate.py

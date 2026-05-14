@@ -275,3 +275,14 @@ without poppler), do **not** add new grounding entries. Instead:
   reasoning, and the verification step that could not be performed.
 - Defer the entry to a batch that runs in an environment with
   `poppler-utils` (or equivalent) available.
+
+## Related documents
+
+- [`docs/paradiso_ai_safe_automation_architecture.md`](paradiso_ai_safe_automation_architecture.md) —
+  end-to-end safe automation architecture (PR sequence A–H).
+- [`docs/source_monitoring_pipeline.md`](source_monitoring_pipeline.md) —
+  what `scripts/check_source_updates.py` does and does not do.
+- [`docs/privacy_safe_coverage_analytics.md`](privacy_safe_coverage_analytics.md) —
+  input contract for `scripts/analyze_coverage_gaps.py`.
+- [`backend/data/manual_grounding/candidates/README.md`](../backend/data/manual_grounding/candidates/README.md) —
+  draft-only candidate directory contract.
