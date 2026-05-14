@@ -7299,6 +7299,8 @@ function renderResults(query){
         const dataHtml = v.dataBadge ? `<span class="manual-badge">${escapeHtml(v.dataBadge)}</span>` : '';
         const ddHtml = v.dataDate ? `<div class="data-date">${escapeHtml(tx('resultDataDate'))} ${escapeHtml(v.dataDate)}</div>` : '';
         const nameEn = getVisaNameEn(v);
+        const primaryName = getLocalizedVisaName(v);
+        const secondaryName = getSecondaryVisaName(v);
         c.innerHTML=`
             <div class="vc-h" data-action="toggle-su">
                 <div class="manual-head-main">
@@ -8231,7 +8233,7 @@ function setSearchEnabled(enabled) {
 
 
 async function loadVisaData() {
-    const parse = (raw) => injectLocalData(Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []));
+    const parse = (raw) => injectLocalData(Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : (Array.isArray(raw?.visas) ? raw.visas : [])));
     const applySuccess = (arr, label) => {
         VISA_DATA = arr; dataReady = true; if(rcEl) rcEl.textContent = tx('dataReady', { count: VISA_DATA.length, source: label });
         setSearchEnabled(true); initUI();
@@ -8246,7 +8248,13 @@ async function loadVisaData() {
             const res = await fetch('./visa_data.json', { cache: 'no-store' });
             if (!res.ok) throw new Error(`JSON Fail`);
             applySuccess(parse(await res.json()), tx('sourceStatic'));
-        } catch (err) { applySuccess(parse([]), tx('sourceOffline')); }
+        } catch (err) {
+            dataReady = false;
+            if (rcEl) rcEl.textContent = currentLanguage === 'en'
+                ? 'Could not load visa data. Please try again shortly.'
+                : '비자 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.';
+            setSearchEnabled(false);
+        }
     }
 }
 
