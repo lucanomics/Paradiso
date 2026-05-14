@@ -166,16 +166,29 @@ alias. Schema-only fields (`visa_code`, `visa_data`, …) are accepted
 to keep the contract stable even when they are not yet consumed by
 answer generation.
 
-### Narrow manual grounding (D-2 체류기간 연장허가)
+### Narrow manual grounding (체류기간 연장허가)
 
-`/api/ask` ships a single, deterministic grounding path for the
-**D-2 (유학) 체류기간 연장허가** question. This is intentionally narrow
-and is **not** a full RAG pipeline:
+`/api/ask` ships a small set of deterministic grounding paths for
+**체류기간 연장허가** questions on selected visa codes. This is
+intentionally narrow and is **not** a full RAG pipeline. Currently
+grounded entries (each verified against the committed PDF):
 
-- The backend detects `visa_code = "D-2"` (from payload, `visa_data.code`,
-  or a regex match in the prompt) and `task_type = "extension"` (from
+| `visa_code` | Section                                          | PDF page(s) |
+| ----------- | ------------------------------------------------ | ----------- |
+| `D-2`       | 유학(D-2)                                        | 43–44       |
+| `D-4`       | 일반연수(D-4) — 어학연수생(D-4-1, D-4-7)          | 90–91       |
+| `E-7`       | 특정활동(E-7) — 1. 제출 서류 및 확인사항           | 226         |
+
+See `docs/manual_grounding_expansion_plan.md` for the verification
+method, deferred candidates (D-10, F-6, other D-4 sub-codes, E-7
+agreement tracks), and the planned next batches.
+
+- The backend detects the visa code (from payload, `visa_data.code`,
+  or a regex match in the prompt — text-detection is bounded to
+  grounded codes only) and `task_type = "extension"` (from
   Korean/English wording such as "체류기간 연장", "연장 신청",
-  "extension", "renew visa").
+  "extension", "renew visa"). Payload variants like `d4`, `D4`,
+  `e7`, `E-7` normalize to `D-4` / `E-7`.
 - When both fire, the prompt is wrapped with a Korea-specific context
   block built from
   `backend/data/manual_grounding/stay_manual_grounding_2026_05.json`,
@@ -212,8 +225,10 @@ and is **not** a full RAG pipeline:
   When no LLM provider is configured, the same metadata is returned
   inside the 503 `detail`.
 
-- All other questions fall through to the existing ungrounded path with
-  `grounding_used: false`. No law API, no manual chunking, no full RAG.
+- All other questions (including ungrounded visa codes and
+  non-extension procedures) fall through to the existing ungrounded
+  path with `grounding_used: false`. No law API, no manual chunking,
+  no full RAG.
 
 `/health` should return `status: "ok"` and a `providers` map showing
 which integrations are configured. `/api/visas` should return a non-
