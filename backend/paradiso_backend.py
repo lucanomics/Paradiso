@@ -129,6 +129,7 @@ class AskResponse(BaseModel):
     visa_code_detected: Optional[str] = None
     visa_sub_code_detected: Optional[str] = None
     task_type_detected: Optional[str] = None
+    risk_level_detected: Optional[str] = None
 
 
 class JobCodeKeywordsRequest(BaseModel):
@@ -668,22 +669,94 @@ def _detect_visa_codes(
 def _detect_task_type(text: str) -> Optional[str]:
     """Detect the procedure the user is asking about from the prompt text.
 
-    Currently only the "extension" task is recognized, because that is the
-    only grounding we ship. Korean and English wording are both checked.
+    Returns the highest-priority task type that matches. When both
+    'marriage_divorce_status_change' and 'extension' signals co-occur
+    (e.g. "getting divorced and my F-6-1 extension is next month"),
+    the marriage/divorce task wins because it carries higher risk.
+
+    Korean and English wording are both checked for each task type.
     """
     import re
 
     if not text:
         return None
+
+    # --- marriage_divorce_status_change (highest priority, high risk) ---
+    divorce_ko = ("이혼", "혼인 무효", "혼인단절", "별거", "사별", "재혼", "혼인관계 해소")
+    divorce_en = r"\b(divorce[ds]?|divorcing|separated|separation|widow(?:ed)?|remarr(?:y|ied|ying)|annul(?:led|ment)?)\b"
+    if any(sig in text for sig in divorce_ko) or re.search(divorce_en, text, flags=re.IGNORECASE):
+        return "marriage_divorce_status_change"
+
+    # --- academic_status_change ---
+    academic_ko = ("휴학", "복학", "자퇴", "제적", "정학", "학점 미달", "학적 변동", "학적 상태")
+    academic_en = r"\b(leave of absence|gap semester|drop(?:\s?out|ped out)|expelled|return(?:ing)? from leave|academic(?:\s+status)?)\b"
+    if any(sig in text for sig in academic_ko) or re.search(academic_en, text, flags=re.IGNORECASE):
+        return "academic_status_change"
+
+    # --- overstay_deadline_risk ---
+    overstay_ko = ("초과체류", "불법체류", "체류 만료", "만료 임박", "오버스테이", "기간이 지났")
+    overstay_en = r"\b(overstay(?:ed)?|visa expired|expired visa|stay expired)\b"
+    if any(sig in text for sig in overstay_ko) or re.search(overstay_en, text, flags=re.IGNORECASE):
+        return "overstay_deadline_risk"
+
+    # --- status_change (체류자격 변경) ---
+    status_change_ko = ("체류자격 변경", "자격 변경", "변경허가", "체류 자격을 바꾸")
+    status_change_en = r"\b(change of status|status change|switch (?:to|from) [A-Z]-\d|change (?:my )?visa (?:type|category|status))\b"
+    if any(sig in text for sig in status_change_ko) or re.search(status_change_en, text, flags=re.IGNORECASE):
+        return "status_change"
+
+    # --- workplace_change ---
+    workplace_ko = ("근무처 변경", "근무처 추가", "근무처 변경신고", "이직", "직장을 바꾸", "직장 변경")
+    workplace_en = r"\b(change (?:of )?workplace|change employer|switch (?:jobs?|employer)|add (?:a )?second job)\b"
+    if any(sig in text for sig in workplace_ko) or re.search(workplace_en, text, flags=re.IGNORECASE):
+        return "workplace_change"
+
+    # --- address_report ---
+    address_ko = ("체류지 변경신고", "주소 변경신고", "이사 신고", "주소를 바꾸", "체류지 변경", "이사를 했")
+    address_en = r"\b(address change|change of address|report (?:my )?(?:new )?address|moved (?:house|apartment|address))\b"
+    if any(sig in text for sig in address_ko) or re.search(address_en, text, flags=re.IGNORECASE):
+        return "address_report"
+
+    # --- passport_info_report ---
+    passport_ko = ("여권 재발급 신고", "여권 정보 변경", "여권정보 변경", "새 여권 신고")
+    passport_en = r"\b(report (?:new|renewed|reissued) passport|passport (?:renewed|reissued|information change))\b"
+    if any(sig in text for sig in passport_ko) or re.search(passport_en, text, flags=re.IGNORECASE):
+        return "passport_info_report"
+
+    # --- family_status_change ---
+    family_ko = ("가족관계 변동", "자녀 출생 신고", "부양 가족 변경", "출생 신고", "가족 구성 변경")
+    family_en = r"\b(family status change|(?:had|born) a child|dependent added|child born|new dependent)\b"
+    if any(sig in text for sig in family_ko) or re.search(family_en, text, flags=re.IGNORECASE):
+        return "family_status_change"
+
+    # --- extension (medium risk; comes after high-risk marriage check) ---
     korean_signals = ("체류기간 연장", "체류 연장", "비자 연장", "연장 신청", "연장허가", "연장")
     if any(signal in text for signal in korean_signals):
         return "extension"
-    # English: word-boundary match on extend/extension/renew/renewal so that
-    # "extend my D-2 visa" is recognized without false-positives like
-    # "extension cord".
     if re.search(r"\b(extend|extension|renew|renewal)\b", text, flags=re.IGNORECASE):
         return "extension"
+
     return None
+
+
+_TASK_RISK_LEVELS: Dict[str, str] = {
+    "extension": "medium",
+    "status_change": "high",
+    "foreigner_registration": "medium",
+    "workplace_change": "medium",
+    "address_report": "low",
+    "passport_info_report": "low",
+    "academic_status_change": "medium",
+    "family_status_change": "medium",
+    "marriage_divorce_status_change": "high",
+    "overstay_deadline_risk": "high",
+    "general_status_summary": "low",
+}
+
+
+def _risk_level_for_task(task_type: Optional[str]) -> str:
+    """Return a risk label for the detected task type."""
+    return _TASK_RISK_LEVELS.get(task_type or "", "low")
 
 
 def _select_grounding(
@@ -840,6 +913,109 @@ def _grounding_source_summary(grounding: Dict[str, Any], bundle: Dict[str, Any])
     }
 
 
+def _build_ungrounded_korea_scoped_prompt(
+    user_prompt: str,
+    *,
+    visa_code: Optional[str] = None,
+    visa_sub_code: Optional[str] = None,
+    task_type: Optional[str] = None,
+    risk_level: str = "low",
+    lang: Optional[str] = None,
+) -> str:
+    """Build a Korea-immigration-scoped system prompt for ungrounded answers.
+
+    When no verified manual entry exists for the requested (visa_code,
+    procedure_type) pair, the raw user prompt would be sent to the LLM with
+    zero guardrails. This builder injects a scoped system role and explicit
+    forbidden-content instructions so that:
+
+    - the answer stays inside Korean immigration/stay-status context,
+    - the model does not fabricate document lists, grace-period day counts,
+      or legal citations,
+    - generic global-immigration boilerplate (USCIS, Home Office, embassy)
+      is excluded,
+    - for high-risk tasks the model is instructed to surface missing facts
+      and to mark every candidate pathway as "must be verified".
+
+    This intentionally does NOT include source attribution from
+    외국인체류 안내매뉴얼 — there is no verified grounding here.
+    """
+    answer_language_line = _answer_language_instruction(lang)
+
+    code_label = visa_sub_code or visa_code or ""
+    code_block = f"\n탐지된 체류자격: {code_label}" if code_label else ""
+    task_label = task_type or ""
+    task_block = f"\n탐지된 절차 유형: {task_label}" if task_label else ""
+
+    # Conditional block for marriage/divorce + F-6 combination.
+    f6_divorce_addendum = ""
+    is_divorce = task_type == "marriage_divorce_status_change"
+    is_f6 = (visa_code or "").startswith("F-6") or (visa_sub_code or "").startswith("F-6")
+    if is_divorce and is_f6:
+        f6_divorce_addendum = (
+            "\n이혼·혼인단절 관련 F-6 체류자격 질문입니다. 아래를 반드시 준수하십시오:\n"
+            "- F-6-1(국민의 배우자), F-6-2(자녀양육), F-6-3(혼인단절), F-1-6, E계열·D계열 등 전환 경로를"
+            " 언급하는 경우, 각 경로마다 반드시 '관할 출입국·외국인청 또는 1345·HiKorea에서 확인 필요'라고 명시하십시오.\n"
+            "- '이혼과 동시에 비자가 즉시 취소됩니다', '즉시 출국해야 합니다', '외국인등록증이 당일 말소됩니다' 등"
+            " 즉각적 취소나 강제 출국에 관한 단정 표현을 사용하지 마십시오.\n"
+            "- '현재 ARC 유효기간이 언제까지인지', '이혼이 최종 확정(협의이혼 또는 재판이혼)되었는지',"
+            " '자녀의 유무·양육권·면접교섭권', '배우자 귀책사유(혼인단절)가 인정되는지',"
+            " '독립적인 체류 자격(취업비자 등) 전환 가능성'을 사용자에게 확인하도록 요청하십시오.\n"
+            "- 검증된 매뉴얼 발췌 없이 특정 제출서류 목록, 법령 조문 번호, 유예 기간(예: '30일') 등을"
+            " 임의로 제시하지 마십시오."
+        )
+    elif is_divorce:
+        f6_divorce_addendum = (
+            "\n이혼·혼인단절 관련 질문입니다. 이혼은 체류자격에 중대한 영향을 줄 수 있으므로,"
+            " 사안에 따라 결과가 달라집니다. 단정적인 표현을 피하고 관할 출입국·외국인청에"
+            " 확인하도록 안내하십시오."
+        )
+
+    high_risk_addendum = ""
+    if risk_level == "high":
+        high_risk_addendum = (
+            "\n[고위험 사안 지침]\n"
+            "이 질문은 체류 지위에 중대한 영향을 미칠 수 있는 고위험 사안입니다.\n"
+            "- 답변의 각 섹션(현재 알려진 사실 / 한국 체류 측면의 쟁점 / 가능한 경로(검증 필요) /"
+            " 확인이 필요한 정보 / 다음 단계 / 출처 한계)을 명확히 구분하십시오.\n"
+            "- 모든 경로 및 결과 예측에 '확인 필요(must be verified)' 표기를 포함하십시오.\n"
+            "- '즉시', '반드시', '자동으로' 등 단정적 표현으로 결과를 예측하지 마십시오."
+        )
+
+    return (
+        "당신은 한국 비자·체류 안내 도우미 Paradiso입니다. 대한민국 출입국·외국인 체류 제도의 범위 안에서만 답하십시오.\n"
+        "본 답변은 검증된 매뉴얼 발췌가 없는 상황에서 제공되는 일반 안내입니다."
+        " 이 답변은 공식 출입국·외국인정책본부 매뉴얼에 근거하지 않습니다.\n\n"
+        "[금지 사항 — 반드시 준수]\n"
+        "- 미국(USCIS), 영국(Home Office), 캐나다, 호주 등 다른 나라의 이민 절차나"
+        " '대사관·영사관에 문의하세요' 같은 일반화된 안내를 포함하지 마십시오.\n"
+        "- 구체적인 제출서류 목록, 법령 조문 번호, 유예 기간(예: '30일'), 행정 양식 번호(예: '별지 34호 서식')를"
+        " 검증된 출처 없이 임의로 제시하지 마십시오.\n"
+        "- '본 답변은 외국인체류 안내매뉴얼에 근거합니다' 등 공식 매뉴얼 인용을 암시하는 표현을"
+        " 사용하지 마십시오.\n"
+        "- USCIS, Home Office, embassy, consulate, '해당 국가', '본인이 체류 중인 국가',"
+        " '귀국 후 해당국 이민청' 같은 표현을 사용하지 마십시오.\n\n"
+        "[탐지 정보]"
+        f"{code_block}"
+        f"{task_block}\n\n"
+        f"{f6_divorce_addendum}"
+        f"{high_risk_addendum}\n\n"
+        "[답변 형식]\n"
+        "다음 6개 섹션을 순서대로 포함하십시오:\n"
+        "1. 현재 알려진 사실 (사용자 질문에서 명시된 정보만, 추측 없이)\n"
+        "2. 한국 체류 측면의 쟁점 (왜 이 문제가 한국 체류에 중요한지)\n"
+        "3. 가능한 경로 — 검증 필요 (각 경로에 '출입국·외국인청 / 1345 / HiKorea 확인 필요' 표기)\n"
+        "4. 확인이 필요한 정보 (사용자가 제공하지 않은, 결과에 영향을 주는 사실)\n"
+        "5. 다음 단계 및 문의처 (관할 출입국·외국인청/사무소/출장소, 1345 외국인종합안내센터,"
+        " HiKorea, 필요 시 행정사·변호사; 미국·영국 등 타국 기관 제외)\n"
+        "6. 출처 한계 안내 (이 답변은 검증된 매뉴얼 발췌가 없으므로 반드시 공식 채널에서 확인해야 한다는 점)\n\n"
+        "[답변 지침]\n"
+        f"{answer_language_line}\n\n"
+        "[사용자 질문]\n"
+        f"{user_prompt}"
+    )
+
+
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
@@ -917,15 +1093,24 @@ async def ask(req: AskRequest) -> AskResponse:
         req.visa_code, req.visa_data, prompt
     )
     task_type_detected = _detect_task_type(prompt)
+    risk_level_detected = _risk_level_for_task(task_type_detected)
     grounding = _select_grounding(
         visa_code_detected, task_type_detected, visa_sub_code_detected
     )
     grounding_sources: List[Dict[str, Any]] = []
-    final_prompt = prompt
     if grounding is not None:
         bundle = _load_stay_manual_grounding() or {}
         final_prompt = _build_grounded_prompt(prompt, grounding, bundle, lang=req.lang)
         grounding_sources = [_grounding_source_summary(grounding, bundle)]
+    else:
+        final_prompt = _build_ungrounded_korea_scoped_prompt(
+            prompt,
+            visa_code=visa_code_detected,
+            visa_sub_code=visa_sub_code_detected,
+            task_type=task_type_detected,
+            risk_level=risk_level_detected,
+            lang=req.lang,
+        )
 
     if OPENROUTER_API_KEY:
         answer = await _call_openrouter(final_prompt, model=req.model)
@@ -938,6 +1123,7 @@ async def ask(req: AskRequest) -> AskResponse:
             visa_code_detected=visa_code_detected,
             visa_sub_code_detected=visa_sub_code_detected,
             task_type_detected=task_type_detected,
+            risk_level_detected=risk_level_detected,
         )
     if GROQ_API_KEY:
         answer = await _call_groq(final_prompt, model=req.model)
@@ -950,6 +1136,7 @@ async def ask(req: AskRequest) -> AskResponse:
             visa_code_detected=visa_code_detected,
             visa_sub_code_detected=visa_sub_code_detected,
             task_type_detected=task_type_detected,
+            risk_level_detected=risk_level_detected,
         )
 
     raise HTTPException(
@@ -965,6 +1152,7 @@ async def ask(req: AskRequest) -> AskResponse:
             "visa_code_detected": visa_code_detected,
             "visa_sub_code_detected": visa_sub_code_detected,
             "task_type_detected": task_type_detected,
+            "risk_level_detected": risk_level_detected,
         },
     )
 
