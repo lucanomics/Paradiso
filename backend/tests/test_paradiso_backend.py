@@ -1139,5 +1139,309 @@ class GroundingFixtureSchemaV12Tests(unittest.TestCase):
         self.assertEqual(e7.get("scenarios_covered"), ["general"])
 
 
+class FallbackTaskTypeDetectionTests(unittest.TestCase):
+    """Extended task-type detection: marriage/divorce, academic, overstay, etc."""
+
+    def _detect(self, text):
+        _, mod = _client()
+        return mod._detect_task_type(text)
+
+    # ---- marriage_divorce_status_change ----
+
+    def test_f61_divorce_query_en_triggers_marriage_divorce(self):
+        result = self._detect(
+            "Will my visa be revoked immediately if an American who is staying on an F-6-1 visa divorces?"
+        )
+        self.assertEqual(result, "marriage_divorce_status_change")
+
+    def test_f61_divorce_query_ko_triggers_marriage_divorce(self):
+        result = self._detect("F-6-1 비자로 체류 중인데 이혼하면 체류자격이 어떻게 되나요?")
+        self.assertEqual(result, "marriage_divorce_status_change")
+
+    def test_separated_triggers_marriage_divorce(self):
+        self.assertEqual(self._detect("We are now separated. Does that affect my F-6 visa?"), "marriage_divorce_status_change")
+
+    def test_widowed_triggers_marriage_divorce(self):
+        self.assertEqual(self._detect("My Korean spouse passed away. I am widowed. What happens to my F-6?"), "marriage_divorce_status_change")
+
+    def test_marriage_divorce_outranks_extension_when_both_signals(self):
+        result = self._detect("이혼했는데 F-6-1 비자 연장이 다음 달이에요. 어떻게 해야 하나요?")
+        self.assertEqual(result, "marriage_divorce_status_change")
+
+    # ---- academic_status_change ----
+
+    def test_leave_of_absence_en_triggers_academic(self):
+        result = self._detect(
+            "I'm on a D-2 visa and taking a leave of absence this semester — does that affect my stay?"
+        )
+        self.assertEqual(result, "academic_status_change")
+
+    def test_gap_semester_triggers_academic(self):
+        self.assertEqual(self._detect("Can I take a gap semester without losing my D-4 status?"), "academic_status_change")
+
+    def test_hwuhak_triggers_academic(self):
+        result = self._detect("D-2 비자로 유학 중인데 이번 학기 휴학하면 체류 자격에 문제가 있나요?")
+        self.assertEqual(result, "academic_status_change")
+
+    # ---- overstay_deadline_risk ----
+
+    def test_visa_expired_triggers_overstay(self):
+        self.assertEqual(self._detect("My visa expired yesterday — what now?"), "overstay_deadline_risk")
+
+    def test_chogwa_triggers_overstay(self):
+        self.assertEqual(self._detect("비자가 어제 만료됐어요. 초과체류가 됩니까?"), "overstay_deadline_risk")
+
+    # ---- workplace_change ----
+
+    def test_change_employer_triggers_workplace(self):
+        self.assertEqual(self._detect("I want to change employer. What do I need to report?"), "workplace_change")
+
+    def test_geupmucheo_triggers_workplace(self):
+        self.assertEqual(self._detect("근무처 변경 신고를 해야 하나요?"), "workplace_change")
+
+    # ---- address_report ----
+
+    def test_address_change_triggers_address_report(self):
+        self.assertEqual(self._detect("I moved. Where do I report my new address?"), "address_report")
+
+    def test_isa_triggers_address_report(self):
+        self.assertEqual(self._detect("이사를 했습니다. 어디에 신고해야 하나요?"), "address_report")
+
+    # ---- extension still detected correctly ----
+
+    def test_extension_detected_when_no_other_signal(self):
+        self.assertEqual(self._detect("D-2 비자 연장에 필요한 서류는?"), "extension")
+
+    def test_extension_en_detected(self):
+        self.assertEqual(self._detect("How do I renew my D-4 visa?"), "extension")
+
+    # ---- risk levels ----
+
+    def test_marriage_divorce_is_high_risk(self):
+        _, mod = _client()
+        self.assertEqual(mod._risk_level_for_task("marriage_divorce_status_change"), "high")
+
+    def test_overstay_is_high_risk(self):
+        _, mod = _client()
+        self.assertEqual(mod._risk_level_for_task("overstay_deadline_risk"), "high")
+
+    def test_extension_is_medium_risk(self):
+        _, mod = _client()
+        self.assertEqual(mod._risk_level_for_task("extension"), "medium")
+
+    def test_address_report_is_low_risk(self):
+        _, mod = _client()
+        self.assertEqual(mod._risk_level_for_task("address_report"), "low")
+
+    def test_none_task_returns_low_risk(self):
+        _, mod = _client()
+        self.assertEqual(mod._risk_level_for_task(None), "low")
+
+
+class FallbackGroundingRoutingTests(unittest.TestCase):
+    """F-6-1 divorce must not accidentally use D-2/D-4/E-7 extension grounding."""
+
+    def _post(self, payload):
+        client, _ = _client()
+        return client.post("/api/ask", json=payload)
+
+    def _detail(self, resp):
+        self.assertEqual(resp.status_code, 503, resp.text)
+        return resp.json()["detail"]
+
+    def test_f61_divorce_query_does_not_use_grounding(self):
+        detail = self._detail(self._post({
+            "question": "Will my visa be revoked immediately if an American who is staying on an F-6-1 visa divorces?",
+            "visa_code": "F-6-1",
+        }))
+        self.assertFalse(detail.get("grounding_used"))
+        self.assertEqual(detail.get("grounding_sources"), [])
+
+    def test_f61_divorce_detects_marriage_divorce_task(self):
+        detail = self._detail(self._post({
+            "question": "Will my visa be revoked immediately if an American who is staying on an F-6-1 visa divorces?",
+            "visa_code": "F-6-1",
+        }))
+        self.assertEqual(detail.get("task_type_detected"), "marriage_divorce_status_change")
+        self.assertEqual(detail.get("visa_code_detected"), "F-6")
+        self.assertEqual(detail.get("visa_sub_code_detected"), "F-6-1")
+
+    def test_f61_divorce_high_risk_level(self):
+        detail = self._detail(self._post({
+            "question": "Will my visa be revoked immediately if an American who is staying on an F-6-1 visa divorces?",
+            "visa_code": "F-6-1",
+        }))
+        self.assertEqual(detail.get("risk_level_detected"), "high")
+
+    def test_d2_extension_still_grounds_after_task_type_expansion(self):
+        detail = self._detail(self._post({
+            "question": "D-2 비자 연장 서류는 무엇인가요?",
+            "visa_code": "D-2",
+        }))
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("visa_code_detected"), "D-2")
+        self.assertEqual(detail.get("task_type_detected"), "extension")
+
+    def test_d4_extension_still_grounds_after_task_type_expansion(self):
+        detail = self._detail(self._post({
+            "question": "D-4 어학연수 체류기간 연장 서류?",
+            "visa_code": "D-4",
+        }))
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("task_type_detected"), "extension")
+
+    def test_e7_extension_still_grounds_after_task_type_expansion(self):
+        detail = self._detail(self._post({
+            "question": "E-7 체류기간 연장 서류?",
+            "visa_code": "E-7",
+        }))
+        self.assertTrue(detail.get("grounding_used"))
+        self.assertEqual(detail.get("task_type_detected"), "extension")
+
+
+class UngroundedFallbackPromptTests(unittest.TestCase):
+    """Assert on the prompt string the fallback builder produces (no LLM)."""
+
+    def _build_f61_divorce_prompt(self, lang=None):
+        _, mod = _client()
+        return mod._build_ungrounded_korea_scoped_prompt(
+            "Will my visa be revoked immediately if an American who is staying on an F-6-1 visa divorces?",
+            visa_code="F-6",
+            visa_sub_code="F-6-1",
+            task_type="marriage_divorce_status_change",
+            risk_level="high",
+            lang=lang,
+        )
+
+    # ---- Korea-immigration framing ----
+
+    def test_f61_divorce_prompt_contains_korea_framing(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertIn("한국", built)
+        self.assertIn("출입국", built)
+        self.assertIn("1345", built)
+
+    def test_f61_divorce_prompt_does_not_contain_manual_attribution(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertNotIn("외국인체류 안내매뉴얼 (2026.5)", built)
+        self.assertNotIn("법무부 출입국·외국인정책본부", built)
+
+    # ---- Forbidden global boilerplate ----
+
+    def test_f61_divorce_prompt_forbids_uscis(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertIn("USCIS", built)  # appears in the forbidden-token instruction
+
+    def test_f61_divorce_prompt_forbids_home_office(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertIn("Home Office", built)  # appears in the forbidden-token instruction
+
+    def test_f61_divorce_prompt_forbids_embassy(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertIn("embassy", built)  # appears in the forbidden-token instruction
+
+    def test_f61_divorce_prompt_forbids_consulate(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertIn("consulate", built)  # appears in the forbidden-token instruction
+
+    # ---- Immediate-revocation certainty forbidden ----
+
+    def test_f61_divorce_prompt_forbids_immediate_revocation_language(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertIn("즉시 취소", built)   # appears in the forbidden-token instruction
+        self.assertIn("즉각적 취소", built)
+
+    # ---- Missing-facts elicitation ----
+
+    def test_f61_divorce_prompt_asks_for_arc_expiration(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertIn("ARC 유효기간", built)
+
+    def test_f61_divorce_prompt_asks_for_divorce_finalization(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertIn("최종 확정", built)
+
+    def test_f61_divorce_prompt_asks_for_children_custody(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertIn("자녀", built)
+        self.assertIn("양육권", built)
+
+    def test_f61_divorce_prompt_asks_for_independent_status(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertIn("독립적인 체류 자격", built)
+
+    # ---- Six-section answer shape ----
+
+    def test_f61_divorce_prompt_includes_six_sections(self):
+        built = self._build_f61_divorce_prompt()
+        for section in (
+            "현재 알려진 사실",
+            "한국 체류 측면의 쟁점",
+            "가능한 경로",
+            "확인이 필요한 정보",
+            "다음 단계",
+            "출처 한계",
+        ):
+            self.assertIn(section, built, f"missing section: {section!r}")
+
+    # ---- Verify-marker for pathways ----
+
+    def test_f61_divorce_prompt_marks_pathways_as_must_verify(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertIn("확인 필요", built)
+
+    # ---- Answer-language preservation ----
+
+    def test_ungrounded_prompt_lang_ko(self):
+        _, mod = _client()
+        built = mod._build_ungrounded_korea_scoped_prompt("질문", lang="ko")
+        self.assertIn("한국어로 답하십시오", built)
+        self.assertNotIn("Answer in English", built)
+
+    def test_ungrounded_prompt_lang_en(self):
+        _, mod = _client()
+        built = mod._build_ungrounded_korea_scoped_prompt("question", lang="en")
+        self.assertIn("Answer in English", built)
+        self.assertNotIn("한국어로 답하십시오", built)
+
+    def test_ungrounded_prompt_lang_default(self):
+        _, mod = _client()
+        built = mod._build_ungrounded_korea_scoped_prompt("question", lang=None)
+        self.assertIn("Answer in the same language as the user's question", built)
+
+    # ---- No source attribution bleed-through ----
+
+    def test_ungrounded_prompt_does_not_imply_source_grounding(self):
+        built = self._build_f61_divorce_prompt()
+        self.assertNotIn("외국인체류 안내매뉴얼 (2026.5)", built)
+        self.assertNotIn("법무부 출입국·외국인정책본부", built)
+
+    # ---- Non-F-6 divorce (no F-6-specific addendum but still Korea-scoped) ----
+
+    def test_non_f6_divorce_prompt_is_still_korea_scoped(self):
+        _, mod = _client()
+        built = mod._build_ungrounded_korea_scoped_prompt(
+            "What happens to my visa if I divorce? I have an E-2 visa.",
+            visa_code="E-2",
+            task_type="marriage_divorce_status_change",
+            risk_level="high",
+            lang="en",
+        )
+        self.assertIn("출입국", built)
+        self.assertNotIn("USCIS", built.split("[금지 사항")[0])  # not in system role; is in the forbidden list
+
+    # ---- Overstay prompt sanity ----
+
+    def test_overstay_prompt_routes_to_1345(self):
+        _, mod = _client()
+        built = mod._build_ungrounded_korea_scoped_prompt(
+            "My visa expired yesterday — what now?",
+            task_type="overstay_deadline_risk",
+            risk_level="high",
+            lang="en",
+        )
+        self.assertIn("1345", built)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
