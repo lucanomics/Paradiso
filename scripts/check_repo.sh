@@ -6,13 +6,13 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "[1/11] Validating visa_data.json format..."
+echo "[1/12] Validating visa_data.json format..."
 python3 -m json.tool visa_data.json > /tmp/visa_data_check.json
 
-echo "[2/11] Scanning visa data for U+FFFD replacement characters..."
+echo "[2/12] Scanning visa data for U+FFFD replacement characters..."
 python3 scripts/check_visa_text_corruption.py
 
-echo "[3/11] Validating representative manual-aware visa schema..."
+echo "[3/12] Validating representative manual-aware visa schema..."
 python3 - <<'PY'
 import json
 import sys
@@ -80,23 +80,30 @@ if errors:
     raise SystemExit("\\n".join(errors))
 PY
 
-echo "[4/11] Validating current source manuals..."
+echo "[4/12] Validating current source manuals..."
 python3 scripts/check_source_manuals.py
 
-echo "[5/11] Running source-monitoring report (local-only)..."
+echo "[5/12] Running source-monitoring report (local-only)..."
 # Report-only. Network entries are skipped. Not flaky: only fails if
 # data/source_registry.json itself is malformed.
 python3 scripts/check_source_updates.py --local-only > /dev/null
 
-echo "[6/11] Validating manual-grounding candidates (if any)..."
+echo "[6/12] Validating manual-grounding candidates (if any)..."
 # Passes cleanly when no candidate.json files exist. Only fails if a
 # committed candidate file is structurally invalid.
 python3 scripts/validate_manual_grounding_candidate.py > /dev/null
 
-echo "[7/11] Running git diff --check..."
+echo "[7/12] Validating Paradiso coverage matrix..."
+# Structural validation only. The matrix is metadata, not read by
+# /api/ask. Fails only if a row claims active_grounded for a fixture
+# that does not exist, or otherwise breaks the schema rules in
+# scripts/validate_coverage_matrix.py.
+python3 scripts/validate_coverage_matrix.py > /dev/null
+
+echo "[8/12] Running git diff --check..."
 git diff --check -- index.html ai.html visa_data.json doc_master.json scripts/check_repo.sh scripts/check_source_manuals.py scripts/check_visa_text_corruption.py scripts/check_i18n.js scripts/smoke_ai_payload.js docs/data docs/design docs/source-manuals docs/i18n docs/backend
 
-echo "[8/11] Validating EN/KO UI translations..."
+echo "[9/12] Validating EN/KO UI translations..."
 if [[ -f scripts/check_i18n.js ]]; then
   if command -v node >/dev/null 2>&1; then
     node scripts/check_i18n.js
@@ -109,7 +116,7 @@ else
   echo "INFO: scripts/check_i18n.js not present; skipping i18n validation."
 fi
 
-echo "[9/11] Scanning key user-facing files for forbidden branding strings..."
+echo "[10/12] Scanning key user-facing files for forbidden branding strings..."
 KEY_FILES=(
   "index.html"
   "ai.html"
@@ -145,10 +152,10 @@ else
   fi
 fi
 
-echo "[10/11] Verifying backend deploy-context visa data file is in sync..."
+echo "[11/12] Verifying backend deploy-context visa data file is in sync..."
 python3 scripts/sync_visa_data.py --check
 
-echo "[11/11] Running backend regression tests..."
+echo "[12/12] Running backend regression tests..."
 python3 backend/tests/test_paradiso_backend.py
 
 echo "Success: repository validation passed. JSON is valid, representative manual schema is valid, source manuals are registered, git diff check is clean, and no forbidden branding strings were found in existing key user-facing files."
