@@ -6358,27 +6358,51 @@ async function searchJobcodeWithAI() {
     const btn = spinner.parentElement; btn.disabled = true; spinner.style.display = 'inline-block';
     jobBox.innerHTML = '<div class="jc-loading">직종 스캔 중...</div>'; indBox.innerHTML = '<div class="jc-loading">업종 스캔 중...</div>';
     try {
-        let jobKw = [input], indKw = [input];
+        if (!_jobcodeData) {
+            try { await loadJobcodeData(); } catch (_) {
+                const msg = currentLanguage === 'en'
+                    ? 'The official job/industry analysis tool is currently unavailable. Try a more specific description or try again later.'
+                    : '현재 공식 직종·업종 분석 기능을 사용할 수 없습니다. 입력 내용을 조금 더 구체적으로 바꾸거나, 나중에 다시 시도해 주세요.';
+                const html = `<div class="jc-empty">${escapeHtml(msg)}</div>`;
+                jobBox.innerHTML = html; indBox.innerHTML = html; return;
+            }
+        }
+        let jobKw = [input], indKw = [input], fallbackNote = null;
         if (!API_BASE) {
              const li = input.toLowerCase();
              if (li.includes('식당')) { jobKw = ["웨이터", "조리", "서빙"]; indKw = ["음식", "외식", "주점"]; }
              else if (li.includes('배달')) { jobKw = ["배달", "택배", "배송"]; indKw = ["운송", "이륜차", "물류"]; }
         } else {
-            const response = await fetch(`${API_BASE}/api/jobcodekeywords`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: input }) });
-            if(!response.ok) throw new Error("AI 서버 응답 지연");
-            const data = await response.json();
-            jobKw = (data.job_keywords || data.keywords || []).filter(k => k !== '...' && !k.startsWith('kw'));
-            indKw = (data.industry_keywords || []).filter(k => k !== '...' && !k.startsWith('kw'));
+            try {
+                const response = await fetch(`${API_BASE}/api/jobcodekeywords`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: input }) });
+                if(!response.ok) throw new Error("AI 서버 응답 지연");
+                const data = await response.json();
+                jobKw = (data.job_keywords || data.keywords || []).filter(k => k !== '...' && !k.startsWith('kw'));
+                indKw = (data.industry_keywords || []).filter(k => k !== '...' && !k.startsWith('kw'));
+            } catch(_) {
+                const words = input.split(/[\s,]+/).filter(w => w.length > 1);
+                jobKw = words.length ? words : [input];
+                indKw = jobKw.slice();
+                fallbackNote = currentLanguage === 'en'
+                    ? '⚠ AI server unavailable. Showing local keyword matches only.'
+                    : '⚠ AI 서버를 사용할 수 없어 키워드 직접 매칭으로 결과를 표시합니다.';
+            }
         }
-        renderUnifiedAiResults(jobKw, indKw);
+        renderUnifiedAiResults(jobKw, indKw, fallbackNote);
     } catch(e) {
         const errorHtml = `<div class="jc-empty" style="color:var(--color-error);">AI 분석 오류: ${escapeHtml(e.message)}</div>`;
         jobBox.innerHTML = errorHtml; indBox.innerHTML = errorHtml;
     } finally { btn.disabled = false; spinner.style.display = 'none'; }
 }
-function renderUnifiedAiResults(jobKw, indKw) {
+function renderUnifiedAiResults(jobKw, indKw, note) {
     const jobBox = document.getElementById('jcJobResults'), indBox = document.getElementById('jcIndResults'), badge = document.getElementById('jcCountBadge');
-    if (!_jobcodeData) return;
+    if (!_jobcodeData) {
+        const msg = currentLanguage === 'en'
+            ? 'The official job/industry analysis tool is currently unavailable. Try a more specific description or try again later.'
+            : '현재 공식 직종·업종 분석 기능을 사용할 수 없습니다. 입력 내용을 조금 더 구체적으로 바꾸거나, 나중에 다시 시도해 주세요.';
+        const html = `<div class="jc-empty">${escapeHtml(msg)}</div>`;
+        if(jobBox) jobBox.innerHTML = html; if(indBox) indBox.innerHTML = html; return;
+    }
     const getScoredRows = (type, keywords) => {
         if(!keywords || keywords.length === 0) return [];
         let rows = _jobcodeData.data.filter(r => r.분류 === type).map(r => {
@@ -6390,6 +6414,7 @@ function renderUnifiedAiResults(jobKw, indKw) {
     };
     const jobRows = getScoredRows('직업', jobKw), indRows = getScoredRows('산업', indKw);
     if (badge) badge.textContent = `AI 추천 완료`;
+    const noteHtml = note ? `<div class="jc-empty" style="color:var(--color-warning);">${escapeHtml(note)}</div>` : '';
     const buildHtml = (rows, keywords) => {
         if(!rows.length) return `<div class="jc-empty">추천 결과 없음.<br><span style="font-size:0.75rem; color:var(--t3);">키워드: ${keywords.map(k=>`[${escapeHtml(k)}]`).join(' ')}</span></div>`;
         let html = `<div style="padding: 0.4rem 0.8rem; background: var(--bg2); color: var(--ac); font-size: 0.75rem; font-weight:700; border-bottom:1px solid var(--bd2);">🤖 AI 키워드: ${keywords.map(k => `[${escapeHtml(k)}]`).join(' ')}</div>`;
@@ -6398,7 +6423,7 @@ function renderUnifiedAiResults(jobKw, indKw) {
             return `<div class="jc-item"><span class="jc-code lv${lv}">${code}</span><div><span class="jc-level-tag">매칭도 ${r.score}</span><span class="jc-level-tag">${levelLabel}</span><span class="jc-desc">${desc}</span></div><button type="button" class="jc-copy-btn" data-action="copy-jobcode" data-code="${code}">📋 복사</button></div>`;
         }).join('');
     };
-    jobBox.innerHTML = buildHtml(jobRows, jobKw); indBox.innerHTML = buildHtml(indRows, indKw);
+    jobBox.innerHTML = noteHtml + buildHtml(jobRows, jobKw); indBox.innerHTML = noteHtml + buildHtml(indRows, indKw);
 }
 function copyJobcode(btnEl, code) {
     if (!code) return;
