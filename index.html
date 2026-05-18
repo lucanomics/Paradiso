@@ -4307,6 +4307,168 @@ body:not(.searched) #visaManualSection::before {
   border-color: var(--color-primary);
   color: var(--color-primary-ink);
 }
+
+/* Ministry of Justice designated medical institution finder */
+.p-med-finder { display: flex; flex-direction: column; gap: 0.9rem; }
+.p-med-finder__source {
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.95rem;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  border-left: 3px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-border) 22%, transparent);
+}
+.p-med-finder__disclaimer {
+  border-radius: var(--radius-md);
+  padding: 0.7rem 0.95rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  margin: 0;
+  background: color-mix(in srgb, var(--color-warning) 14%, transparent);
+  border-left: 3px solid var(--color-warning);
+  color: var(--color-text);
+  font-weight: 600;
+}
+.p-med-finder__chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.p-med-finder__chip {
+  font: inherit;
+  font-size: 0.83rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  min-height: 36px;
+}
+.p-med-finder__chip:hover,
+.p-med-finder__chip:focus-visible { border-color: var(--color-primary); color: var(--color-primary-ink); }
+.p-med-finder__chip[aria-pressed="true"] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+}
+.p-med-finder__controls { display: flex; gap: 0.5rem; align-items: center; }
+.p-med-finder__controls input[type="search"] {
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-width: 0;
+}
+.p-med-finder__controls input[type="search"]:hover { border-color: color-mix(in srgb, var(--color-primary) 48%, var(--color-border)); }
+.p-med-finder__controls input[type="search"]:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-soft) 42%, transparent);
+  outline: none;
+}
+.p-med-finder__clear {
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  min-height: 40px;
+}
+.p-med-finder__clear:hover,
+.p-med-finder__clear:focus-visible { border-color: var(--color-primary); color: var(--color-primary-ink); }
+.p-med-finder__count { margin: 0; font-size: 0.85rem; color: var(--color-text-muted); font-weight: 600; }
+.p-med-finder__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.p-med-finder__card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.p-med-finder__card h3 { margin: 0; font-size: 0.98rem; line-height: 1.35; }
+.p-med-finder__region {
+  display: inline-block;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  color: var(--color-primary-ink);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+.p-med-finder__card address { font-style: normal; font-size: 0.85rem; line-height: 1.5; color: var(--color-text); }
+.p-med-finder__card-source { font-size: 0.76rem; color: var(--color-text-muted); margin-top: 0.1rem; }
+.p-med-finder__actions { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.15rem; }
+.p-med-finder__actions a,
+.p-med-finder__actions button {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+}
+.p-med-finder__actions a:hover,
+.p-med-finder__actions a:focus-visible,
+.p-med-finder__actions button:hover,
+.p-med-finder__actions button:focus-visible { border-color: var(--color-primary); color: var(--color-primary-ink); }
+.p-med-finder__empty,
+.p-med-finder__error {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  font-size: 0.88rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-border) 22%, transparent);
+  color: var(--color-text-muted);
+}
+.p-med-finder__error { border-left: 3px solid var(--color-warning); color: var(--color-text); }
+.p-med-finder[hidden] { display: none; }
+.p-med-finder [hidden] { display: none !important; }
+.p-med-finder__prompt,
+.p-med-finder__loading {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  font-size: 0.88rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-border) 22%, transparent);
+  color: var(--color-text-muted);
+}
+.p-med-finder__more { display: flex; justify-content: center; padding: 0.5rem 0; }
+.p-med-finder__show-more {
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.65rem 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  min-height: 44px;
+}
+.p-med-finder__show-more:hover,
+.p-med-finder__show-more:focus-visible { border-color: var(--color-primary); color: var(--color-primary-ink); }
 @media (max-width: 600px) {
   .p-agent-finder__controls { grid-template-columns: 1fr; }
   .p-agent-finder__card { padding: 0.95rem; }
@@ -5281,6 +5443,46 @@ body:not(.searched) .visa-track-card:hover {
         <div class="p-agent-finder__error" id="agentFinderError" role="alert" hidden><span id="agentFinderErrorText">데이터를 불러오지 못했습니다. 잠시 후 다시 시도하거나 하이코리아 공식 조회를 이용하세요.</span> <button type="button" class="cb" id="agentFinderRetry" style="margin-left:0.5rem; padding:0.25rem 0.6rem;">다시 시도</button></div>
         <div class="p-agent-finder__more" id="agentFinderMore" hidden>
             <button type="button" id="agentFinderShowMore" class="p-agent-finder__show-more">더 보기</button>
+        </div>
+    </section>
+
+    <section class="p-section p-med-finder" id="medFinder" aria-labelledby="medFinderTitle">
+        <div class="p-section-head">
+            <div>
+                <p class="p-kicker">Medical guidance</p>
+                <h2 class="p-section-title" id="medFinderTitle">법무부지정 의료기관 찾기</h2>
+            </div>
+            <p class="p-section-copy">채용신체검사·건강진단이 가능한 법무부지정 의료기관 목록을 지역, 기관명, 주소로 검색할 수 있습니다.</p>
+        </div>
+        <p class="p-med-finder__source" id="medFinderSourceNote">
+            출처: 법무부지정 채용신체검사 및 건강진단 의료기관 현황 (2026.04.30.)
+        </p>
+        <p class="p-med-finder__disclaimer" id="medFinderDisclaimer">
+            <span id="medFinderDisclaimerText">방문 전 해당 의료기관에 전화해 검사 가능 여부, 예약 필요 여부, 검사 항목, 준비물을 확인하세요.</span>
+        </p>
+        <div class="p-med-finder__chips" id="medFinderChips" role="group" aria-label="지역 빠른 선택">
+            <button type="button" class="p-med-finder__chip" data-med-region="제주" aria-pressed="false">제주</button>
+            <button type="button" class="p-med-finder__chip" data-med-region="서울" aria-pressed="false">서울</button>
+            <button type="button" class="p-med-finder__chip" data-med-region="경기" aria-pressed="false">경기</button>
+            <button type="button" class="p-med-finder__chip" data-med-region="부산" aria-pressed="false">부산</button>
+            <button type="button" class="p-med-finder__chip" data-med-region="인천" aria-pressed="false">인천</button>
+            <button type="button" class="p-med-finder__chip" data-med-region="대구" aria-pressed="false">대구</button>
+            <button type="button" class="p-med-finder__chip" data-med-region="광주" aria-pressed="false">광주</button>
+            <button type="button" class="p-med-finder__chip" data-med-region="대전" aria-pressed="false">대전</button>
+        </div>
+        <div class="p-med-finder__controls" role="search" aria-controls="medFinderList">
+            <label class="sr-only" for="medFinderKeyword">검색어</label>
+            <input id="medFinderKeyword" type="search" placeholder="지역·기관명·주소로 검색" autocomplete="off" />
+            <button type="button" id="medFinderClear" class="p-med-finder__clear" hidden aria-label="검색 초기화">✕</button>
+        </div>
+        <p class="p-med-finder__prompt" id="medFinderPrompt">지역 버튼을 누르거나 2자 이상 입력하면 검색됩니다. 예: 제주, 한라병원, 강남</p>
+        <p class="p-med-finder__loading" id="medFinderLoading" hidden>데이터를 불러오는 중입니다.</p>
+        <p class="p-med-finder__count" id="medFinderCount" aria-live="polite"></p>
+        <ul class="p-med-finder__list" id="medFinderList" aria-label="법무부지정 의료기관 목록"></ul>
+        <p class="p-med-finder__empty" id="medFinderEmpty" hidden>검색 결과가 없습니다. 다른 키워드나 지역을 시도해 보세요.</p>
+        <div class="p-med-finder__error" id="medFinderError" role="alert" hidden><span id="medFinderErrorText">데이터를 불러오지 못했습니다. 잠시 후 다시 시도하세요.</span> <button type="button" class="cb" id="medFinderRetry" style="margin-left:0.5rem; padding:0.25rem 0.6rem;">다시 시도</button></div>
+        <div class="p-med-finder__more" id="medFinderMore" hidden>
+            <button type="button" id="medFinderShowMore" class="p-med-finder__show-more">더 보기</button>
         </div>
     </section>
 
@@ -7679,6 +7881,8 @@ const UI_TRANSLATIONS = {
         toolsTitle: '필요한 도구는 흐름 가까이에 둡니다.', toolsCopy: '이미 구현된 도구는 기존 모달과 검색에 연결하고, 아직 준비 중인 기능은 계획 상태로 표시합니다.', toolTitles: ['관할 출입국 찾기', '직업·산업 코드', '서류 체크리스트', '1345 통화 스크립트'], toolDescs: ['체류지 기준으로 관할 출입국·외국인관서를 확인합니다.', '취업 신고에 필요한 직종·업종 코드를 찾아봅니다.', '체류자격별 공통서류와 추가 확인 항목으로 이동합니다.', '상황 요약을 바탕으로 상담 전 확인할 질문을 정리하는 기능입니다.'],
         agentTitle: '가까운 행정 도움 찾기', agentCopy: '공식 등록된 출입국민원 대행기관을 지역별로 확인하고, 네이버지도 또는 카카오맵에서 위치를 열어볼 수 있습니다.', agentSourceNote: '출처: 출입국업무 민원신청대행 등록기관 현황(2026.04.30.부)', agentDisclaimer: 'Paradiso는 특정 기관을 추천하거나 업무 결과를 보증하지 않습니다. 방문 또는 의뢰 전 전화 확인, 상담 범위 및 수수료 확인을 권장합니다.',
         agentRegionLabel: '지역', agentRegionAll: '전체 지역', agentKeywordLabel: '키워드', agentKeywordPlaceholder: '지역명·사무소명·주소로 검색', agentListAria: '등록 대행기관 목록', agentLoading: '데이터를 불러오는 중입니다.', agentPrompt: '지역명, 사무소명, 주소 일부를 입력해 등록된 민원대행기관을 찾아보세요.', agentEmpty: '검색 결과가 없습니다. 지역명이나 사무소명을 다시 확인해 주세요.', agentError: '데이터를 불러오지 못했습니다. 잠시 후 다시 시도하거나 하이코리아 공식 조회를 이용하세요.', agentCountShowing: '총 {total}개 중 {showing}개 표시', agentCountAll: '{count}개 대행기관 표시', agentShowMore: '더 보기', agentCountFiltered: '전체 {total}개 중 {count}개 대행기관 표시', agentMapNaver: '네이버지도', agentMapKakao: '카카오맵', agentCopyAddress: '주소 복사', agentPhone: '전화 {phone}', agentCopied: '주소를 복사했습니다.', agentCopyFailed: '주소 복사에 실패했습니다. 주소를 길게 눌러 직접 복사하세요.', agentTotalCount: '총 {count}개 기관',
+        medTitle: '법무부지정 의료기관 찾기', medKicker: 'Medical guidance', medCopy: '채용신체검사·건강진단이 가능한 법무부지정 의료기관 목록을 지역, 기관명, 주소로 검색할 수 있습니다.', medSourceNote: '출처: 법무부지정 채용신체검사 및 건강진단 의료기관 현황 (2026.04.30.)', medDisclaimer: '방문 전 해당 의료기관에 전화해 검사 가능 여부, 예약 필요 여부, 검사 항목, 준비물을 확인하세요.', medCallNotice: '이 목록은 안내 목적이며, 의료 자문이나 검사 가능 여부를 보증하지 않습니다.',
+        medChipsAria: '지역 빠른 선택', medKeywordLabel: '검색어', medKeywordPlaceholder: '지역·기관명·주소로 검색', medClearAria: '검색 초기화', medListAria: '법무부지정 의료기관 목록', medLoading: '데이터를 불러오는 중입니다.', medPrompt: '지역 버튼을 누르거나 2자 이상 입력하면 검색됩니다. 예: 제주, 한라병원, 강남', medEmpty: '검색 결과가 없습니다. 다른 키워드나 지역을 시도해 보세요.', medError: '데이터를 불러오지 못했습니다. 잠시 후 다시 시도하세요.', medCountShowing: '총 {total}개 중 {showing}개 표시', medCountAll: '{count}개 의료기관 표시', medShowMore: '더 보기', medCopyAddress: '주소 복사', medPhone: '전화 {phone}', medCopied: '주소를 복사했습니다.', medCopyFailed: '주소 복사에 실패했습니다. 주소를 길게 눌러 직접 복사하세요.', medTotalCount: '총 {count}개 기관', medCountFiltered: '전체 {total}개 중 {count}개 의료기관 표시',
         reminderTitle: '놓치기 쉬운 기한은 앞으로 알림으로 관리합니다.', reminderCopy: '아래 항목은 계획 중인 기능이며, 현재 제공되는 공식 알림 서비스가 아닙니다.', reminderAria: '계획 중인 알림 항목', reminderCardTitles: ['체류기간 연장', '주소 이전 신고', '근무처 변경'], reminderCardDescs: ['만료 전 확인 시점과 서류 준비 흐름.', '전입 후 신고 기한과 관할 확인.', '변동 신고와 취업 정보 확인.'], reminderPills: ['여권정보 변경', '캘린더 내보내기', '이메일·SMS 알림', '방문 준비 카드'],
         aboutTitle: '플랫폼 소개', anagramAria: 'Diaspora에서 Paradiso로 이어지는 애너그램', philosophyTitle: '브랜드 철학 및 어원 <span class="en-label" lang="en">— Brand Philosophy &amp; Etymology</span>', philosophyItems: ['<strong>Diaspora</strong> — \'Diaspora\'는 이주민을 뜻하는 영단어입니다.', '<strong>Paradiso</strong> — \'Paradiso\'는 이탈리아어로 "낙원(Paradise)"을 의미하며, \'Diaspora\'의 철자를 애너그램(Anagram)으로 재배치한 단어기도 합니다. 각자의 뜻과 꿈을 가지고 한국에 도착한 모든 이들에게 평안과 위로의 인사를 전합니다.'],
         aboutStartTitle: 'Paradiso의 시작', aboutStartBody: '대한민국에는 39가지의 체류자격이 존재하지만, 관련 법령과 매뉴얼은 분산되어 있어 정보 탐색에 시간이 걸립니다. Paradiso는 흩어진 비자·체류 정보를 구조화하여 사용자 입장에서 한 번에 살펴볼 수 있는 안내 흐름을 제공하고, 정보 비대칭을 줄이는 사용자 안내 레이어를 지향합니다.', valuesTitle: '핵심 가치 및 비전', valuesBody: '단순한 정보 나열을 넘어, 구조화된 체류자격 데이터와 사용자 입력에 기반한 안내를 통해 정보 탐색 부담을 줄이고, 공식 자료 확인까지 자연스럽게 이어지도록 설계합니다.',
@@ -7774,6 +7978,8 @@ const UI_TRANSLATIONS = {
         toolsTitle: 'Useful tools stay close to the workflow.', toolsCopy: 'Implemented tools connect to the existing modals and search. Features still in preparation are marked as planned.', toolTitles: ['Find your immigration office', 'Occupation and industry codes', 'Document checklist', '1345 call script'], toolDescs: ['Check the competent immigration office based on residence address.', 'Find occupation and industry codes needed for employment reporting.', 'Jump to common documents and additional checks by residence status.', 'A planned helper for organizing questions before a consultation call.'],
         agentTitle: 'Find nearby administrative help', agentCopy: 'Browse officially registered immigration civil petition proxy agencies by region and open locations in Naver Map or Kakao Map.', agentSourceNote: 'Source: Registered civil petition proxy agencies for immigration services, as of 2026-04-30.', agentDisclaimer: 'Paradiso does not recommend any specific agency or guarantee service outcomes. Before visiting or hiring an agency, confirm by phone, scope of consultation, and fees.',
         agentRegionLabel: 'Region', agentRegionAll: 'All regions', agentKeywordLabel: 'Keyword', agentKeywordPlaceholder: 'Search by region, office name, or address', agentListAria: 'Registered proxy agency list', agentLoading: 'Loading agency data…', agentPrompt: 'Search by region, office name, or part of an address to find registered immigration service agencies.', agentEmpty: 'No results found. Check the region or office name and try again.', agentError: 'Could not load the data. Try again later or use the official HiKorea lookup.', agentCountShowing: 'Showing {showing} of {total} results', agentCountAll: 'Showing {count} agencies', agentShowMore: 'Show more', agentCountFiltered: 'Showing {count} of {total} registered agencies', agentMapNaver: 'Naver Map', agentMapKakao: 'Kakao Map', agentCopyAddress: 'Copy address', agentPhone: 'Call {phone}', agentCopied: 'Address copied.', agentCopyFailed: 'Could not copy the address. Long-press the address and copy it manually.', agentTotalCount: '{count} agencies total',
+        medTitle: 'Find MOJ-designated medical institutions', medKicker: 'Medical guidance', medCopy: 'Search Ministry of Justice-designated medical institutions for employment physical exams and health checkups by region, institution name, or address.', medSourceNote: 'Source: MOJ-designated medical institutions for employment physicals and health checkups, as of 2026-04-30.', medDisclaimer: 'Call the institution before visiting to confirm exam availability, appointment requirements, test items, and required materials.', medCallNotice: 'This list is for reference only and does not guarantee exam availability or medical advice.',
+        medChipsAria: 'Quick region filter', medKeywordLabel: 'Search', medKeywordPlaceholder: 'Search by region, institution name, or address', medClearAria: 'Clear search', medListAria: 'MOJ-designated medical institution list', medLoading: 'Loading institution data…', medPrompt: 'Select a region or type at least 2 characters to search. Example: Jeju, Halla Hospital, Gangnam', medEmpty: 'No results found. Try a different keyword or region.', medError: 'Could not load the data. Please try again later.', medCountShowing: 'Showing {showing} of {total} results', medCountAll: 'Showing {count} institutions', medShowMore: 'Show more', medCopyAddress: 'Copy address', medPhone: 'Call {phone}', medCopied: 'Address copied.', medCopyFailed: 'Could not copy the address. Long-press the address and copy it manually.', medTotalCount: '{count} institutions total', medCountFiltered: 'Showing {count} of {total} institutions',
         reminderTitle: 'Future reminders will help manage easy-to-miss deadlines.', reminderCopy: 'The items below are planned features and are not an official reminder service today.', reminderAria: 'Planned reminder items', reminderCardTitles: ['Extension of stay', 'Address change report', 'Workplace change'], reminderCardDescs: ['When to check before expiry and how to prepare documents.', 'Reporting deadline after moving and jurisdiction checks.', 'Change reporting and employment information checks.'], reminderPills: ['Passport information change', 'Calendar export', 'Email and SMS reminders', 'Visit preparation card'],
         aboutTitle: 'About the platform', anagramAria: 'Diaspora to Paradiso anagram', philosophyTitle: 'Brand Philosophy &amp; Etymology', philosophyItems: ['<strong>Diaspora</strong> — A word for people living away from an original homeland or community.', '<strong>Paradiso</strong> — Italian for "paradise" and an anagram of "Diaspora"; a quiet greeting of comfort to people arriving in Korea with their own purpose and hopes.'],
         aboutStartTitle: 'How Paradiso began', aboutStartBody: 'Korea has 39 residence statuses, but the relevant laws and manuals are spread across many sources. Paradiso structures scattered visa and residence information into a user-centered guidance flow that reduces information asymmetry.', valuesTitle: 'Core values and vision', valuesBody: 'Beyond listing information, Paradiso reduces search burden with structured residence-status data and user-centered guidance that naturally leads back to official-source confirmation.',
@@ -8348,6 +8554,22 @@ function applyLanguage(code, options = {}) {
     setText('#agentFinderEmpty', tx('agentEmpty'));
     setText('#agentFinderErrorText', tx('agentError'));
     setText('#agentFinderShowMore', tx('agentShowMore'));
+    setText('#medFinderTitle', tx('medTitle'));
+    setText('#medFinder .p-kicker', tx('medKicker'));
+    setText('#medFinder .p-section-copy', tx('medCopy'));
+    setText('#medFinderSourceNote', tx('medSourceNote'));
+    setText('#medFinderDisclaimerText', tx('medDisclaimer'));
+    setAttr('#medFinderChips', 'aria-label', tx('medChipsAria'));
+    setText('label[for="medFinderKeyword"]', tx('medKeywordLabel'));
+    setAttr('#medFinderKeyword', 'placeholder', tx('medKeywordPlaceholder'));
+    setAttr('#medFinderClear', 'aria-label', tx('medClearAria'));
+    setAttr('#medFinderList', 'aria-label', tx('medListAria'));
+    setText('#medFinderPrompt', tx('medPrompt'));
+    setText('#medFinderLoading', tx('medLoading'));
+    setText('#medFinderEmpty', tx('medEmpty'));
+    setText('#medFinderErrorText', tx('medError'));
+    setText('#medFinderShowMore', tx('medShowMore'));
+    if (typeof window.updateMedFinderLanguage === 'function') window.updateMedFinderLanguage();
     setText('#pReminderTitle', tx('reminderTitle'));
     setText('.p-reminder-section .p-section-copy', tx('reminderCopy'));
     setAttr('.p-reminder-list', 'aria-label', tx('reminderAria'));
@@ -9214,6 +9436,201 @@ function showVisaDocForAction(visaCode) {
         dataset.agencies = Array.isArray(json && json.agencies) ? json.agencies : [];
         populateRegions(dataset.regions);
         window.updateAgentFinderLanguage();
+        applyFilter();
+      })
+      .catch(function () {
+        loadingEl.hidden = true;
+        showError();
+      });
+  }
+  if (retryBtn) retryBtn.addEventListener('click', loadDataset);
+  loadDataset();
+})();
+
+// ── Ministry of Justice designated medical institution finder ──
+(function initMedFinder() {
+  const root = document.getElementById('medFinder');
+  if (!root) return;
+  const chipsEl = document.getElementById('medFinderChips');
+  const keywordIn = document.getElementById('medFinderKeyword');
+  const clearBtn = document.getElementById('medFinderClear');
+  const countEl = document.getElementById('medFinderCount');
+  const listEl = document.getElementById('medFinderList');
+  const emptyEl = document.getElementById('medFinderEmpty');
+  const errorEl = document.getElementById('medFinderError');
+  const retryBtn = document.getElementById('medFinderRetry');
+  const promptEl = document.getElementById('medFinderPrompt');
+  const loadingEl = document.getElementById('medFinderLoading');
+  const moreEl = document.getElementById('medFinderMore');
+  const showMoreBtn = document.getElementById('medFinderShowMore');
+  let dataset = { institutions: [], meta: {} };
+  const PAGE_SIZE = 20;
+  let filteredInstitutions = [];
+  let visibleCount = 0;
+  let activeRegion = '';
+
+  function escapeText(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'absolute';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand && document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('copy command failed'));
+      } catch (err) { reject(err); }
+    });
+  }
+  function buildCard(inst) {
+    const name = escapeText(inst.institution_name);
+    const region = escapeText(inst.region);
+    const address = inst.address ? escapeText(inst.address) : '';
+    const phone = (inst.phone || '').trim();
+    const phoneSafe = phone.replace(/[^0-9+\-]/g, '');
+    const phoneBtn = phoneSafe
+      ? '<a href="tel:' + escapeText(phoneSafe) + '" rel="nofollow">' + escapeText(tx('medPhone', { phone: phone })) + '</a>'
+      : '';
+    const copyBtn = address
+      ? '<button type="button" data-med-copy="' + escapeText(inst.address) + '">' + escapeText(tx('medCopyAddress')) + '</button>'
+      : '';
+    return ''
+      + '<li class="p-med-finder__card">'
+      +   '<span class="p-med-finder__region">' + region + '</span>'
+      +   '<h3>' + name + '</h3>'
+      +   (address ? '<address>' + address + '</address>' : '')
+      +   '<div class="p-med-finder__actions">'
+      +     copyBtn
+      +     phoneBtn
+      +   '</div>'
+      +   '<p class="p-med-finder__card-source">' + escapeText(tx('medSourceNote')) + '</p>'
+      + '</li>';
+  }
+  function renderSlice() {
+    const slice = filteredInstitutions.slice(0, visibleCount);
+    if (filteredInstitutions.length === 0) {
+      listEl.innerHTML = '';
+      emptyEl.hidden = false;
+      countEl.textContent = '';
+      moreEl.hidden = true;
+    } else {
+      emptyEl.hidden = true;
+      listEl.innerHTML = slice.map(buildCard).join('');
+      if (visibleCount >= filteredInstitutions.length) {
+        countEl.textContent = tx('medCountAll', { count: filteredInstitutions.length });
+        moreEl.hidden = true;
+      } else {
+        countEl.textContent = tx('medCountShowing', { showing: slice.length, total: filteredInstitutions.length });
+        moreEl.hidden = false;
+      }
+    }
+  }
+  function applyFilter() {
+    const kw = (keywordIn.value || '').trim().toLowerCase();
+    const hasSearch = !!(activeRegion || kw.length >= 2);
+    if (clearBtn) clearBtn.hidden = !(activeRegion || kw);
+    if (!hasSearch) {
+      promptEl.hidden = false;
+      listEl.innerHTML = '';
+      countEl.textContent = tx('medTotalCount', { count: dataset.institutions.length });
+      emptyEl.hidden = true;
+      moreEl.hidden = true;
+      return;
+    }
+    promptEl.hidden = true;
+    const regionSet = new Set(dataset.regions || []);
+    const kwRaw = (keywordIn.value || '').trim();
+    const kwIsRegion = kwRaw.length > 0 && regionSet.has(kwRaw);
+    filteredInstitutions = dataset.institutions.filter(function (inst) {
+      if (activeRegion && inst.region !== activeRegion) return false;
+      if (kwIsRegion) return inst.region === kwRaw;
+      if (kw.length < 2) return true;
+      const hay = ((inst.institution_name || '') + ' ' + (inst.address || '') + ' ' + (inst.region || '') + ' ' + (inst.phone || '')).toLowerCase();
+      return hay.indexOf(kw) !== -1;
+    });
+    visibleCount = PAGE_SIZE;
+    renderSlice();
+  }
+  function setActiveChip(region) {
+    activeRegion = region;
+    if (chipsEl) {
+      chipsEl.querySelectorAll('.p-med-finder__chip').forEach(function (btn) {
+        btn.setAttribute('aria-pressed', btn.getAttribute('data-med-region') === region ? 'true' : 'false');
+      });
+    }
+    applyFilter();
+  }
+  window.updateMedFinderLanguage = function () {
+    if (dataset.institutions.length) applyFilter();
+  };
+  function showError() {
+    errorEl.hidden = false;
+    listEl.innerHTML = '';
+    countEl.textContent = '';
+    emptyEl.hidden = true;
+    promptEl.hidden = true;
+    loadingEl.hidden = true;
+    moreEl.hidden = true;
+  }
+  if (chipsEl) {
+    chipsEl.addEventListener('click', function (ev) {
+      const chip = ev.target.closest('.p-med-finder__chip');
+      if (!chip) return;
+      const region = chip.getAttribute('data-med-region') || '';
+      setActiveChip(activeRegion === region ? '' : region);
+    });
+  }
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function () {
+      keywordIn.value = '';
+      setActiveChip('');
+    });
+  }
+  listEl.addEventListener('click', function (ev) {
+    const btn = ev.target.closest('button[data-med-copy]');
+    if (!btn) return;
+    ev.preventDefault();
+    const addr = btn.getAttribute('data-med-copy') || '';
+    if (!addr) return;
+    copyToClipboard(addr).then(function () {
+      if (typeof showToast === 'function') showToast(tx('medCopied'), 'success');
+    }).catch(function () {
+      if (typeof showToast === 'function') showToast(tx('medCopyFailed'), 'warning');
+    });
+  });
+  if (showMoreBtn) {
+    showMoreBtn.addEventListener('click', function () {
+      visibleCount += PAGE_SIZE;
+      renderSlice();
+    });
+  }
+  keywordIn.addEventListener('input', applyFilter);
+  window.addEventListener('paradiso-language-applied', applyFilter);
+
+  function loadDataset() {
+    loadingEl.hidden = false;
+    promptEl.hidden = true;
+    errorEl.hidden = true;
+    fetch('data/designated_medical_institutions_2026_04_30.json', { cache: 'no-cache' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function (json) {
+        loadingEl.hidden = true;
+        dataset.meta = json && json._meta ? json._meta : {};
+        dataset.institutions = Array.isArray(json && json.institutions) ? json.institutions : [];
         applyFilter();
       })
       .catch(function () {
