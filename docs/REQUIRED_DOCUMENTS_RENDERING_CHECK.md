@@ -46,3 +46,12 @@ This keeps renderer assumptions and data schema evolution synchronized.
 ## Connection to manual-grounding expansion
 
 As manual-grounded coverage grows, more statuses/procedures can move from fallback-heavy states to explicit structured document groups. This check guards against accidental schema drift during that expansion, without forcing unverified statuses to be treated as errors.
+
+
+## Safety guarantees reinforced in follow-up fixes
+
+- Procedure availability honors explicit flags: when a procedure declares `available: false`, that explicit value takes precedence over legacy document/text signals.
+- Fallback metadata checks validate meaningful content, not just key presence. Empty placeholders such as `null`, `{}`, `[]`, and blank strings do not satisfy fallback safety gates.
+- Coverage extraction includes procedure-level document-group aliases (for example `commonDocs`, `requiredDocs`, `additionalDocs`, `conditionalDocs`, plus alias variants consumed by renderer normalization).
+- Missing document data by itself is reported but not automatically failed; only clear regressions fail the check.
+- Unverified source/display metadata must not be treated as manual-grounded content.
