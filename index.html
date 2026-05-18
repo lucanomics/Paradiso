@@ -6422,22 +6422,27 @@ function openDocModal(visaCode, type, subIdx) {
 
     if (type === 'new') {
         title = currentLanguage === 'en' ? 'Visa / new application documents' : '신규 발급/신규 신청 구비서류';
-        docs = visa.initialReqDocs || visa.newReqDocs || [];
+        docs = flattenDocGroups(getProcedure(visa, PROCEDURE_CONFIG.find(p => p.key === 'visaIssuance')).docs);
     } else if (type === 'ext') {
         title = currentLanguage === 'en' ? 'Extension documents' : '체류기간 연장 구비서류';
-        docs = visa.extensionReqDocs || visa.extReqDocs || [];
+        docs = flattenDocGroups(getProcedure(visa, PROCEDURE_CONFIG.find(p => p.key === 'extension')).docs);
     } else if (type === 'change') {
         title = currentLanguage === 'en' ? 'Change of status documents' : '체류자격 변경 구비서류';
-        docs = visa.changeReqDocs || [];
+        docs = flattenDocGroups(getProcedure(visa, PROCEDURE_CONFIG.find(p => p.key === 'statusChange')).docs);
         if (!docs.length) {
-            docs = visa.extensionReqDocs || visa.extReqDocs || visa.initialReqDocs || visa.newReqDocs || [];
+            docs = [
+                ...flattenDocGroups(getProcedure(visa, PROCEDURE_CONFIG.find(p => p.key === 'extension')).docs),
+                ...flattenDocGroups(getProcedure(visa, PROCEDURE_CONFIG.find(p => p.key === 'visaIssuance')).docs)
+            ];
+            docs = dedupeDocs(docs);
             if (docs.length) stageNote = currentLanguage === 'en' ? 'Note: the dedicated change-of-status document list has not yet been manually verified and normalized, so extension/new-application documents are shown conservatively. This is not an official final list.' : '※ [준용 안내] 체류자격 변경 전용 문서목록이 아직 수작업 검증·정규화되지 않아 연장/신규 단계 문서를 보수적으로 준용 표시합니다. 공식 확정 목록이 아닙니다.';
         }
     } else if (type === 'sub' && subIdx != null) {
         const sIdx = parseInt(subIdx, 10);
-        if (!isNaN(sIdx) && visa.subCodes && visa.subCodes[sIdx]) {
-            const sub = visa.subCodes[sIdx];
-            title = currentLanguage === 'en' ? `${sub.name || 'Selected subcode'} additional documents` : `${sub.name || '해당 세부항목'} 추가 구비서류`; docs = sub.addReqDocs || []; targetCode = sub.code;
+        const subcodes = getVisaSubcodes(visa);
+        if (!isNaN(sIdx) && subcodes[sIdx]) {
+            const sub = subcodes[sIdx];
+            title = currentLanguage === 'en' ? `${sub.name || 'Selected subcode'} additional documents` : `${sub.name || '해당 세부항목'} 추가 구비서류`; docs = flattenDocGroups(normalizeDocGroups(null, sub, { additionalDocs: ['addReqDocs', 'addReq'] })); targetCode = sub.code;
         } else { title = currentLanguage === 'en' ? `Subcode additional documents` : `세부항목 추가 구비서류`; }
     }
     document.getElementById('docModalTitle').innerHTML = `${escapeHtml(visa.code)} - ${escapeHtml(title)}${stageNote ? ` <span style="font-size:0.8em;color:var(--color-warning);">(${currentLanguage === 'en' ? 'reference' : '준용'})</span>` : ''}`;
@@ -7144,10 +7149,10 @@ function renderDocTags(docKeys, keywords, isSubCode = false, visaCode = '') {
 }
 
 const PROCEDURE_CONFIG = [
-    { key: 'visaIssuance', labelIndex: 0, label: '사증발급', oldType: 'new', oldDocs: ['initialReqDocs', 'newReqDocs'], oldText: 'newReq' },
+    { key: 'visaIssuance', labelIndex: 0, label: '사증발급', oldType: 'new', oldDocs: ['initialReqDocs', 'newReqDocs'], oldText: 'newReq', docFields: { requiredDocs: ['initialReqDocs', 'newReqDocs', 'newReq', 'reqDocs', 'documents', 'requiredDocs', 'required_documents'], additionalDocs: ['addReqDocs', 'addReq'] } },
     { key: 'certificateOfVisaIssuance', labelIndex: 1, label: '사증발급인정서', oldType: 'new', oldDocs: ['cviReqDocs'] },
-    { key: 'statusChange', labelIndex: 2, label: '체류자격 변경', oldType: 'change', oldDocs: ['changeReqDocs'], oldText: 'changeReq' },
-    { key: 'extension', labelIndex: 3, label: '체류기간 연장', oldType: 'ext', oldDocs: ['extensionReqDocs', 'extReqDocs'], oldText: 'extReq' },
+    { key: 'statusChange', labelIndex: 2, label: '체류자격 변경', oldType: 'change', oldDocs: ['changeReqDocs'], oldText: 'changeReq', docFields: { requiredDocs: ['changeReqDocs', 'chgReqDocs', 'chgReq', 'changeReq'] } },
+    { key: 'extension', labelIndex: 3, label: '체류기간 연장', oldType: 'ext', oldDocs: ['extensionReqDocs', 'extReqDocs'], oldText: 'extReq', docFields: { requiredDocs: ['extensionReqDocs', 'extReqDocs', 'extReq'] } },
     { key: 'statusGrant', labelIndex: 4, label: '체류자격 부여', oldType: 'new', oldDocs: ['statusGrantReqDocs'] },
     { key: 'registration', labelIndex: 5, label: '외국인등록', oldType: 'new', oldDocs: ['registrationReqDocs'] },
     { key: 'activitiesOutsideStatus', labelIndex: 6, label: '자격외활동', oldType: 'change', oldDocs: ['activitiesOutsideStatusReqDocs'] },
@@ -7340,10 +7345,16 @@ function renderReviewBadge(v) {
 
 function getProcedure(v, cfg) {
     const raw = v.procedures && v.procedures[cfg.key] ? v.procedures[cfg.key] : null;
-    const oldDocs = (cfg.oldDocs || []).flatMap(k => Array.isArray(v[k]) ? v[k] : []);
-    const legacyAvailable = oldDocs.length > 0 || !!(cfg.oldText && v[cfg.oldText]);
+    const legacyDocs = normalizeDocGroups(null, v, {
+        commonDocs: ['commonDocs'],
+        requiredDocs: cfg.docFields?.requiredDocs || cfg.oldDocs || [],
+        additionalDocs: ['additionalDocs', ...(cfg.docFields?.additionalDocs || [])],
+        conditionalDocs: ['conditionalDocs']
+    });
+    const legacyAvailable = hasAnyDocs(legacyDocs) || !!(cfg.oldText && v[cfg.oldText]);
     const available = raw ? raw.available !== false : legacyAvailable;
-    const docValue = raw?.requiredDocs ?? oldDocs;
+    const rawDocs = normalizeDocGroups(raw?.requiredDocs, raw || {});
+    const docs = mergeDocGroups(rawDocs, legacyDocs);
     return {
         key: cfg.key,
         label: txAt('procedureLabels', cfg.labelIndex, cfg.label),
@@ -7352,32 +7363,107 @@ function getProcedure(v, cfg) {
         eligibility: raw?.eligibility || [],
         notes: raw?.notes || [],
         summary: raw?.summary || (cfg.oldText && v[cfg.oldText] ? v[cfg.oldText] : ''),
-        docs: normalizeDocGroups(docValue, raw || {}),
+        docs,
         feeInfo: getProcedureFeeInfo(v, cfg.key),
         manualRefs: raw?.manualRefs || []
     };
 }
 
-function normalizeDocGroups(docValue, raw = {}) {
-    const groups = { commonDocs: [], requiredDocs: [], additionalDocs: [], conditionalDocs: [] };
-    const toDocArray = (value) => {
-        if (!value) return [];
-        if (Array.isArray(value)) return value.map(v => String(v || '').trim()).filter(Boolean);
-        if (typeof value === 'string') return value.split(/\n|;|·/).map(v => v.trim()).filter(Boolean);
-        return [];
-    };
-    if (Array.isArray(docValue) || typeof docValue === 'string') groups.requiredDocs = toDocArray(docValue);
-    else if (docValue && typeof docValue === 'object') {
-        groups.commonDocs = toDocArray(docValue.commonDocs || docValue.common);
-        groups.requiredDocs = toDocArray(docValue.requiredDocs || docValue.required);
-        groups.additionalDocs = toDocArray(docValue.additionalDocs || docValue.additional);
-        groups.conditionalDocs = toDocArray(docValue.conditionalDocs || docValue.conditional);
+const DOC_GROUP_ALIASES = {
+    commonDocs: ['commonDocs', 'common_documents', 'common'],
+    requiredDocs: ['requiredDocs', 'required_documents', 'reqDocs', 'documents', 'document', 'docs', 'required'],
+    additionalDocs: ['additionalDocs', 'additional_documents', 'addReqDocs', 'addReq', 'additional'],
+    conditionalDocs: ['conditionalDocs', 'conditional_documents', 'conditional']
+};
+
+function toDocArray(value) {
+    if (!value) return [];
+    if (Array.isArray(value)) return value.flatMap(toDocArray);
+    if (typeof value === 'string') return value.split(/\n|;|·/).map(v => v.trim()).filter(v => v && !isDocPlaceholder(v));
+    if (typeof value === 'object') {
+        const label = value.name || value.label || value.title || value.text || value.description;
+        return label ? [String(label).trim()].filter(v => v && !isDocPlaceholder(v)) : [];
     }
-    groups.commonDocs = toDocArray(raw.commonDocs).length ? toDocArray(raw.commonDocs) : groups.commonDocs;
-    groups.additionalDocs = toDocArray(raw.additionalDocs).length ? toDocArray(raw.additionalDocs) : groups.additionalDocs;
-    groups.conditionalDocs = toDocArray(raw.conditionalDocs).length ? toDocArray(raw.conditionalDocs) : groups.conditionalDocs;
-    groups.requiredDocs = toDocArray(groups.requiredDocs);
+    return [String(value).trim()].filter(v => v && !isDocPlaceholder(v));
+}
+
+function isDocPlaceholder(value) {
+    return ['매뉴얼 확인 필요', '페이지 확인 필요', 'Manual review needed', 'Page review needed'].includes(String(value || '').trim());
+}
+
+function dedupeDocs(docs) {
+    const seen = new Set();
+    return (docs || []).filter(doc => {
+        const key = String(doc || '').trim();
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+}
+
+function mergeDocGroups(...groupList) {
+    const groups = { commonDocs: [], requiredDocs: [], additionalDocs: [], conditionalDocs: [] };
+    groupList.forEach(src => {
+        if (!src) return;
+        Object.keys(groups).forEach(groupKey => {
+            groups[groupKey].push(...toDocArray(src[groupKey]));
+        });
+    });
+    Object.keys(groups).forEach(groupKey => {
+        groups[groupKey] = dedupeDocs(groups[groupKey]);
+    });
     return groups;
+}
+
+function addDocField(groups, groupKey, value) {
+    const nested = extractNestedDocGroups(value);
+    if (hasAnyDocs(nested)) {
+        Object.keys(groups).forEach(key => groups[key].push(...nested[key]));
+        return;
+    }
+    groups[groupKey].push(...toDocArray(value));
+}
+
+function extractNestedDocGroups(value) {
+    const groups = { commonDocs: [], requiredDocs: [], additionalDocs: [], conditionalDocs: [] };
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return groups;
+    Object.entries(DOC_GROUP_ALIASES).forEach(([groupKey, aliases]) => {
+        aliases.forEach(alias => {
+            if (Object.prototype.hasOwnProperty.call(value, alias)) addDocField(groups, groupKey, value[alias]);
+        });
+    });
+    return mergeDocGroups(groups);
+}
+
+function normalizeDocGroups(docValue, raw = {}, fieldAliases = {}) {
+    const groups = { commonDocs: [], requiredDocs: [], additionalDocs: [], conditionalDocs: [] };
+    if (Array.isArray(docValue) || typeof docValue === 'string') groups.requiredDocs = toDocArray(docValue);
+    else if (docValue && typeof docValue === 'object') Object.assign(groups, extractNestedDocGroups(docValue));
+    Object.entries(DOC_GROUP_ALIASES).forEach(([groupKey, aliases]) => {
+        aliases.forEach(alias => {
+            if (Object.prototype.hasOwnProperty.call(raw, alias)) addDocField(groups, groupKey, raw[alias]);
+        });
+    });
+    Object.entries(fieldAliases).forEach(([groupKey, aliases]) => {
+        (aliases || []).forEach(alias => {
+            if (Object.prototype.hasOwnProperty.call(raw, alias)) addDocField(groups, groupKey, raw[alias]);
+        });
+    });
+    return mergeDocGroups(groups);
+}
+
+function flattenDocGroups(groups) {
+    if (!groups) return [];
+    return dedupeDocs([
+        ...(groups.commonDocs || []),
+        ...(groups.requiredDocs || []),
+        ...(groups.additionalDocs || []),
+        ...(groups.conditionalDocs || [])
+    ]);
+}
+
+function hasAnyDocs(groups) {
+    return !!(groups && (groups.commonDocs?.length || groups.requiredDocs?.length || groups.additionalDocs?.length || groups.conditionalDocs?.length));
 }
 
 function renderDocGroup(title, docs, keywords) {
