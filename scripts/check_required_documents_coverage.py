@@ -7,10 +7,9 @@ recognized by the index.html renderer assumptions, and reports potential gaps.
 from __future__ import annotations
 
 import json
-import re
 import sys
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Set, Tuple
+from typing import Any, Dict, List, Set, Tuple
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_CANDIDATES = [ROOT / "visa_data.json", ROOT / "backend" / "data" / "visas.json"]
@@ -35,8 +34,15 @@ PROCEDURE_KEYS = {
     "registration", "activitiesOutsideStatus", "workplaceChange", "reentry",
 }
 
+PROCEDURE_DOC_GROUP_ALIASES = {
+    "commonDocs", "requiredDocs", "additionalDocs", "conditionalDocs",
+    "common", "required", "additional", "conditional",
+    "documents", "reqDocs", "required_documents",
+}
+
 PRIORITY_CODES = {"F-1", "F-2", "F-3", "F-5", "F-6", "D-2", "D-4", "D-10", "E-2", "E-7", "G-1", "H-2"}
 ALLOWED_DOC_VALUE_TYPES = (str, list, dict)
+USEFUL_FALLBACK_KEYS = {"needsManualReview", "verified", "source", "confidence", "status", "note", "updatedAt", "evidence"}
 
 
 def _load_data() -> Tuple[Path, List[Dict[str, Any]]]:
@@ -50,6 +56,18 @@ def _load_data() -> Tuple[Path, List[Dict[str, Any]]]:
     raise SystemExit("ERROR: Could not find visa data file (visa_data.json or backend/data/visas.json)")
 
 
+def _has_useful_value(value: Any) -> bool:
+    if value is None:
+        return False
+    if isinstance(value, str):
+        return bool(value.strip())
+    if isinstance(value, list):
+        return any(_has_useful_value(v) for v in value)
+    if isinstance(value, dict):
+        return any(_has_useful_value(v) for v in value.values())
+    return bool(value)
+
+
 def _looks_doc_field(field: str) -> bool:
     low = field.lower()
     if low in {"manualrequireddocaudit", "sourcemanualstatus"}:
@@ -58,7 +76,31 @@ def _looks_doc_field(field: str) -> bool:
 
 
 def _has_fallback_metadata(record: Dict[str, Any]) -> bool:
-    return any(k in record for k in ("sourceManualStatus", "manualRequiredDocAudit", "procedures"))
+    status = record.get("sourceManualStatus")
+    if isinstance(status, dict) and status:
+        if any(key in status and _has_useful_value(status.get(key)) for key in USEFUL_FALLBACK_KEYS):
+            return True
+        if any(_has_useful_value(v) for v in status.values()):
+            return True
+
+    audit = record.get("manualRequiredDocAudit")
+    if isinstance(audit, dict) and audit and any(_has_useful_value(v) for v in audit.values()):
+        return True
+
+    for key in ("fallbackStatus", "coverageStatus", "sourceReviewStatus"):
+        if key in record and _has_useful_value(record.get(key)):
+            return True
+
+    procedures = record.get("procedures")
+    if isinstance(procedures, dict) and procedures:
+        for pval in procedures.values():
+            if not isinstance(pval, dict):
+                continue
+            meta = {k: v for k, v in pval.items() if k not in {"requiredDocs", "commonDocs", "additionalDocs", "conditionalDocs"}}
+            if any(_has_useful_value(v) for v in meta.values()):
+                return True
+
+    return False
 
 
 def _extract_doc_fields(record: Dict[str, Any]) -> Dict[str, Any]:
@@ -73,8 +115,9 @@ def _extract_doc_fields(record: Dict[str, Any]) -> Dict[str, Any]:
         for pkey, pval in procedures.items():
             if pkey not in PROCEDURE_KEYS or not isinstance(pval, dict):
                 continue
-            if "requiredDocs" in pval:
-                found[f"procedures.{pkey}.requiredDocs"] = pval.get("requiredDocs")
+            for alias in PROCEDURE_DOC_GROUP_ALIASES:
+                if alias in pval:
+                    found[f"procedures.{pkey}.{alias}"] = pval.get(alias)
     return found
 
 
@@ -113,12 +156,10 @@ def main() -> int:
         for field in r.keys():
             if _looks_doc_field(field) and field not in RENDERER_DOC_FIELDS and field not in {"procedures"}:
                 suspicious_fields.setdefault(code, set()).add(field)
-                # clear regression only if the field appears to hold renderable doc data
                 value = r.get(field)
-                if isinstance(value, (str, list, dict)) and value:
+                if isinstance(value, (str, list, dict)) and _has_useful_value(value):
                     errors.append(f"{code}: document-like field '{field}' is not covered by renderer mapping inventory")
 
-    # Priority safety check.
     by_code = {str(r.get("code") or "<unknown>"): r for r in records}
     for code in sorted(PRIORITY_CODES):
         rec = by_code.get(code)
