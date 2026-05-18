@@ -100,10 +100,10 @@ echo "[7/12] Validating Paradiso coverage matrix..."
 # scripts/validate_coverage_matrix.py.
 python3 scripts/validate_coverage_matrix.py > /dev/null
 
-echo "[8/12] Running git diff --check..."
+echo "[8/14] Running git diff --check..."
 git diff --check -- index.html ai.html visa_data.json doc_master.json scripts/check_repo.sh scripts/check_source_manuals.py scripts/check_visa_text_corruption.py scripts/check_i18n.js scripts/smoke_ai_payload.js docs/data docs/design docs/source-manuals docs/i18n docs/backend
 
-echo "[9/12] Validating EN/KO UI translations..."
+echo "[9/14] Validating EN/KO UI translations..."
 if [[ -f scripts/check_i18n.js ]]; then
   if command -v node >/dev/null 2>&1; then
     node scripts/check_i18n.js
@@ -116,7 +116,7 @@ else
   echo "INFO: scripts/check_i18n.js not present; skipping i18n validation."
 fi
 
-echo "[10/12] Scanning key user-facing files for forbidden branding strings..."
+echo "[10/14] Scanning key user-facing files for forbidden branding strings..."
 KEY_FILES=(
   "index.html"
   "ai.html"
@@ -152,13 +152,16 @@ else
   fi
 fi
 
-echo "[11/12] Verifying backend deploy-context visa data file is in sync..."
+echo "[11/14] Verifying backend deploy-context visa data file is in sync..."
 python3 scripts/sync_visa_data.py --check
 
-echo "[12/13] Running backend regression tests..."
+echo "[12/14] Checking required-documents rendering coverage..."
+python3 scripts/check_required_documents_coverage.py
+
+echo "[13/14] Running backend regression tests..."
 python3 backend/tests/test_paradiso_backend.py
 
-echo "[13/13] Running Paradiso AI golden eval (non-strict)..."
+echo "[14/14] Running Paradiso AI golden eval (non-strict)..."
 # Non-strict: known gaps are reported but do not fail the repo check.
 # Regression failures (a previously-passing expectation now fails) still
 # exit nonzero because the runner returns 0 in non-strict mode only when

@@ -1,0 +1,165 @@
+#!/usr/bin/env python3
+"""Deterministic coverage check for required-document rendering inputs.
+
+This script validates that visa/status records use document-related fields that are
+recognized by the index.html renderer assumptions, and reports potential gaps.
+"""
+from __future__ import annotations
+
+import json
+import re
+import sys
+from pathlib import Path
+from typing import Any, Dict, Iterable, List, Set, Tuple
+
+ROOT = Path(__file__).resolve().parents[1]
+DATA_CANDIDATES = [ROOT / "visa_data.json", ROOT / "backend" / "data" / "visas.json"]
+
+# Mirrors index.html renderer aliases + procedure legacy aliases.
+RENDERER_DOC_FIELDS: Set[str] = {
+    # top-level / grouped aliases
+    "commonDocs", "common_documents", "common",
+    "requiredDocs", "required_documents", "reqDocs", "documents", "document", "docs", "required",
+    "additionalDocs", "additional_documents", "addReqDocs", "addReq", "additional",
+    "conditionalDocs", "conditional_documents", "conditional",
+    # legacy procedure doc arrays / text-backed fields
+    "initialReqDocs", "newReqDocs", "newReq",
+    "changeReqDocs", "chgReqDocs", "chgReq", "changeReq",
+    "extensionReqDocs", "extReqDocs", "extReq",
+    "cviReqDocs", "statusGrantReqDocs", "registrationReqDocs",
+    "activitiesOutsideStatusReqDocs", "workplaceChangeReqDocs", "reentryReqDocs",
+}
+
+PROCEDURE_KEYS = {
+    "visaIssuance", "certificateOfVisaIssuance", "statusChange", "extension", "statusGrant",
+    "registration", "activitiesOutsideStatus", "workplaceChange", "reentry",
+}
+
+PRIORITY_CODES = {"F-1", "F-2", "F-3", "F-5", "F-6", "D-2", "D-4", "D-10", "E-2", "E-7", "G-1", "H-2"}
+ALLOWED_DOC_VALUE_TYPES = (str, list, dict)
+
+
+def _load_data() -> Tuple[Path, List[Dict[str, Any]]]:
+    for path in DATA_CANDIDATES:
+        if path.exists():
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(data, list):
+                raise SystemExit(f"ERROR: {path} must contain a JSON array")
+            records = [x for x in data if isinstance(x, dict)]
+            return path, records
+    raise SystemExit("ERROR: Could not find visa data file (visa_data.json or backend/data/visas.json)")
+
+
+def _looks_doc_field(field: str) -> bool:
+    low = field.lower()
+    if low in {"manualrequireddocaudit", "sourcemanualstatus"}:
+        return False
+    return any(token in low for token in ("doc", "req", "required"))
+
+
+def _has_fallback_metadata(record: Dict[str, Any]) -> bool:
+    return any(k in record for k in ("sourceManualStatus", "manualRequiredDocAudit", "procedures"))
+
+
+def _extract_doc_fields(record: Dict[str, Any]) -> Dict[str, Any]:
+    found: Dict[str, Any] = {}
+
+    for k, v in record.items():
+        if k in RENDERER_DOC_FIELDS:
+            found[k] = v
+
+    procedures = record.get("procedures")
+    if isinstance(procedures, dict):
+        for pkey, pval in procedures.items():
+            if pkey not in PROCEDURE_KEYS or not isinstance(pval, dict):
+                continue
+            if "requiredDocs" in pval:
+                found[f"procedures.{pkey}.requiredDocs"] = pval.get("requiredDocs")
+    return found
+
+
+def _check_types(code: str, doc_fields: Dict[str, Any]) -> List[str]:
+    errors: List[str] = []
+    for field, value in doc_fields.items():
+        if value is None:
+            continue
+        if not isinstance(value, ALLOWED_DOC_VALUE_TYPES):
+            errors.append(f"{code}: malformed document field type at '{field}' => {type(value).__name__}")
+    return errors
+
+
+def main() -> int:
+    data_path, records = _load_data()
+
+    with_doc: List[str] = []
+    without_doc: List[str] = []
+    likely_fallback: List[str] = []
+    suspicious_fields: Dict[str, Set[str]] = {}
+    errors: List[str] = []
+
+    for r in records:
+        code = str(r.get("code") or "<unknown>")
+        doc_fields = _extract_doc_fields(r)
+
+        if doc_fields:
+            with_doc.append(code)
+        else:
+            without_doc.append(code)
+            if _has_fallback_metadata(r):
+                likely_fallback.append(code)
+
+        errors.extend(_check_types(code, doc_fields))
+
+        for field in r.keys():
+            if _looks_doc_field(field) and field not in RENDERER_DOC_FIELDS and field not in {"procedures"}:
+                suspicious_fields.setdefault(code, set()).add(field)
+                # clear regression only if the field appears to hold renderable doc data
+                value = r.get(field)
+                if isinstance(value, (str, list, dict)) and value:
+                    errors.append(f"{code}: document-like field '{field}' is not covered by renderer mapping inventory")
+
+    # Priority safety check.
+    by_code = {str(r.get("code") or "<unknown>"): r for r in records}
+    for code in sorted(PRIORITY_CODES):
+        rec = by_code.get(code)
+        if not rec:
+            errors.append(f"Priority status missing from data: {code}")
+            continue
+        doc_fields = _extract_doc_fields(rec)
+        if not doc_fields and not _has_fallback_metadata(rec):
+            errors.append(f"{code}: priority status missing both document data and fallback classification metadata")
+
+    print("=== Required Documents Rendering Coverage Report ===")
+    print(f"Data source: {data_path.relative_to(ROOT)}")
+    print(f"Total statuses scanned: {len(records)}")
+    print(f"Statuses with document fields: {len(with_doc)}")
+    print(f"Statuses without document fields: {len(without_doc)}")
+    print(f"Statuses likely requiring fallback: {len(likely_fallback)}")
+
+    print("\nPriority status snapshot:")
+    for code in sorted(PRIORITY_CODES):
+        rec = by_code.get(code)
+        if not rec:
+            print(f"- {code}: MISSING")
+            continue
+        doc_count = len(_extract_doc_fields(rec))
+        fallback = _has_fallback_metadata(rec)
+        print(f"- {code}: doc_fields={doc_count}, fallback_metadata={'yes' if fallback else 'no'}")
+
+    if suspicious_fields:
+        print("\nSuspicious document-like fields not in renderer inventory:")
+        for code in sorted(suspicious_fields):
+            print(f"- {code}: {', '.join(sorted(suspicious_fields[code]))}")
+
+    if errors:
+        print("\nFAIL: Clear regressions detected:")
+        for e in errors:
+            print(f"- {e}")
+        return 1
+
+    print("\nPASS: No clear rendering-coverage regressions detected.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
