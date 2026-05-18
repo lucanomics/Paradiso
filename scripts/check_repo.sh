@@ -155,7 +155,14 @@ fi
 echo "[11/12] Verifying backend deploy-context visa data file is in sync..."
 python3 scripts/sync_visa_data.py --check
 
-echo "[12/12] Running backend regression tests..."
+echo "[12/13] Running backend regression tests..."
 python3 backend/tests/test_paradiso_backend.py
+
+echo "[13/13] Running Paradiso AI golden eval (non-strict)..."
+# Non-strict: known gaps are reported but do not fail the repo check.
+# Regression failures (a previously-passing expectation now fails) still
+# exit nonzero because the runner returns 0 in non-strict mode only when
+# there are zero regression failures.
+python3 scripts/evaluate_paradiso_ai_golden_questions.py
 
 echo "Success: repository validation passed. JSON is valid, representative manual schema is valid, source manuals are registered, git diff check is clean, and no forbidden branding strings were found in existing key user-facing files."
