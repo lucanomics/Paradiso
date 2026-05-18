@@ -8555,6 +8555,7 @@ function applyLanguage(code, options = {}) {
     setText('#agentFinderErrorText', tx('agentError'));
     setText('#agentFinderShowMore', tx('agentShowMore'));
     setText('#medFinderTitle', tx('medTitle'));
+    setText('#medFinder .p-kicker', tx('medKicker'));
     setText('#medFinder .p-section-copy', tx('medCopy'));
     setText('#medFinderSourceNote', tx('medSourceNote'));
     setText('#medFinderDisclaimerText', tx('medDisclaimer'));
@@ -9513,7 +9514,7 @@ function showVisaDocForAction(visaCode) {
       +     copyBtn
       +     phoneBtn
       +   '</div>'
-      +   '<p class="p-med-finder__card-source">출처: 법무부지정 채용신체검사 및 건강진단 의료기관 현황 (2026.04.30.)</p>'
+      +   '<p class="p-med-finder__card-source">' + escapeText(tx('medSourceNote')) + '</p>'
       + '</li>';
   }
   function renderSlice() {
@@ -9548,8 +9549,12 @@ function showVisaDocForAction(visaCode) {
       return;
     }
     promptEl.hidden = true;
+    const regionSet = new Set(dataset.regions || []);
+    const kwRaw = (keywordIn.value || '').trim();
+    const kwIsRegion = kwRaw.length > 0 && regionSet.has(kwRaw);
     filteredInstitutions = dataset.institutions.filter(function (inst) {
       if (activeRegion && inst.region !== activeRegion) return false;
+      if (kwIsRegion) return inst.region === kwRaw;
       if (kw.length < 2) return true;
       const hay = ((inst.institution_name || '') + ' ' + (inst.address || '') + ' ' + (inst.region || '') + ' ' + (inst.phone || '')).toLowerCase();
       return hay.indexOf(kw) !== -1;
