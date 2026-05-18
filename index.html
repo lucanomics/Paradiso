@@ -7144,10 +7144,10 @@ function renderDocTags(docKeys, keywords, isSubCode = false, visaCode = '') {
 }
 
 const PROCEDURE_CONFIG = [
-    { key: 'visaIssuance', labelIndex: 0, label: '사증발급', oldType: 'new', oldDocs: ['initialReqDocs', 'newReqDocs'], oldText: 'newReq' },
+    { key: 'visaIssuance', labelIndex: 0, label: '사증발급', oldType: 'new', oldDocs: ['initialReqDocs', 'newReqDocs', 'reqDocs', 'documents', 'requiredDocs', 'required_documents'], oldText: 'newReq' },
     { key: 'certificateOfVisaIssuance', labelIndex: 1, label: '사증발급인정서', oldType: 'new', oldDocs: ['cviReqDocs'] },
-    { key: 'statusChange', labelIndex: 2, label: '체류자격 변경', oldType: 'change', oldDocs: ['changeReqDocs'], oldText: 'changeReq' },
-    { key: 'extension', labelIndex: 3, label: '체류기간 연장', oldType: 'ext', oldDocs: ['extensionReqDocs', 'extReqDocs'], oldText: 'extReq' },
+    { key: 'statusChange', labelIndex: 2, label: '체류자격 변경', oldType: 'change', oldDocs: ['changeReqDocs', 'chgReqDocs', 'reqDocs', 'documents', 'requiredDocs', 'required_documents'], oldText: ['changeReq', 'chgReq'] },
+    { key: 'extension', labelIndex: 3, label: '체류기간 연장', oldType: 'ext', oldDocs: ['extensionReqDocs', 'extReqDocs', 'reqDocs', 'documents', 'requiredDocs', 'required_documents'], oldText: 'extReq' },
     { key: 'statusGrant', labelIndex: 4, label: '체류자격 부여', oldType: 'new', oldDocs: ['statusGrantReqDocs'] },
     { key: 'registration', labelIndex: 5, label: '외국인등록', oldType: 'new', oldDocs: ['registrationReqDocs'] },
     { key: 'activitiesOutsideStatus', labelIndex: 6, label: '자격외활동', oldType: 'change', oldDocs: ['activitiesOutsideStatusReqDocs'] },
@@ -7341,9 +7341,10 @@ function renderReviewBadge(v) {
 function getProcedure(v, cfg) {
     const raw = v.procedures && v.procedures[cfg.key] ? v.procedures[cfg.key] : null;
     const oldDocs = (cfg.oldDocs || []).flatMap(k => Array.isArray(v[k]) ? v[k] : []);
-    const legacyAvailable = oldDocs.length > 0 || !!(cfg.oldText && v[cfg.oldText]);
-    const available = raw ? raw.available !== false : legacyAvailable;
-    const docValue = raw?.requiredDocs ?? oldDocs;
+    const legacySummary = Array.isArray(cfg.oldText) ? cfg.oldText.map(k => v[k]).find(Boolean) : (cfg.oldText ? v[cfg.oldText] : '');
+    const legacyAvailable = oldDocs.length > 0 || !!legacySummary;
+    const available = raw ? raw.available !== false || legacyAvailable : legacyAvailable;
+    const docValue = raw?.requiredDocs ?? raw?.required_documents ?? raw?.reqDocs ?? raw?.documents ?? oldDocs;
     return {
         key: cfg.key,
         label: txAt('procedureLabels', cfg.labelIndex, cfg.label),
@@ -7351,7 +7352,7 @@ function getProcedure(v, cfg) {
         available,
         eligibility: raw?.eligibility || [],
         notes: raw?.notes || [],
-        summary: raw?.summary || (cfg.oldText && v[cfg.oldText] ? v[cfg.oldText] : ''),
+        summary: raw?.summary || legacySummary || '',
         docs: normalizeDocGroups(docValue, raw || {}),
         feeInfo: getProcedureFeeInfo(v, cfg.key),
         manualRefs: raw?.manualRefs || []
@@ -7369,13 +7370,14 @@ function normalizeDocGroups(docValue, raw = {}) {
     if (Array.isArray(docValue) || typeof docValue === 'string') groups.requiredDocs = toDocArray(docValue);
     else if (docValue && typeof docValue === 'object') {
         groups.commonDocs = toDocArray(docValue.commonDocs || docValue.common);
-        groups.requiredDocs = toDocArray(docValue.requiredDocs || docValue.required);
+        groups.requiredDocs = toDocArray(docValue.requiredDocs || docValue.required || docValue.reqDocs || docValue.documents || docValue.required_documents);
         groups.additionalDocs = toDocArray(docValue.additionalDocs || docValue.additional);
         groups.conditionalDocs = toDocArray(docValue.conditionalDocs || docValue.conditional);
     }
     groups.commonDocs = toDocArray(raw.commonDocs).length ? toDocArray(raw.commonDocs) : groups.commonDocs;
     groups.additionalDocs = toDocArray(raw.additionalDocs).length ? toDocArray(raw.additionalDocs) : groups.additionalDocs;
     groups.conditionalDocs = toDocArray(raw.conditionalDocs).length ? toDocArray(raw.conditionalDocs) : groups.conditionalDocs;
+    if (!groups.requiredDocs.length) groups.requiredDocs = toDocArray(raw.requiredDocs || raw.required || raw.reqDocs || raw.documents || raw.required_documents);
     groups.requiredDocs = toDocArray(groups.requiredDocs);
     return groups;
 }
