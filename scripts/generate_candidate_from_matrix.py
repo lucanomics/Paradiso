@@ -106,6 +106,13 @@ _PAGE_FOOTER_RE = re.compile(r"-\s*(\d+)\s*-")
 # Match a ❍ / ① ② … / 가. 나. 다. block under a "제출서류" heading.
 _SUBMISSION_HEADING_RE = re.compile(r"제출서류|제 출 서 류")
 
+# Character-position threshold used to distinguish chapter-title pages from
+# table-of-contents and cross-reference pages when locating a visa section.
+# A chapter title page has the visa code in the very first characters of the
+# pdftotext -layout output (e.g. "구 직(D-10)\n❍ ..."). Cross-references and
+# TOC entries embed the code in a sentence that starts much later.
+_CHAPTER_TITLE_MAX_OFFSET = 50
+
 
 # ---------------------------------------------------------------------------
 # Matrix
@@ -232,6 +239,26 @@ def _is_internal_token(s: str) -> bool:
     return bool(s) and all(c.isascii() for c in s) and "_" in s
 
 
+def _header_at_chapter_position(page_text: str, visa_headers: List[str]) -> bool:
+    """Return True when any visa header appears near the top of the page.
+
+    A chapter-title page in the stay manual starts with the visa category
+    name (e.g. "구 직(D-10)") in the very first characters of the
+    pdftotext -layout output.  Table-of-contents lines and cross-reference
+    sentences embed the same code much later (typical offset > 100 chars).
+
+    Using a threshold of _CHAPTER_TITLE_MAX_OFFSET (50 chars) reliably
+    distinguishes chapter openings from TOC entries and cross-references,
+    without requiring any knowledge of the overall chapter count or visa
+    code inventory.
+    """
+    for h in visa_headers:
+        pos = page_text.find(h)
+        if pos != -1 and pos < _CHAPTER_TITLE_MAX_OFFSET:
+            return True
+    return False
+
+
 def _locate_page(
     pages: List[str],
     visa_headers: List[str],
@@ -242,10 +269,13 @@ def _locate_page(
     pdf_page_index is 1-based to match pdftotext -f.
     Returns None when the section cannot be unambiguously located.
     """
-    # Find the first page whose text contains any visa header.
+    # Find the first page whose visa header appears in chapter-title position.
+    # This skips table-of-contents lines and cross-reference sentences where
+    # the same visa code is mentioned later in the text (see
+    # _header_at_chapter_position for the heuristic).
     section_start: Optional[int] = None
     for i, page_text in enumerate(pages, start=1):
-        if any(h in page_text for h in visa_headers):
+        if _header_at_chapter_position(page_text, visa_headers):
             section_start = i
             break
     if section_start is None:
