@@ -7363,7 +7363,7 @@ function normalizeDocGroups(docValue, raw = {}) {
     const toDocArray = (value) => {
         if (!value) return [];
         if (Array.isArray(value)) return value.map(v => String(v || '').trim()).filter(Boolean);
-        if (typeof value === 'string') return value.split(/\n|,|;|·/).map(v => v.trim()).filter(Boolean);
+        if (typeof value === 'string') return value.split(/\n|;|·/).map(v => v.trim()).filter(Boolean);
         return [];
     };
     if (Array.isArray(docValue) || typeof docValue === 'string') groups.requiredDocs = toDocArray(docValue);
@@ -7409,7 +7409,12 @@ function renderProcedurePanel(v, proc, keywords, isActive) {
 
 function renderProcedures(v, keywords) {
     const procedures = PROCEDURE_CONFIG.map(cfg => getProcedure(v, cfg)).filter(p => p.available);
-    if (!procedures.length) return '';
+    if (!procedures.length) {
+        return `<section class="manual-section" aria-label="${escapeHtml(tx('procedureSectionTitle'))}">
+            <h4 class="manual-section-title">${escapeHtml(tx('procedureSectionTitle'))}</h4>
+            <div class="doc-group-empty">${escapeHtml(tx('docReviewFallback'))}</div>
+        </section>`;
+    }
     const firstActive = procedures.find(p => p.available) || procedures[0];
     const tabs = procedures.map(p => `<button type="button" class="procedure-tab${p.key === firstActive.key ? ' active' : ''}" data-action="select-procedure" data-procedure="${p.key}" ${p.available ? '' : 'disabled'}>${getProcedureLabel(p)}</button>`).join('');
     const panels = procedures.map(p => renderProcedurePanel(v, p, keywords, p.key === firstActive.key)).join('');
