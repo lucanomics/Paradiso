@@ -66,13 +66,13 @@
   --ff-display: "Pretendard", "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --fs: clamp(14px, 1.35vw, 16px);
 
-  --color-primary: #0EA37B;           
+  --color-primary: #0EA37B;
   --color-primary-ink: #085E48;
   --color-primary-soft: #7DD8B8;
-  --color-accent:  #FF6B5B;           
+  --color-accent:  #FF6B5B;
   --color-accent-deep: #E0513E;
   --color-accent-soft: #FFB8A8;
-  --color-surface: #F4EDDC;           
+  --color-surface: #F4EDDC;
   --color-surface-2: #EBE0C5;
   --color-surface-dark: #0B2A24;
   --color-text: #152823;
@@ -223,7 +223,6 @@ body.searched .logo-svg { width: 36px; height: 36px; }
 body.searched .logo-text { align-items: flex-start; }
 .logo-brand { margin: 0; font-family: var(--ff-logo) !important; font-size: clamp(4.5rem, 8vw, 6.3rem); font-weight: 500; letter-spacing: -0.025em; line-height: 0.92; color: var(--color-primary-ink); font-optical-sizing: auto; transition: all 0.7s cubic-bezier(0.4,0,0.2,1); display: inline-flex; align-items: baseline; gap: 0.12em; }
 [data-theme="dark"] .logo-brand { color: var(--t1); }
-.logo-brand .logo-39 { font-style: italic; font-weight: 600; color: var(--color-accent); letter-spacing: -0.04em; font-feature-settings: "tnum" 1; margin-left: 0.05em; }
 .logo-area:hover .logo-svg .rocket-flyer { transform: translateY(-5px); }
 .logo-svg .rocket-flyer { transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1); }
 body.searched .logo-brand { font-size: 1.4rem; }
@@ -237,14 +236,11 @@ body:not(.searched) .logo-text { align-items: flex-start; }
 .logo-brand .al { display: inline-block; position: relative; transition: transform 0.75s cubic-bezier(0.65, 0, 0.28, 1), opacity 0.4s ease, filter 0.5s; will-change: transform, opacity; }
 .logo-brand .al .src, .logo-brand .al .tgt { display: inline-block; transition: opacity 0.45s ease 0.3s; }
 .logo-brand .al .tgt { position: absolute; left: 0; top: 0; opacity: 0; color: var(--color-accent); }
-.logo-brand .l39 { display: inline-block; transition: transform 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.5s; }
 body.anagram-run .logo-brand .al { transform: translate3d(var(--ax,0px), 0, 0); }
 body.anagram-run .logo-brand .al .src { opacity: 0; transition-delay: 0.25s; }
 body.anagram-run .logo-brand .al .tgt { opacity: 1; transition-delay: 0.5s; }
-body.anagram-run .logo-brand .l39 { transform: translateY(-8px) scale(0.75); opacity: 0; }
 body.launching .logo-brand .al { opacity: 0; transform: translate3d(var(--ax,0px), 10px, 0) scale(0.88); transition-duration: 0.45s; filter: blur(1px); }
-body.launching .logo-brand .l39 { opacity: 0; }
-body.searched .logo-brand .al, body.searched .logo-brand .l39 { opacity: 1; transform: none; filter: none; }
+body.searched .logo-brand .al { opacity: 1; transform: none; filter: none; }
 body.searched .logo-brand .al .src { opacity: 1; }
 body.searched .logo-brand .al .tgt { opacity: 0; }
 .exhaust { opacity: 1; }
@@ -2000,7 +1996,7 @@ body.searched .brand-wordmark-img { display: none; }
     transition-duration: 0.01ms !important;
   }
 }
-    
+
 /* Phase 10D: hide legacy visible brand mark after brush wordmark integration */
 body:not(.searched) .logo-svg,
 body:not(.searched) .logo-brand,
@@ -2014,10 +2010,6 @@ body:not(.searched) .logo-text {
 
 body:not(.searched) .brand-wordmark-img {
   display: block !important;
-}
-
-.logo-brand .logo-39 {
-  display: none !important;
 }
 
 
@@ -4859,7 +4851,7 @@ body:not(.searched) .visa-track-card:hover {
             <div class="logo-text">
                 <h1 class="logo-brand">
                     <span class="al" data-i="0" data-tgt="4"><span class="src">P</span><span class="tgt">p</span></span><span class="al" data-i="1" data-tgt="2"><span class="src">a</span><span class="tgt">a</span></span><span class="al" data-i="2" data-tgt="6"><span class="src">r</span><span class="tgt">r</span></span><span class="al" data-i="3" data-tgt="7"><span class="src">a</span><span class="tgt">a</span></span><span class="al" data-i="4" data-tgt="0"><span class="src">d</span><span class="tgt">D</span></span><span class="al" data-i="5" data-tgt="1"><span class="src">i</span><span class="tgt">i</span></span><span class="al" data-i="6" data-tgt="3"><span class="src">s</span><span class="tgt">s</span></span><span class="al" data-i="7" data-tgt="5"><span class="src">o</span><span class="tgt">o</span></span>
-                    <em class="logo-39 l39">39</em>
+
                 </h1>
                 <span class="logo-sub">비자·체류 정보 안내 플랫폼</span>
             </div>
@@ -4989,7 +4981,7 @@ body:not(.searched) .visa-track-card:hover {
                 Paradiso에서 손쉽게.
             </h2>
             <p class="brand-hero-subtitle" lang="en">
-                Korea's 39 visa categories. Unified.
+                Korea's residence categories, organized by purpose.
             </p>
             <div class="brand-hero-buttons">
                 <a href="#aboutMe" class="btn-primary">
@@ -5020,7 +5012,7 @@ body:not(.searched) .visa-track-card:hover {
                 <div class="stat-codes" aria-hidden="true">
                     <span class="stat-code-chip">D-2</span>
                     <span class="stat-code-chip">D-4</span>
-                    <span class="stat-code-chip">D-10</span>
+
                 </div>
             </div>
             <div class="stat-card">
@@ -5082,8 +5074,8 @@ body:not(.searched) .visa-track-card:hover {
                     <div><strong>취업 관련 직종·업종 코드 접근</strong>
                     <span lang="en">Employment occupation &amp; industry codes</span></div></li>
                 <li><span class="check-icon" aria-hidden="true">✓</span>
-                    <div><strong>결과와 근거를 함께 확인</strong>
-                    <span lang="en">Results paired with sources</span></div></li>
+                    <div><strong>공식 출처 확인 흐름 안내</strong>
+                    <span lang="en">Results with source-checking guidance</span></div></li>
             </ul>
         </aside>
     </section>
@@ -5171,7 +5163,7 @@ body:not(.searched) .visa-track-card:hover {
             <article class="p-how-step">
                 <span class="p-step-num">03</span>
                 <h3>서류 점검</h3>
-                <p>공통서류와 상황별 추가 확인 항목을 놓치지 않게 봅니다.</p>
+                <p>자격별 구비서류 흐름을 살펴보고, 공식 출처 확인으로 이어집니다.</p>
             </article>
             <article class="p-how-step">
                 <span class="p-step-num">04</span>
@@ -5194,7 +5186,7 @@ body:not(.searched) .visa-track-card:hover {
             </div>
             <div class="p-source-grid" aria-label="참고 출처">
                 <article class="p-source-card"><h3>출입국관리법</h3><p>체류자격과 기본 절차의 법령 기준.</p></article>
-                <article class="p-source-card"><h3>출입국관리매뉴얼</h3><p>체류자격별 허가기준과 실무 확인 흐름.</p></article>
+                <article class="p-source-card"><h3>출입국관리매뉴얼</h3><p>체류자격 확인 경로와 공식 매뉴얼 참조 안내.</p></article>
                 <article class="p-source-card"><h3>HiKorea 공지</h3><p>예약, 전자민원, 방문 안내의 최신 공지.</p></article>
                 <article class="p-source-card"><h3>직업·산업분류</h3><p>한국표준직업분류와 산업분류 확인.</p></article>
                 <article class="p-source-card"><h3>1345 안내</h3><p>외국인종합안내센터 상담 확인.</p></article>
@@ -5344,7 +5336,7 @@ body:not(.searched) .visa-track-card:hover {
                     <div class="hobby-inner">
                         <div class="hobby-icon" aria-hidden="true">📑</div>
                         <div class="hobby-title">Data Integrity</div>
-                        <div class="hobby-desc">출입국·외국인정책본부 매뉴얼과 시행규칙을 1차 출처로 참고합니다.</div>
+                        <div class="hobby-desc">출입국·외국인정책본부 매뉴얼과 시행규칙을 1차 출처로 삼으며, 검증 범위는 단계적으로 확대 중입니다.</div>
                     </div>
                 </div>
                 <div class="hobby-card hobby-2 figma-value-card" aria-label="사용자 중심 UX">
@@ -5400,7 +5392,7 @@ body:not(.searched) .visa-track-card:hover {
                     <span class="footer-hero-eyebrow">Paradiso</span>
                     <h3 class="figma-footer-hero-title">대한민국 39가지<br>체류자격, 한 곳에서 살펴보세요.</h3>
                     <div class="figma-footer-chips">
-                        <span class="footer-chip">📑 매뉴얼 기반 탐색</span>
+                        <span class="footer-chip">📑 공식 출처 확인 경로</span>
                         <span class="footer-chip">🧭 목적별 경로 정리</span>
                         <span class="footer-chip">🏛 관할기관 안내</span>
                         <span class="footer-chip">💼 직종·업종 코드</span>
@@ -5419,7 +5411,7 @@ body:not(.searched) .visa-track-card:hover {
     </section>
 
     <section class="p-section p-footer-cta" aria-labelledby="pFooterCtaTitle">
-        <h2 id="pFooterCtaTitle">체류 절차를 더 쉽게, 더 정확하게.</h2>
+        <h2 id="pFooterCtaTitle">체류 절차 경로를 더 쉽게, 더 체계적으로.</h2>
         <p>복잡하기만 했던 체류 행정. Paradiso와 함께라면 어렵지 않습니다.</p>
         <div class="p-footer-actions">
             <a class="p-cta-btn primary" href="ai.html">내 상황으로 시작하기</a>
@@ -5444,7 +5436,7 @@ body:not(.searched) .visa-track-card:hover {
             <p style="font-size:0.85rem; color:var(--t3); line-height:1.5;">현재 국적, 보유 중인 체류자격(비자), 직무, 거주지 등 본인의 상황을 상세히 적어주시면, Paradiso AI가 공개 자료와 입력하신 상황을 바탕으로 관련 체류자격과 확인해야 할 절차를 정리해 드립니다. 최종 판단과 신청 절차는 관할기관 안내를 확인해 주세요.</p>
             <label for="aiInput" class="sr-only">상황 입력</label>
             <textarea id="aiInput" class="ai-textarea" placeholder="예: 미국 국적이며 현재 이태원에 거주 중입니다. 한국 대학교 4년제 학사를 졸업했고 D-10 구직 비자 상태인데 E-7으로 취업하고 싶습니다."></textarea>
-            
+
             <div class="ai-quick-actions">
                 <button type="button" class="ai-action-btn primary" data-type="analyze">
                     <span>✨ 종합 상황 분석 요청</span>
@@ -5971,7 +5963,7 @@ function getTzHour(tz) {
     }
 }
 function formatTzTime(tz) {
-    try { return new Intl.DateTimeFormat('ko-KR', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date()); } 
+    try { return new Intl.DateTimeFormat('ko-KR', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date()); }
     catch (e) { return '—:—'; }
 }
 function applyCity(city) {
@@ -6148,7 +6140,7 @@ function openAiModal(visaCode) {
     if (!visa) return;
     currentAiVisaCode = visaCode;
     document.getElementById('aiModalTitleText').innerHTML = `${escapeHtml(visa.code)} (${escapeHtml(visa.name)})`;
-    
+
     const descEl = document.querySelector('#aiModalOverlay .modal-body p');
     if (['faq', 'scn', 'nhis'].includes(visa.cat)) {
         descEl.innerHTML = currentLanguage === 'en'
@@ -6159,7 +6151,7 @@ function openAiModal(visaCode) {
             ? `Enter nationality, current residence status, role, residence area, and other details. Paradiso AI analyzes against the April 2026 Ministry of Justice immigration manuals.<br><span style="color:var(--color-warning); font-weight:700;">AI answers are for reference only. Always confirm final decisions with 1345 or the competent immigration office.</span>`
             : `현재 국적, 보유 체류자격, 직무, 거주지 등 상황을 상세히 입력하시면, Paradiso AI가 <strong>2026년 4월 법무부 출입국 실무 매뉴얼(사증·체류민원 최신본)</strong>에 근거하여 분석합니다.<br><span style="color:var(--color-warning); font-weight:700;">⚠ AI 답변은 참고용입니다. 최종 판단은 반드시 ☎ 1345 또는 관할 출입국·외국인관서에서 확인하십시오.</span>`;
     }
-    
+
     const jobCodeBtn = document.getElementById('btnJobCode');
     if (jobCodeBtn) {
         const isJobCodeTarget = JOBCODE_TARGET_VISAS.some(prefix => visa.code === prefix || visa.code.startsWith(prefix + '-') || visa.code.startsWith(prefix));
@@ -6285,7 +6277,7 @@ async function openJobCodeModal() {
     if (input) { input.value = ''; setTimeout(() => input.focus(), 100); }
     document.getElementById('jcJobResults').innerHTML = '<div class="jc-loading">데이터 로드 중... (최초 1회만)</div>';
     document.getElementById('jcIndResults').innerHTML = '<div class="jc-loading">데이터 로드 중... (최초 1회만)</div>';
-    try { await loadJobcodeData(); renderJobcodeResults(''); } 
+    try { await loadJobcodeData(); renderJobcodeResults(''); }
     catch (err) {
         const errorHtml = `<div class="jc-empty" style="color:var(--color-error); text-align:left; padding:1.2rem;">⚠ <strong>데이터 로드 실패</strong><br><br><small style="color:#64748b;">상세 오류: ${escapeHtml(err.message)}</small></div>`;
         document.getElementById('jcJobResults').innerHTML = errorHtml; document.getElementById('jcIndResults').innerHTML = errorHtml;
@@ -6325,7 +6317,7 @@ async function searchJobcodeWithAI() {
         let jobKw = [input], indKw = [input];
         if (!API_BASE) {
              const li = input.toLowerCase();
-             if (li.includes('식당')) { jobKw = ["웨이터", "조리", "서빙"]; indKw = ["음식", "외식", "주점"]; } 
+             if (li.includes('식당')) { jobKw = ["웨이터", "조리", "서빙"]; indKw = ["음식", "외식", "주점"]; }
              else if (li.includes('배달')) { jobKw = ["배달", "택배", "배송"]; indKw = ["운송", "이륜차", "물류"]; }
         } else {
             const response = await fetch(`${API_BASE}/api/jobcodekeywords`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: input }) });
@@ -6350,7 +6342,7 @@ function renderUnifiedAiResults(jobKw, indKw) {
             keywords.forEach(kw => { if(desc.includes(kw.toLowerCase())) score += 1; });
             return { ...r, score };
         }).filter(r => r.score > 0).sort((a, b) => b.score - a.score || (a.코드값 || '').localeCompare(b.코드값 || ''));
-        return rows.slice(0, 50); 
+        return rows.slice(0, 50);
     };
     const jobRows = getScoredRows('직업', jobKw), indRows = getScoredRows('산업', indKw);
     if (badge) badge.textContent = `AI 추천 완료`;
@@ -7299,8 +7291,8 @@ function expandKeywords(keywords){
 }
 
 const PREDEF_KEYWORDS = [
-"체류지 변경(주민센터)", "여권 갱신(비예약)", "등록증 재발급", "만료 당일/임산부 등", 
-"제주 무사증", "K-ETA 발급", "숙련기능(E-7-4)", "결혼이민(F-6)", 
+"체류지 변경(주민센터)", "여권 갱신(비예약)", "등록증 재발급", "만료 당일/임산부 등",
+"제주 무사증", "K-ETA 발급", "숙련기능(E-7-4)", "결혼이민(F-6)",
 "동반(F-3) 소득요건", "결핵 제출 대상", "난민신청 절차", "오버스테이",
 "D-2 유학", "영주권(F-5)", "E-9 이직", "점수제 비자"
 ];
@@ -7541,14 +7533,14 @@ const UI_TRANSLATIONS = {
         featureTitle: '출입국·외국인정책본부<br>매뉴얼 기반의 정보 탐색', featureSubtitle: 'Manual-based information navigation',
         featureBody: '구조화된 체류자격 데이터를 토대로 공식 자료 확인을 전제로 한 정보 탐색을 보조합니다. 최종 판단과 신청 절차는 관할 출입국·외국인관서 안내 확인이 필요합니다.',
         featureCta: '1345 외국인종합안내센터', featureCtaSub: 'Contact 1345', featureChecklistAria: '서비스 핵심 기능',
-        featureChecks: ['<strong>39가지 체류자격 통합 탐색</strong><span lang="en">Browse all 39 stay categories</span>', '<strong>목적별 체류 경로 정리</strong><span lang="en">Path overview by purpose</span>', '<strong>관할기관 확인 흐름</strong><span lang="en">Jurisdiction lookup flow</span>', '<strong>취업 관련 직종·업종 코드 접근</strong><span lang="en">Employment occupation &amp; industry codes</span>', '<strong>결과와 근거를 함께 확인</strong><span lang="en">Results paired with sources</span>'],
+        featureChecks: ['<strong>39가지 체류자격 통합 탐색</strong><span lang="en">Browse all 39 stay categories</span>', '<strong>목적별 체류 경로 정리</strong><span lang="en">Path overview by purpose</span>', '<strong>관할기관 확인 흐름</strong><span lang="en">Jurisdiction lookup flow</span>', '<strong>취업 관련 직종·업종 코드 접근</strong><span lang="en">Employment occupation &amp; industry codes</span>', '<strong>공식 출처 확인 흐름 안내</strong><span lang="en">Results with source-checking guidance</span>'],
         pathwayTitle: '비자 코드보다 먼저, 생활의 경로를 봅니다.', pathwayCopy: '같은 체류자격도 목적과 시점에 따라 필요한 확인 순서가 달라집니다. 아래 경로는 기존 검색 결과로 이어지는 안전한 출발점입니다.', pathwayAria: '목적별 체류 경로',
         pathwayTitles: ['유학·연수 <span>Study</span>', '취업·전문직 <span>Work</span>', '가족·결혼 <span>Family</span>', '사업·투자 <span>Business</span>', '예술·연구 <span>Culture &amp; Research</span>', '체류 연장 <span>Extension</span>', '자격 변경 <span>Change of status</span>', '출국·재입국 <span>Departure &amp; return</span>'],
         pathwayDescs: ['학위 과정, 어학연수, 졸업 후 구직까지 이어지는 흐름.', '전문직 취업, 근무처 변경, 직종·업종 코드 확인.', '결혼이민, 동반 가족, 자녀와 가족 체류 확인.', '법인 설립, 투자, 무역 경영 활동과 증빙.', '공연, 연구, 교육 활동의 초청·계약 확인.', '현재 자격을 유지하며 기간을 연장할 때의 확인 순서.', '졸업, 취업, 결혼, 거주 전환처럼 자격이 바뀌는 시점.', '출국 전 확인, 재입국 가능성, 체류 공백 점검.'],
         pathwayCodes: ['D-2', 'D-4', 'D-10', 'E-7', 'E-9', 'D-8', 'F-6', 'F-3', 'F-1', 'D-8', 'D-9', 'E-1', 'E-3', 'E-6', '연장', '서류', '변경', 'D-10', 'E-7', '재입국', '출국'],
-        howTitle: '검색에서 공식 출처 확인까지, 네 단계로 줄입니다.', howStepTitles: ['검색', '비교', '서류 점검', '공식 출처 확인'], howStepBodies: ['코드, 키워드, 상황 설명 중 가능한 방식으로 시작합니다.', '유사한 자격과 절차를 나란히 보며 차이를 좁힙니다.', '공통서류와 상황별 추가 확인 항목을 놓치지 않게 봅니다.', '하이코리아, 1345, 관할 출입국 안내로 최종 확인합니다.'],
+        howTitle: '검색에서 공식 출처 확인까지, 네 단계로 줄입니다.', howStepTitles: ['검색', '비교', '서류 점검', '공식 출처 확인'], howStepBodies: ['코드, 키워드, 상황 설명 중 가능한 방식으로 시작합니다.', '유사한 자격과 절차를 나란히 보며 차이를 좁힙니다.', '자격별 구비서류 흐름을 살펴보고, 공식 출처 확인으로 이어집니다.', '하이코리아, 1345, 관할 출입국 안내로 최종 확인합니다.'],
         sourceTitle: 'Paradiso의 문장은 출처를 향합니다.', sourceCopy: 'Paradiso는 참고용 정보 탐색 플랫폼입니다. 최종 판단은 관할 출입국·외국인관서, HiKorea, 1345 또는 자격 있는 전문가에게 확인해야 합니다.', sourceGridAria: '참고 출처',
-        sourceCards: ['<h3>출입국관리법</h3><p>체류자격과 기본 절차의 법령 기준.</p>', '<h3>출입국관리매뉴얼</h3><p>체류자격별 허가기준과 실무 확인 흐름.</p>', '<h3>HiKorea 공지</h3><p>예약, 전자민원, 방문 안내의 최신 공지.</p>', '<h3>직업·산업분류</h3><p>한국표준직업분류와 산업분류 확인.</p>', '<h3>1345 안내</h3><p>외국인종합안내센터 상담 확인.</p>'],
+        sourceCards: ['<h3>출입국관리법</h3><p>체류자격과 기본 절차의 법령 기준.</p>', '<h3>출입국관리매뉴얼</h3><p>체류자격 확인 경로와 공식 매뉴얼 참조 안내.</p>', '<h3>HiKorea 공지</h3><p>예약, 전자민원, 방문 안내의 최신 공지.</p>', '<h3>직업·산업분류</h3><p>한국표준직업분류와 산업분류 확인.</p>', '<h3>1345 안내</h3><p>외국인종합안내센터 상담 확인.</p>'],
         sourceNote: 'Paradiso는 법률 자문이나 민원 대행을 제공하지 않으며, 이에 따른 어떠한 법적 책임도 지지 않습니다.',
         toolsTitle: '필요한 도구는 흐름 가까이에 둡니다.', toolsCopy: '이미 구현된 도구는 기존 모달과 검색에 연결하고, 아직 준비 중인 기능은 계획 상태로 표시합니다.',
         toolCards: ['<h3>관할 출입국 찾기</h3><p>체류지 기준으로 관할 출입국·외국인관서를 확인합니다.</p>', '<h3>직업·산업 코드</h3><p>취업 신고에 필요한 직종·업종 코드를 찾아봅니다.</p>', '<h3>서류 체크리스트</h3><p>체류자격별 공통서류와 추가 확인 항목으로 이동합니다.</p>', '<h3>1345 통화 스크립트</h3><p>상황 요약을 바탕으로 상담 전 확인할 질문을 정리하는 기능입니다.</p>'],
@@ -7567,12 +7559,12 @@ const UI_TRANSLATIONS = {
         aboutPhilosophy: ['<strong>Diaspora</strong> - \'Diaspora\'는 이주민을 뜻하는 영단어입니다.', '<strong>Paradiso</strong> - \'Paradiso\'는 이탈리아어로 "낙원(Paradise)"을 의미하며, \'Paradiso\'의 철자를 애너그램(Anagram)으로 재배치한 단어기도 합니다. 각자의 뜻과 꿈을 가지고 한국에 도착한 모든 이들에게 평안과 위로의 인사를 전합니다.'],
         aboutStartTitle: 'Paradiso의 시작', aboutStartBody: '대한민국에는 39가지의 체류자격이 존재하지만, 관련 법령과 매뉴얼은 분산되어 있어 정보 탐색에 시간이 걸립니다. Paradiso는 흩어진 비자·체류 정보를 구조화하여 사용자 입장에서 한 번에 살펴볼 수 있는 안내 흐름을 제공하고, 정보 비대칭을 줄이는 사용자 안내 레이어를 지향합니다.',
         aboutValuesTitle: '핵심 가치 및 비전', aboutValuesBody: '단순한 정보 나열을 넘어, 구조화된 체류자격 데이터와 사용자 입력에 기반한 안내를 통해 정보 탐색 부담을 줄이고, 공식 자료 확인까지 자연스럽게 이어지도록 설계합니다.',
-        aboutValueAria: ['정확성과 신뢰성', '사용자 중심 UX', 'AI 기반 안내 보조'], aboutValueDesc: ['출입국·외국인정책본부 매뉴얼과 시행규칙을 1차 출처로 참고합니다.', '39개 체류자격을 목적별로 묶어 한 화면에서 비교·탐색할 수 있도록 정리합니다.', '사용자가 입력한 상황을 기반으로 살펴볼 자격과 확인 흐름을 제안하는 안내 보조입니다.'],
+        aboutValueAria: ['정확성과 신뢰성', '사용자 중심 UX', 'AI 기반 안내 보조'], aboutValueDesc: ['출입국·외국인정책본부 매뉴얼과 시행규칙을 1차 출처로 삼으며, 검증 범위는 단계적으로 확대 중입니다.', '39개 체류자격을 목적별로 묶어 한 화면에서 비교·탐색할 수 있도록 정리합니다.', '사용자가 입력한 상황을 기반으로 살펴볼 자격과 확인 흐름을 제안하는 안내 보조입니다.'],
         roadmapTitle: '로드맵 <span class="figma-roadmap-en" lang="en">- Project Roadmap</span>', roadmapNote: '아래 일정은 프로젝트 추진 계획이며, 공식 정책 일정이 아닙니다.',
         roadmapCompanies: ['2025 Q4 - 공공데이터 활용 공모전 출품 및 MVP 검증', '2026 Q1 - AI 기반 질의응답과 안내 품질 고도화', '2026 Q3 - 다국어 UI와 사용자 접근성 확대'],
         roadmapDetails: ['39가지 체류자격 통합 탐색 MVP 공개·실사용자 피드백 수집', '매뉴얼 기반 답변 보조와 사용자 상황별 안내 흐름 정교화', '영어·다국어 UI 도입, 1345 안내 흐름 연계 강화'],
-        footerHeroTitle: '대한민국 39가지<br>체류자격, 한 곳에서 살펴보세요.', footerChips: ['📑 매뉴얼 기반 탐색', '🧭 목적별 경로 정리', '🏛 관할기관 안내', '💼 직종·업종 코드'], footerButtons: ['지금 탐색 시작', '1345 직접 문의'], footerButtonSubs: ['Start exploring', '1345 Hotline'],
-        footerCtaTitle: '체류 절차를 더 쉽게, 더 정확하게.', footerCtaBody: '복잡하기만 했던 체류 행정. Paradiso와 함께라면 어렵지 않습니다.', footerCtaButtons: ['내 상황으로 시작하기', 'AI에게 묻기'],
+        footerHeroTitle: '대한민국 39가지<br>체류자격, 한 곳에서 살펴보세요.', footerChips: ['📑 공식 출처 확인 경로', '🧭 목적별 경로 정리', '🏛 관할기관 안내', '💼 직종·업종 코드'], footerButtons: ['지금 탐색 시작', '1345 직접 문의'], footerButtonSubs: ['Start exploring', '1345 Hotline'],
+        footerCtaTitle: '체류 절차 경로를 더 쉽게, 더 체계적으로.', footerCtaBody: '복잡하기만 했던 체류 행정. Paradiso와 함께라면 어렵지 않습니다.', footerCtaButtons: ['내 상황으로 시작하기', 'AI에게 묻기'],
         resultEmptyTitle: '궤도를 이탈했습니다', resultEmptyBody: '\'{query}\'에 해당하는 정보가 없습니다.<br>키워드를 줄이거나 OR 모드로 전환해 보세요.', resultCountZero: '0건',
         resultSubtypes: '세부 {count}', resultDataDate: '데이터 기준:', resultCount: '{count}건', resultSubtypeCount: '세부 {count}건', resultTotal: '총 {count}개', resultRelated: '관련도 정렬',
         resultDomainsBoth: '공통/양쪽', resultDomainVisa: '사증발급', resultDomainStay: '체류민원', reviewOk: '2026.5 매뉴얼 확인됨', reviewPartial: '일부 정보 미검증', reviewNeeded: '2026.5 매뉴얼 확인 필요',
@@ -7587,30 +7579,30 @@ const UI_TRANSLATIONS = {
         agentCountAll: '{filtered}개의 {noun} 표시', agentCountFiltered: '전체 {total}개 중 {filtered}개 {noun} 표시', agentSampleNoun: '샘플 항목', agentNoun: '대행기관', agentNaver: '네이버지도', agentKakao: '카카오맵', agentCopy: '주소 복사', agentPhone: '전화 {phone}', agentCopyOk: '주소를 복사했습니다.', agentCopyFail: '주소 복사에 실패했습니다. 주소를 길게 눌러 직접 복사하세요.',
         landingHints: ['체류지 변경(주민센터)', '여권 갱신(비예약)', '등록증 재발급', '만료 당일/임산부 등', '제주 무사증', 'K-ETA 발급', '숙련기능(E-7-4)', '결혼이민(F-6)', '동반(F-3) 소득요건', '결핵 제출 대상', '난민신청 절차', '오버스테이', 'D-10 구직', 'K-Trainee(D-4-2K)'],
         quickFilters: ['체류지 변경', '비예약 업무', 'F-3 소득', 'K-ETA', '결핵 가이드', '오버스테이', '건강보험', 'B-2-2 제주', 'E-7', 'E-9', 'F-6', 'F-5', '점수제'],
-        brandHeroTitle: '복잡한 체류,<br>Paradiso에서 손쉽게.', brandHeroSubtitle: "Korea's 39 visa categories. Unified.", brandHeroAbout: '서비스 소개', brandHeroHotline: '1345 직접 문의',
+        brandHeroTitle: '복잡한 체류,<br>Paradiso에서 손쉽게.', brandHeroSubtitle: "Korea's residence categories, organized by purpose.", brandHeroAbout: '서비스 소개', brandHeroHotline: '1345 직접 문의',
         brandHeroStatsAria: '비자 카테고리 통계', statLabels: ['취업·전문직<br><span lang="en">Employment</span>', '유학·연수<br><span lang="en">Study</span>', '거주·결혼<br><span lang="en">Residence</span>', '방문·기타<br><span lang="en">Visit & Other</span>'],
         brandFeatureTitle: '출입국·외국인정책본부<br>매뉴얼 기반의 정보 탐색', brandFeatureSubtitle: 'Manual-based information navigation', brandFeatureBody: '구조화된 체류자격 데이터를 토대로 공식 자료 확인을 전제로 한 정보 탐색을 보조합니다. 최종 판단과 신청 절차는 관할 출입국·외국인관서 안내 확인이 필요합니다.', brandFeatureCta: '1345 외국인종합안내센터', brandFeatureChecklistAria: '서비스 핵심 기능',
-        featureChecklist: ['<strong>39가지 체류자격 통합 탐색</strong><span lang="en">Browse all 39 stay categories</span>', '<strong>목적별 체류 경로 정리</strong><span lang="en">Path overview by purpose</span>', '<strong>관할기관 확인 흐름</strong><span lang="en">Jurisdiction lookup flow</span>', '<strong>취업 관련 직종·업종 코드 접근</strong><span lang="en">Employment occupation &amp; industry codes</span>', '<strong>결과와 근거를 함께 확인</strong><span lang="en">Results paired with sources</span>'],
+        featureChecklist: ['<strong>39가지 체류자격 통합 탐색</strong><span lang="en">Browse all 39 stay categories</span>', '<strong>목적별 체류 경로 정리</strong><span lang="en">Path overview by purpose</span>', '<strong>관할기관 확인 흐름</strong><span lang="en">Jurisdiction lookup flow</span>', '<strong>취업 관련 직종·업종 코드 접근</strong><span lang="en">Employment occupation &amp; industry codes</span>', '<strong>공식 출처 확인 흐름 안내</strong><span lang="en">Results with source-checking guidance</span>'],
         pathwayTitle: '비자 코드보다 먼저, 생활의 경로를 봅니다.', pathwayCopy: '같은 체류자격도 목적과 시점에 따라 필요한 확인 순서가 달라집니다. 아래 경로는 기존 검색 결과로 이어지는 안전한 출발점입니다.', pathwayAria: '목적별 체류 경로',
         pathwayTitles: ['유학·연수 <span>Study</span>', '취업·전문직 <span>Work</span>', '가족·결혼 <span>Family</span>', '사업·투자 <span>Business</span>', '예술·연구 <span>Culture &amp; Research</span>', '체류 연장 <span>Extension</span>', '자격 변경 <span>Change of status</span>', '출국·재입국 <span>Departure &amp; return</span>'],
         pathwayDescs: ['학위 과정, 어학연수, 졸업 후 구직까지 이어지는 흐름.', '전문직 취업, 근무처 변경, 직종·업종 코드 확인.', '결혼이민, 동반 가족, 자녀와 가족 체류 확인.', '법인 설립, 투자, 무역 경영 활동과 증빙.', '공연, 연구, 교육 활동의 초청·계약 확인.', '현재 자격을 유지하며 기간을 연장할 때의 확인 순서.', '졸업, 취업, 결혼, 거주 전환처럼 자격이 바뀌는 시점.', '출국 전 확인, 재입국 가능성, 체류 공백 점검.'],
         pathwayCodes: ['D-2', 'D-4', 'D-10', 'E-7', 'E-9', 'D-8', 'F-6', 'F-3', 'F-1', 'D-8', 'D-9', 'E-1', 'E-3', 'E-6', '연장', '서류', '변경', 'D-10', 'E-7', '재입국', '출국'],
-        howTitle: '검색에서 공식 출처 확인까지, 네 단계로 줄입니다.', howStepTitles: ['검색', '비교', '서류 점검', '공식 출처 확인'], howStepDescs: ['코드, 키워드, 상황 설명 중 가능한 방식으로 시작합니다.', '유사한 자격과 절차를 나란히 보며 차이를 좁힙니다.', '공통서류와 상황별 추가 확인 항목을 놓치지 않게 봅니다.', '하이코리아, 1345, 관할 출입국 안내로 최종 확인합니다.'],
+        howTitle: '검색에서 공식 출처 확인까지, 네 단계로 줄입니다.', howStepTitles: ['검색', '비교', '서류 점검', '공식 출처 확인'], howStepDescs: ['코드, 키워드, 상황 설명 중 가능한 방식으로 시작합니다.', '유사한 자격과 절차를 나란히 보며 차이를 좁힙니다.', '자격별 구비서류 흐름을 살펴보고, 공식 출처 확인으로 이어집니다.', '하이코리아, 1345, 관할 출입국 안내로 최종 확인합니다.'],
         sourceTitle: 'Paradiso의 문장은 출처를 향합니다.', sourceCopy: 'Paradiso는 참고용 정보 탐색 플랫폼입니다. 최종 판단은 관할 출입국·외국인관서, HiKorea, 1345 또는 자격 있는 전문가에게 확인해야 합니다.', sourceGridAria: '참고 출처',
-        sourceCardTitles: ['출입국관리법', '출입국관리매뉴얼', 'HiKorea 공지', '직업·산업분류', '1345 안내'], sourceCardDescs: ['체류자격과 기본 절차의 법령 기준.', '체류자격별 허가기준과 실무 확인 흐름.', '예약, 전자민원, 방문 안내의 최신 공지.', '한국표준직업분류와 산업분류 확인.', '외국인종합안내센터 상담 확인.'], sourceNote: 'Paradiso는 법률 자문이나 민원 대행을 제공하지 않으며, 이에 따른 어떠한 법적 책임도 지지 않습니다.',
+        sourceCardTitles: ['출입국관리법', '출입국관리매뉴얼', 'HiKorea 공지', '직업·산업분류', '1345 안내'], sourceCardDescs: ['체류자격과 기본 절차의 법령 기준.', '체류자격 확인 경로와 공식 매뉴얼 참조 안내.', '예약, 전자민원, 방문 안내의 최신 공지.', '한국표준직업분류와 산업분류 확인.', '외국인종합안내센터 상담 확인.'], sourceNote: 'Paradiso는 법률 자문이나 민원 대행을 제공하지 않으며, 이에 따른 어떠한 법적 책임도 지지 않습니다.',
         toolsTitle: '필요한 도구는 흐름 가까이에 둡니다.', toolsCopy: '이미 구현된 도구는 기존 모달과 검색에 연결하고, 아직 준비 중인 기능은 계획 상태로 표시합니다.', toolTitles: ['관할 출입국 찾기', '직업·산업 코드', '서류 체크리스트', '1345 통화 스크립트'], toolDescs: ['체류지 기준으로 관할 출입국·외국인관서를 확인합니다.', '취업 신고에 필요한 직종·업종 코드를 찾아봅니다.', '체류자격별 공통서류와 추가 확인 항목으로 이동합니다.', '상황 요약을 바탕으로 상담 전 확인할 질문을 정리하는 기능입니다.'],
         agentTitle: '가까운 행정 도움 찾기', agentCopy: '공식 등록된 출입국민원 대행기관을 지역별로 확인하고, 네이버지도 또는 카카오맵에서 위치를 열어볼 수 있습니다.', agentSourceNote: '출처: 출입국업무 민원신청대행 등록기관 현황(2026.04.30.부)', agentDisclaimer: 'Paradiso는 특정 기관을 추천하거나 업무 결과를 보증하지 않습니다. 방문 또는 의뢰 전 전화 확인, 상담 범위 및 수수료 확인을 권장합니다.',
         agentRegionLabel: '지역', agentRegionAll: '전체 지역', agentKeywordLabel: '키워드', agentKeywordPlaceholder: '지역명·사무소명·주소로 검색', agentListAria: '등록 대행기관 목록', agentLoading: '데이터를 불러오는 중입니다.', agentPrompt: '지역명, 사무소명, 주소 일부를 입력해 등록된 민원대행기관을 찾아보세요.', agentEmpty: '검색 결과가 없습니다. 지역명이나 사무소명을 다시 확인해 주세요.', agentError: '데이터를 불러오지 못했습니다. 잠시 후 다시 시도하거나 하이코리아 공식 조회를 이용하세요.', agentCountShowing: '총 {total}개 중 {showing}개 표시', agentCountAll: '{count}개 대행기관 표시', agentShowMore: '더 보기', agentCountFiltered: '전체 {total}개 중 {count}개 대행기관 표시', agentMapNaver: '네이버지도', agentMapKakao: '카카오맵', agentCopyAddress: '주소 복사', agentPhone: '전화 {phone}', agentCopied: '주소를 복사했습니다.', agentCopyFailed: '주소 복사에 실패했습니다. 주소를 길게 눌러 직접 복사하세요.',
         reminderTitle: '놓치기 쉬운 기한은 앞으로 알림으로 관리합니다.', reminderCopy: '아래 항목은 계획 중인 기능이며, 현재 제공되는 공식 알림 서비스가 아닙니다.', reminderAria: '계획 중인 알림 항목', reminderCardTitles: ['체류기간 연장', '주소 이전 신고', '근무처 변경'], reminderCardDescs: ['만료 전 확인 시점과 서류 준비 흐름.', '전입 후 신고 기한과 관할 확인.', '변동 신고와 취업 정보 확인.'], reminderPills: ['여권정보 변경', '캘린더 내보내기', '이메일·SMS 알림', '방문 준비 카드'],
         aboutTitle: '플랫폼 소개', anagramAria: 'Diaspora에서 Paradiso로 이어지는 애너그램', philosophyTitle: '브랜드 철학 및 어원 <span class="en-label" lang="en">— Brand Philosophy &amp; Etymology</span>', philosophyItems: ['<strong>Diaspora</strong> — \'Diaspora\'는 이주민을 뜻하는 영단어입니다.', '<strong>Paradiso</strong> — \'Paradiso\'는 이탈리아어로 "낙원(Paradise)"을 의미하며, \'Diaspora\'의 철자를 애너그램(Anagram)으로 재배치한 단어기도 합니다. 각자의 뜻과 꿈을 가지고 한국에 도착한 모든 이들에게 평안과 위로의 인사를 전합니다.'],
         aboutStartTitle: 'Paradiso의 시작', aboutStartBody: '대한민국에는 39가지의 체류자격이 존재하지만, 관련 법령과 매뉴얼은 분산되어 있어 정보 탐색에 시간이 걸립니다. Paradiso는 흩어진 비자·체류 정보를 구조화하여 사용자 입장에서 한 번에 살펴볼 수 있는 안내 흐름을 제공하고, 정보 비대칭을 줄이는 사용자 안내 레이어를 지향합니다.', valuesTitle: '핵심 가치 및 비전', valuesBody: '단순한 정보 나열을 넘어, 구조화된 체류자격 데이터와 사용자 입력에 기반한 안내를 통해 정보 탐색 부담을 줄이고, 공식 자료 확인까지 자연스럽게 이어지도록 설계합니다.',
-        valueCardAria: ['정확성과 신뢰성', '사용자 중심 UX', 'AI 기반 안내 보조'], valueCardDescs: ['출입국·외국인정책본부 매뉴얼과 시행규칙을 1차 출처로 참고합니다.', '39개 체류자격을 목적별로 묶어 한 화면에서 비교·탐색할 수 있도록 정리합니다.', '사용자가 입력한 상황을 기반으로 살펴볼 자격과 확인 흐름을 제안하는 안내 보조입니다.'],
+        valueCardAria: ['정확성과 신뢰성', '사용자 중심 UX', 'AI 기반 안내 보조'], valueCardDescs: ['출입국·외국인정책본부 매뉴얼과 시행규칙을 1차 출처로 삼으며, 검증 범위는 단계적으로 확대 중입니다.', '39개 체류자격을 목적별로 묶어 한 화면에서 비교·탐색할 수 있도록 정리합니다.', '사용자가 입력한 상황을 기반으로 살펴볼 자격과 확인 흐름을 제안하는 안내 보조입니다.'],
         roadmapTitle: '로드맵 <span class="figma-roadmap-en" lang="en">— Project Roadmap</span>', roadmapNote: '아래 일정은 프로젝트 추진 계획이며, 공식 정책 일정이 아닙니다.', roadmapCompanies: ['2025 Q4 — 공공데이터 활용 공모전 출품 및 MVP 검증', '2026 Q1 — AI 기반 질의응답과 안내 품질 고도화', '2026 Q3 — 다국어 UI와 사용자 접근성 확대'], roadmapDetails: ['39가지 체류자격 통합 탐색 MVP 공개·실사용자 피드백 수집', '매뉴얼 기반 답변 보조와 사용자 상황별 안내 흐름 정교화', '영어·다국어 UI 도입, 1345 안내 흐름 연계 강화'],
-        footerHeroTitle: '대한민국 39가지<br>체류자격, 한 곳에서 살펴보세요.', footerChips: ['📑 매뉴얼 기반 탐색', '🧭 목적별 경로 정리', '🏛 관할기관 안내', '💼 직종·업종 코드'], footerStart: '지금 탐색 시작', footerHotline: '1345 직접 문의', footerCtaTitle: '체류 절차를 더 쉽게, 더 정확하게.', footerCtaCopy: '복잡하기만 했던 체류 행정. Paradiso와 함께라면 어렵지 않습니다.', footerCtaButtons: ['내 상황으로 시작하기', 'AI에게 묻기'], quickFiltersAria: '자주 찾는 검색어 모음', footerLegal: 'v38 · ※ 본 서비스는 베타 테스트 중이며, 제공되는 정보는 법적 효력을 갖지 않습니다. 정확한 정보는 반드시 1345(외국인종합안내센터)에 확인하시기 바랍니다.',
+        footerHeroTitle: '대한민국 39가지<br>체류자격, 한 곳에서 살펴보세요.', footerChips: ['📑 공식 출처 확인 경로', '🧭 목적별 경로 정리', '🏛 관할기관 안내', '💼 직종·업종 코드'], footerStart: '지금 탐색 시작', footerHotline: '1345 직접 문의', footerCtaTitle: '체류 절차 경로를 더 쉽게, 더 체계적으로.', footerCtaCopy: '복잡하기만 했던 체류 행정. Paradiso와 함께라면 어렵지 않습니다.', footerCtaButtons: ['내 상황으로 시작하기', 'AI에게 묻기'], quickFiltersAria: '자주 찾는 검색어 모음', footerLegal: 'v38 · ※ 본 서비스는 베타 테스트 중이며, 제공되는 정보는 법적 효력을 갖지 않습니다. 정확한 정보는 반드시 1345(외국인종합안내센터)에 확인하시기 바랍니다.',
         closeModal: '닫기', docModalTitle: '구비서류 확인', faqModalTitle: '💡 자주 묻는 질문 (FAQ)', aiModalTitle: 'AI 맞춤 상황 분석', aiIntro: '현재 국적, 보유 중인 체류자격(비자), 직무, 거주지 등 본인의 상황을 상세히 적어주시면, Paradiso AI가 공개 자료와 입력하신 상황을 바탕으로 관련 체류자격과 확인해야 할 절차를 정리해 드립니다. 최종 판단과 신청 절차는 관할기관 안내를 확인해 주세요.', aiInputLabel: '상황 입력', aiInputPlaceholder: '예: 미국 국적이며 현재 이태원에 거주 중입니다. 한국 대학교 4년제 학사를 졸업했고 D-10 구직 비자 상태인데 E-7으로 취업하고 싶습니다.', aiActionLabels: ['✨ 종합 상황 분석 요청', '✨ 서류 다국어 풀이 및 발급처 안내', '🏛 관할 관서 조회 & 1345 안내', '💼 취업신고용 업종/직종 코드 찾기'], jobCodeTitle: '💼 취업신고용 업종/직종 코드 찾기', jobCodeSearchLabel: '업종 또는 직종 검색', jobCodePlaceholder: '명칭 또는 상황 검색 (예: 영어 회화 강사, 중식당 종업원)', jurisdictionTitle: '🏛 관할 출입국관서 조회',
         docGroupLabels: ['공통서류', '필수서류', '추가/심사 필요 서류', '조건부 서류'], procedureLabels: ['사증발급', '사증발급인정서', '체류자격 변경', '체류기간 연장', '체류자격 부여', '외국인등록', '자격외활동', '근무처 변경·추가', '재입국'], domainLabels: ['공통/양쪽', '사증발급', '체류민원'], reviewLabels: ['2026.5 매뉴얼 확인됨', '일부 정보 미검증', '2026.5 매뉴얼 확인 필요'],
         manualNeedsReview: '매뉴얼 확인 필요', docReviewFallback: '매뉴얼 확인 필요: 이 절차의 구조화된 구비서류는 아직 대표 데이터에 없습니다.', eligibilityLabel: '대상/요건', notesLabel: '유의사항', procedureSectionTitle: '절차별 안내', subcodesTitle: '세부코드', commonWarningsTitle: '공통 매뉴얼 유의사항', sourceManualFallback: '출처 매뉴얼', pageNeedsReview: '페이지 확인 필요', confidenceLabel: '신뢰도', confidenceNeedsReview: '매뉴얼 확인 필요', sourceStatusTitle: '출처 및 검증 상태', sourceReviewDone: '대표 데이터 검토 완료', sourceReviewPending: '대표 데이터이며 전체 수작업 검증 전입니다.', sourceLegalNote: '본 서비스는 안내용이며 실제 허가 여부는 심사에 의해 결정됩니다.', manualActionLabels: ['사증/신규 서류', '연장 서류', '변경 서류', 'Paradiso AI 상황 분석'], resultEmptyTitle: '궤도를 이탈했습니다', resultEmptyDesc: "'{query}'에 해당하는 정보가 없습니다.<br>키워드를 줄이거나 OR 모드로 전환해 보세요.", resultCount: '{count}건', resultCountWithSub: '{count}건 (세부 {subcount}건)', sortMeta: '관련도 정렬 · {mode} · {categories}', dataDateLabel: '데이터 기준', searchedCategoryLabels: ['단기', '유학/연수', '취업', '투자', '가족/이민', '기타', '외교', '건강보험', '안내', '시나리오'],
-        sourceStructuredData: '구조화 데이터', sourceVisaManual: '사증발급 안내매뉴얼 2026.5', sourceStayManual: '외국인체류 안내매뉴얼 2026.5', sourceUnverified: '출처 메타데이터 미확인', sourceEvidenceTitle: '출처 및 근거', sourceUnverifiedNote: '출처 메타데이터 미확인. 현재 표시 정보는 구조화 데이터 기준이며, 세부 제출서류는 공식 매뉴얼/HiKorea 확인이 필요합니다.', cautionText: '심사 과정에서 제출서류는 가감될 수 있으며, 최종 허가 여부는 관할 출입국·외국인청의 심사에 따릅니다.', procedureExpansionNote: '절차별 제출서류 안내는 매뉴얼 기반 검증이 확장되는 중입니다.', actionCopyResult: '결과 복사', actionAskAi: 'Paradiso AI에 물어보기'
+        sourceStructuredData: '구조화 데이터', sourceVisaManual: '사증발급 절차 분류', sourceStayManual: '국내 체류 절차 분류', sourceUnverified: '출처 메타데이터 미확인', sourceEvidenceTitle: '출처 및 근거', sourceUnverifiedNote: '출처 메타데이터 미확인. 현재 표시 정보는 구조화 데이터 기준이며, 세부 제출서류는 공식 매뉴얼/HiKorea 확인이 필요합니다.', cautionText: '심사 과정에서 제출서류는 가감될 수 있으며, 최종 허가 여부는 관할 출입국·외국인청의 심사에 따릅니다.', procedureExpansionNote: '절차별 제출서류 안내는 매뉴얼 기반 검증이 확장되는 중입니다.', actionCopyResult: '결과 복사', actionAskAi: 'Paradiso AI에 물어보기'
     },
     en: {
         languageButton: 'Language settings', languageMenu: 'Choose language', languageChanged: 'Language changed to English.',
@@ -7636,7 +7628,7 @@ const UI_TRANSLATIONS = {
         featureTitle: 'Manual-based information<br>from Korea Immigration Service', featureSubtitle: 'Manual-based information navigation',
         featureBody: 'Paradiso helps you navigate structured residence-status data with official-source verification in mind. Final decisions and filing steps must be confirmed with the competent immigration office.',
         featureCta: '1345 Immigration Contact Center', featureCtaSub: 'Contact 1345', featureChecklistAria: 'Core service features',
-        featureChecks: ['<strong>Browse all 39 stay categories</strong><span lang="en">Unified status search</span>', '<strong>Purpose-first pathway overview</strong><span lang="en">Path overview by purpose</span>', '<strong>Jurisdiction lookup flow</strong><span lang="en">Find the right office</span>', '<strong>Occupation and industry code access</strong><span lang="en">Employment reporting codes</span>', '<strong>Results paired with sources</strong><span lang="en">Check the basis together</span>'],
+        featureChecks: ['<strong>Browse all 39 stay categories</strong><span lang="en">Unified status search</span>', '<strong>Purpose-first pathway overview</strong><span lang="en">Path overview by purpose</span>', '<strong>Jurisdiction lookup flow</strong><span lang="en">Find the right office</span>', '<strong>Occupation and industry code access</strong><span lang="en">Employment reporting codes</span>', '<strong>Results with source-checking guidance</strong><span lang="en">Check the basis together</span>'],
         pathwayTitle: 'Start with your life path, not just a visa code.', pathwayCopy: 'The same status can require different checks depending on purpose and timing. These paths are safe starting points that connect back to existing search results.', pathwayAria: 'Purpose-based stay pathways',
         pathwayTitles: ['Study &amp; training <span>Study</span>', 'Work &amp; professionals <span>Work</span>', 'Family &amp; settlement <span>Family</span>', 'Business &amp; investment <span>Business</span>', 'Arts &amp; research <span>Culture &amp; Research</span>', 'Extension of stay <span>Extension</span>', 'Change of status <span>Change of status</span>', 'Departure &amp; re-entry <span>Departure &amp; return</span>'],
         pathwayDescs: ['Degree programs, language training, and post-graduation job search.', 'Professional work, workplace changes, and occupation or industry code checks.', 'Marriage migrants, dependents, children, and family stay checks.', 'Company setup, investment, trade management, and evidence.', 'Performance, research, and education activities with invitation or contract checks.', 'The check sequence when extending your current status.', 'Moments when your status changes after graduation, work, marriage, or settlement.', 'Checks before departure, re-entry, and gaps in stay.'],
@@ -7682,10 +7674,10 @@ const UI_TRANSLATIONS = {
         agentCountAll: 'Showing {filtered} {noun}', agentCountFiltered: 'Showing {filtered} of {total} {noun}', agentSampleNoun: 'sample items', agentNoun: 'agents', agentNaver: 'Naver Map', agentKakao: 'Kakao Map', agentCopy: 'Copy address', agentPhone: 'Call {phone}', agentCopyOk: 'Address copied.', agentCopyFail: 'Could not copy the address. Long-press the address and copy it manually.',
         landingHints: ['Address change', 'Passport renewal', 'ARC reissue', 'Same-day expiry / special cases', 'Jeju visa waiver', 'K-ETA', 'Skilled worker (E-7-4)', 'Marriage migrant (F-6)', 'Dependent (F-3) income', 'TB certificate requirement', 'Refugee process', 'Overstay', 'D-10 job search', 'K-Trainee (D-4-2K)'],
         quickFilters: ['Address change', 'Walk-in services', 'F-3 income', 'K-ETA', 'TB guide', 'Overstay', 'Health insurance', 'B-2-2 Jeju', 'E-7', 'E-9', 'F-6', 'F-5', 'Points system'],
-        brandHeroTitle: 'Korea residence procedures,<br>made easier with Paradiso.', brandHeroSubtitle: "Korea's 39 visa categories. Unified.", brandHeroAbout: 'About the service', brandHeroHotline: 'Call 1345',
+        brandHeroTitle: 'Korea residence procedures,<br>made easier with Paradiso.', brandHeroSubtitle: "Korea's residence categories, organized by purpose.", brandHeroAbout: 'About the service', brandHeroHotline: 'Call 1345',
         brandHeroStatsAria: 'Visa category statistics', statLabels: ['Work and specialists<br><span lang="en">Employment</span>', 'Study and training<br><span lang="en">Study</span>', 'Residence and marriage<br><span lang="en">Residence</span>', 'Visits and other statuses<br><span lang="en">Visit & Other</span>'],
         brandFeatureTitle: 'Information navigation<br>based on official immigration manuals', brandFeatureSubtitle: 'Manual-based information navigation', brandFeatureBody: 'Paradiso helps you explore structured residence-status data while keeping official-source verification at the center. Final decisions and filing steps must be confirmed with the competent immigration office.', brandFeatureCta: 'Contact the 1345 Immigration Contact Center', brandFeatureChecklistAria: 'Core service capabilities',
-        featureChecklist: ['<strong>Browse all 39 residence statuses</strong>', '<strong>Purpose-first pathway overview</strong>', '<strong>Jurisdiction lookup flow</strong>', '<strong>Occupation and industry code access</strong>', '<strong>Results paired with sources</strong>'],
+        featureChecklist: ['<strong>Browse all 39 residence statuses</strong>', '<strong>Purpose-first pathway overview</strong>', '<strong>Jurisdiction lookup flow</strong>', '<strong>Occupation and industry code access</strong>', '<strong>Results with source-checking guidance</strong>'],
         pathwayTitle: 'Start with life pathways before visa codes.', pathwayCopy: 'The same residence status can require a different order of checks depending on purpose and timing. These pathways lead into the existing search results safely.', pathwayAria: 'Residence pathways by purpose',
         pathwayTitles: ['Study and training <span>Study</span>', 'Work and specialists <span>Work</span>', 'Family and marriage <span>Family</span>', 'Business and investment <span>Business</span>', 'Arts and research <span>Culture &amp; Research</span>', 'Extension of stay <span>Extension</span>', 'Change of status <span>Change of status</span>', 'Departure and re-entry <span>Departure &amp; return</span>'],
         pathwayDescs: ['Degree programs, language training, and the path into post-graduation job search.', 'Specialist employment, workplace changes, and occupation or industry code checks.', 'Marriage migration, accompanying family, children, and family stay checks.', 'Company formation, investment, trade management, and supporting evidence.', 'Performance, research, and teaching activities with invitation or contract checks.', 'The confirmation order when keeping the current status and extending the stay period.', 'The point when graduation, work, marriage, or residence conversion changes your status.', 'Checks before departure, re-entry possibility, and gaps in stay.'],
@@ -7701,11 +7693,11 @@ const UI_TRANSLATIONS = {
         aboutStartTitle: 'How Paradiso began', aboutStartBody: 'Korea has 39 residence statuses, but the relevant laws and manuals are spread across many sources. Paradiso structures scattered visa and residence information into a user-centered guidance flow that reduces information asymmetry.', valuesTitle: 'Core values and vision', valuesBody: 'Beyond listing information, Paradiso reduces search burden with structured residence-status data and user-centered guidance that naturally leads back to official-source confirmation.',
         valueCardAria: ['Accuracy and reliability', 'User-centered UX', 'AI-assisted guidance'], valueCardDescs: ['Official immigration manuals and enforcement rules are treated as primary sources.', 'The 39 residence statuses are grouped by purpose so users can compare and explore them in one place.', 'The assistant suggests statuses and confirmation flows to review based on the situation the user enters.'],
         roadmapTitle: 'Roadmap <span class="figma-roadmap-en" lang="en">— Project Roadmap</span>', roadmapNote: 'This is a project plan, not an official policy schedule.', roadmapCompanies: ['2025 Q4 — Public-data competition submission and MVP validation', '2026 Q1 — Better AI Q&A and guidance quality', '2026 Q3 — Multilingual UI and broader accessibility'], roadmapDetails: ['Release an MVP for unified exploration of 39 residence statuses and collect user feedback', 'Improve manual-grounded answer support and situation-specific guidance flows', 'Add English and multilingual UI, with stronger linkage to 1345 guidance flows'],
-        footerHeroTitle: 'Explore Korea’s 39<br>residence statuses in one place.', footerChips: ['📑 Manual-based exploration', '🧭 Purpose-first pathways', '🏛 Jurisdiction guidance', '💼 Job and industry codes'], footerStart: 'Start exploring', footerHotline: '1345 hotline', footerCtaTitle: 'Residence procedures, easier and more accurate.', footerCtaCopy: 'Korean residence administration can feel complex. Paradiso helps make the next step clearer.', footerCtaButtons: ['Start with my situation', 'Ask AI'], quickFiltersAria: 'Frequently searched keywords', footerLegal: 'v38 · Beta test service. The information provided has no legal effect. Always confirm accurate information with 1345, the Immigration Contact Center.',
+        footerHeroTitle: 'Explore Korea’s 39<br>residence statuses in one place.', footerChips: ['📑 Official source-check pathway', '🧭 Purpose-first pathways', '🏛 Jurisdiction guidance', '💼 Job and industry codes'], footerStart: 'Start exploring', footerHotline: '1345 hotline', footerCtaTitle: 'Residence procedure paths, easier and more systematic.', footerCtaCopy: 'Korean residence administration can feel complex. Paradiso helps make the next step clearer.', footerCtaButtons: ['Start with my situation', 'Ask AI'], quickFiltersAria: 'Frequently searched keywords', footerLegal: 'v38 · Beta test service. The information provided has no legal effect. Always confirm accurate information with 1345, the Immigration Contact Center.',
         closeModal: 'Close', docModalTitle: 'Document checklist', faqModalTitle: '💡 Frequently Asked Questions (FAQ)', aiModalTitle: 'AI situation analysis', aiIntro: 'Describe your nationality, current residence status, role, residence area, and situation. Paradiso AI will summarize relevant residence statuses and procedures based on public sources and your input. Confirm final decisions and filing steps with the competent authority.', aiInputLabel: 'Situation input', aiInputPlaceholder: 'Example: I am a U.S. citizen living in Itaewon. I graduated from a four-year Korean university and currently hold a D-10 job-seeking visa, but I want to change to E-7.', aiActionLabels: ['✨ Request full situation analysis', '✨ Explain documents and issuing offices in multiple languages', '🏛 Find jurisdiction office and 1345 guidance', '💼 Find employment occupation and industry codes'], jobCodeTitle: '💼 Find occupation and industry codes', jobCodeSearchLabel: 'Search industry or occupation', jobCodePlaceholder: 'Search by name or situation, e.g. English conversation instructor', jurisdictionTitle: '🏛 Find your immigration office',
         docGroupLabels: ['Common documents', 'Required documents', 'Additional / review-needed documents', 'Conditional documents'], procedureLabels: ['Visa issuance', 'Certificate for confirmation of visa issuance', 'Change of status', 'Extension of stay', 'Grant of status', 'Foreigner registration', 'Activities outside status', 'Workplace change or addition', 'Re-entry'], domainLabels: ['Both tracks', 'Visa issuance', 'Stay services'], reviewLabels: ['Confirmed against the 2026.5 manual', 'Some information unverified', 'Needs 2026.5 manual review'],
         manualNeedsReview: 'Manual review needed', docReviewFallback: 'Manual review needed: structured required documents for this procedure are not yet in representative data.', eligibilityLabel: 'Eligibility / requirements', notesLabel: 'Notes', procedureSectionTitle: 'Procedures', subcodesTitle: 'Subcodes', commonWarningsTitle: 'Common manual notes', sourceManualFallback: 'Source manual', pageNeedsReview: 'Page review needed', confidenceLabel: 'Confidence', confidenceNeedsReview: 'Manual review needed', sourceStatusTitle: 'Source and verification status', sourceReviewDone: 'Representative data reviewed', sourceReviewPending: 'Representative data; full manual verification is still pending.', sourceLegalNote: 'This service is for guidance only. Actual approval depends on official review.', manualActionLabels: ['Visa / new-application documents', 'Extension documents', 'Change documents', 'Paradiso AI situation analysis'], resultEmptyTitle: 'No matching orbit', resultEmptyDesc: "No information matches '{query}'.<br>Try fewer keywords or switch to OR mode.", resultCount: '{count} results', resultCountWithSub: '{count} results ({subcount} subcodes)', sortMeta: 'Sorted by relevance · {mode} · {categories}', dataDateLabel: 'Data date', searchedCategoryLabels: ['Short stay', 'Study / training', 'Work', 'Investment', 'Family / immigration', 'Other', 'Diplomatic', 'Health insurance', 'Guide', 'Scenario'],
-        sourceStructuredData: 'Structured data', sourceVisaManual: 'Visa Issuance Manual 2026.5', sourceStayManual: 'Stay Services Manual 2026.5', sourceUnverified: 'Source metadata unavailable', sourceEvidenceTitle: 'Source & Evidence', sourceUnverifiedNote: 'Source metadata unavailable. This result is based on structured data; detailed document requirements should be checked against official manuals/HiKorea.', cautionText: 'Required documents may be added or reduced during review, and final approval depends on immigration office examination.', procedureExpansionNote: 'Procedure-specific document guidance is being expanded through manual-based verification.', actionCopyResult: 'Copy result', actionAskAi: 'Ask Paradiso AI'
+        sourceStructuredData: 'Structured data', sourceVisaManual: 'Visa issuance procedure classification', sourceStayManual: 'Domestic stay procedure classification', sourceUnverified: 'Source metadata unavailable', sourceEvidenceTitle: 'Source & Evidence', sourceUnverifiedNote: 'Source metadata unavailable. This result is based on structured data; detailed document requirements should be checked against official manuals/HiKorea.', cautionText: 'Required documents may be added or reduced during review, and final approval depends on immigration office examination.', procedureExpansionNote: 'Procedure-specific document guidance is being expanded through manual-based verification.', actionCopyResult: 'Copy result', actionAskAi: 'Ask Paradiso AI'
     },
     zh: {
         languageButton: '语言设置', languageMenu: '选择语言', languageChanged: '语言已切换为简体中文。',
@@ -8342,7 +8334,7 @@ function initUI(){
         lc.innerHTML='';
         lf.forEach(x=>{const b=document.createElement('button');b.className='lh';b.textContent=x.l;b.onclick=()=>{qEl.value=x.q;executeSearch();};lc.appendChild(b);});
     }
-    
+
     const rf=getQuickFilterItems();
     const qc=document.getElementById('qf');
     if(qc) {
@@ -8862,13 +8854,11 @@ function selectInKoreaAction(actionType) {
     register: {
       title: '📝 외국인등록',
       desc:   '입국 후 90일 이내에 체류지 관할 출입국·외국인청에서 외국인등록을 해야 합니다.',
-      extra:  `<div class="jur-section">
-                 <div class="jur-label">공통 필요 서류</div>
-                 <ul class="jur-list">
-                   <li>통합신청서</li><li>여권 원본 및 사본</li>
-                   <li>사진 1매 (3.5×4.5cm)</li><li>체류지 입증서류</li><li>수수료</li>
-                 </ul>
-               </div>`
+      extra:  `<div class="subcode-warning" style="margin-top:0.8rem;">
+                 ✅ <strong>안내:</strong> 외국인등록은 입국 후 90일 이내 신청이 원칙입니다.
+               </div>
+               <p class="text-desc" style="margin-top:0.8rem;">구체적인 제출서류는 체류자격과 개인 상황에 따라 달라질 수 있습니다. HiKorea 또는 관할 출입국·외국인청에서 최신 안내를 확인하세요.</p>
+               <a class="doc-trigger-btn" href="https://www.hikorea.go.kr" target="_blank" rel="noopener noreferrer">HiKorea에서 공식 요건 확인</a>`
     },
     extend: {
       title: '⏳ 체류기간 연장',
@@ -8887,14 +8877,11 @@ function selectInKoreaAction(actionType) {
     workplace: {
       title: '🏢 근무처 변경·추가',
       desc:   '취업 자격 소지자가 근무처를 변경할 경우 15일 이내에 신고해야 합니다.',
-      extra:  `<div class="jur-section">
-                 <div class="jur-label">근무처 변경 신고 서류</div>
-                 <ul class="jur-list">
-                   <li>통합신청서</li><li>여권 및 외국인등록증</li>
-                   <li>사업자등록증 사본</li><li>근로계약서</li>
-                   <li>특례고용가능확인서 (H-2 해당자)</li>
-                 </ul>
-               </div>`
+      extra:  `<div class="subcode-warning" style="margin-top:0.8rem;">
+                 ⚠️ <strong>주의:</strong> 근무처 변경은 체류자격별로 신고/허가 유형이 다를 수 있습니다.
+               </div>
+               <p class="text-desc" style="margin-top:0.8rem;">구체적인 제출서류는 체류자격과 개인 상황에 따라 달라질 수 있습니다. HiKorea 또는 관할 출입국·외국인청에서 최신 안내를 확인하세요.</p>
+               <a class="doc-trigger-btn" href="https://www.hikorea.go.kr" target="_blank" rel="noopener noreferrer">HiKorea에서 공식 요건 확인</a>`
     }
   };
 
