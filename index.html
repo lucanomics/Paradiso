@@ -3556,6 +3556,15 @@ body:not(.searched) .lh:hover {
 .p-source-card {
   padding: 1rem;
   min-height: 132px;
+  display: grid;
+  align-content: flex-start;
+  gap: 0.35rem;
+}
+
+.p-source-card:hover,
+.p-source-card:focus-within {
+  border-color: color-mix(in srgb, var(--p-green) 32%, var(--p-line));
+  box-shadow: var(--p-shadow-2);
 }
 
 .p-source-note {
@@ -4179,6 +4188,17 @@ body:not(.searched) #visaManualSection::before {
   color: var(--color-text);
   font: inherit;
   font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.p-agent-finder__controls select:hover,
+.p-agent-finder__controls input[type="search"]:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 48%, var(--color-border));
+}
+.p-agent-finder__controls select:focus-visible,
+.p-agent-finder__controls input[type="search"]:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-soft) 42%, transparent);
+  outline: none;
 }
 .p-agent-finder__count {
   margin: 0;
@@ -4289,6 +4309,9 @@ body:not(.searched) #visaManualSection::before {
 }
 @media (max-width: 600px) {
   .p-agent-finder__controls { grid-template-columns: 1fr; }
+  .p-agent-finder__card { padding: 0.95rem; }
+  .p-source-grid { gap: 0.75rem; }
+  .p-source-card { min-height: auto; }
 }
 
 /* ============================================================
@@ -5181,15 +5204,15 @@ body:not(.searched) .visa-track-card:hover {
                     <h2 class="p-section-title" id="pSourceTitle">Paradiso의 문장은 출처를 향합니다.</h2>
                 </div>
                 <p class="p-section-copy">
-                    Paradiso는 참고용 정보 탐색 플랫폼입니다. 최종 판단은 관할 출입국·외국인관서, HiKorea, 1345 또는 자격 있는 전문가에게 확인해야 합니다.
+                    Paradiso는 참고용 정보 탐색 플랫폼입니다. 결과에 제시된 출처·페이지를 확인한 뒤, 최종 판단은 관할 출입국·외국인관서, HiKorea, 1345 또는 자격 있는 전문가에게 확인해야 합니다.
                 </p>
             </div>
             <div class="p-source-grid" aria-label="참고 출처">
-                <article class="p-source-card"><h3>출입국관리법</h3><p>체류자격과 기본 절차의 법령 기준.</p></article>
-                <article class="p-source-card"><h3>출입국관리매뉴얼</h3><p>체류자격 확인 경로와 공식 매뉴얼 참조 안내.</p></article>
-                <article class="p-source-card"><h3>HiKorea 공지</h3><p>예약, 전자민원, 방문 안내의 최신 공지.</p></article>
-                <article class="p-source-card"><h3>직업·산업분류</h3><p>한국표준직업분류와 산업분류 확인.</p></article>
-                <article class="p-source-card"><h3>1345 안내</h3><p>외국인종합안내센터 상담 확인.</p></article>
+                <article class="p-source-card"><h3>출입국관리법</h3><p>체류자격, 허가 요건, 기본 절차를 확인하는 1차 법령 기준입니다.</p></article>
+                <article class="p-source-card"><h3>출입국관리매뉴얼</h3><p>실무 안내 문구와 구비서류 흐름을 교차 확인하는 공식 매뉴얼입니다.</p></article>
+                <article class="p-source-card"><h3>HiKorea 공지</h3><p>예약, 전자민원, 방문 운영시간처럼 자주 바뀌는 안내를 최종 점검합니다.</p></article>
+                <article class="p-source-card"><h3>직업·산업분류</h3><p>취업 신고 시 필요한 한국표준직업·산업분류 코드를 일치 확인합니다.</p></article>
+                <article class="p-source-card"><h3>1345 안내</h3><p>예외 상황이나 해석 차이는 외국인종합안내센터 상담으로 한 번 더 확인합니다.</p></article>
             </div>
             <p class="p-source-note">Paradiso는 법률 자문이나 민원 대행을 제공하지 않으며, 이에 따른 어떠한 법적 책임도 지지 않습니다.</p>
         </div>
@@ -5233,7 +5256,7 @@ body:not(.searched) .visa-track-card:hover {
                 <p class="p-kicker">Local guidance</p>
                 <h2 class="p-section-title" id="agentFinderTitle">가까운 행정 도움 찾기</h2>
             </div>
-            <p class="p-section-copy">공식 등록된 출입국민원 대행기관을 지역별로 확인하고, 네이버지도 또는 카카오맵에서 위치를 열어볼 수 있습니다.</p>
+            <p class="p-section-copy">공식 등록된 출입국민원 대행기관을 지역별로 확인하고, 지역명(예: 서울·제주)이나 사무소명으로 좁혀서 네이버지도/카카오맵 위치를 바로 열 수 있습니다.</p>
         </div>
         <p class="p-agent-finder__disclaimer" id="agentFinderSourceNote">
             출처: 출입국업무 민원신청대행 등록기관 현황(2026.04.30.부)
@@ -5250,11 +5273,11 @@ body:not(.searched) .visa-track-card:hover {
             <label class="sr-only" for="agentFinderKeyword">키워드</label>
             <input id="agentFinderKeyword" type="search" placeholder="지역명·사무소명·주소로 검색" autocomplete="off" />
         </div>
-        <p class="p-agent-finder__prompt" id="agentFinderPrompt">지역명, 사무소명, 주소 일부를 입력해 등록된 민원대행기관을 찾아보세요.</p>
+        <p class="p-agent-finder__prompt" id="agentFinderPrompt">지역 선택 후 키워드를 입력하면 더 빠르게 찾을 수 있습니다. 예: 서울, 제주, 강릉</p>
         <p class="p-agent-finder__loading" id="agentFinderLoading" hidden>데이터를 불러오는 중입니다.</p>
         <p class="p-agent-finder__count" id="agentFinderCount" aria-live="polite"></p>
         <ul class="p-agent-finder__list" id="agentFinderList" aria-label="등록 대행기관 목록"></ul>
-        <p class="p-agent-finder__empty" id="agentFinderEmpty" hidden>검색 결과가 없습니다. 지역명이나 사무소명을 다시 확인해 주세요.</p>
+        <p class="p-agent-finder__empty" id="agentFinderEmpty" hidden>검색 결과가 없습니다. 지역 필터를 "전체 지역"으로 바꾸거나 키워드를 줄여 다시 확인해 주세요.</p>
         <p class="p-agent-finder__error" id="agentFinderError" role="alert" hidden>데이터를 불러오지 못했습니다. 잠시 후 다시 시도하거나 하이코리아 공식 조회를 이용하세요.</p>
         <div class="p-agent-finder__more" id="agentFinderMore" hidden>
             <button type="button" id="agentFinderShowMore" class="p-agent-finder__show-more">더 보기</button>
