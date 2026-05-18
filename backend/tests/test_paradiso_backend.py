@@ -1443,5 +1443,196 @@ class UngroundedFallbackPromptTests(unittest.TestCase):
         self.assertIn("1345", built)
 
 
+class GoldenEvalSuiteTests(unittest.TestCase):
+    """Tests for the golden question eval suite and runner."""
+
+    GOLDEN_Q_PATH = REPO_ROOT / "backend" / "data" / "eval" / "paradiso_ai_golden_questions.json"
+    RUNNER_PATH = REPO_ROOT / "scripts" / "evaluate_paradiso_ai_golden_questions.py"
+
+    # ---- 1. Golden JSON parses and has required structure ----
+
+    def test_golden_json_exists_and_parses(self):
+        self.assertTrue(self.GOLDEN_Q_PATH.is_file(), f"Missing: {self.GOLDEN_Q_PATH}")
+        import json
+        with open(self.GOLDEN_Q_PATH, encoding="utf-8") as fh:
+            data = json.load(fh)
+        self.assertIn("questions", data)
+        questions = data["questions"]
+        self.assertIsInstance(questions, list)
+        self.assertGreaterEqual(len(questions), 30, "Must have at least 30 golden questions")
+        self.assertLessEqual(len(questions), 50, "Must have at most 50 golden questions")
+
+    def test_golden_json_schema_version_and_flags(self):
+        import json
+        with open(self.GOLDEN_Q_PATH, encoding="utf-8") as fh:
+            data = json.load(fh)
+        self.assertEqual(data.get("schema_version"), "1.0")
+        self.assertIs(data.get("is_training_data"), False)
+        self.assertIs(data.get("is_llm_eval"), False)
+
+    def test_golden_json_required_fields_present(self):
+        import json
+        required_fields = {"id", "language", "question", "expected_task_type",
+                           "expected_grounding_status", "expected_risk_level"}
+        with open(self.GOLDEN_Q_PATH, encoding="utf-8") as fh:
+            data = json.load(fh)
+        for item in data["questions"]:
+            missing = required_fields - item.keys()
+            self.assertFalse(missing, f"Question {item.get('id')} missing fields: {missing}")
+
+    def test_golden_json_no_raw_personal_data(self):
+        """Questions must not contain real personal data patterns."""
+        import json, re
+        # Patterns that suggest real personal identifiers
+        pii_patterns = [
+            re.compile(r"\b[A-Z]{2}\d{7}\b"),        # Korean ARC number pattern
+            re.compile(r"\b\d{6}-\d{7}\b"),           # Korean RRN pattern
+            re.compile(r"\b010-\d{4}-\d{4}\b"),       # Korean phone
+            re.compile(r"\b[A-Z]\d{8}\b"),             # passport-like number
+        ]
+        with open(self.GOLDEN_Q_PATH, encoding="utf-8") as fh:
+            data = json.load(fh)
+        for item in data["questions"]:
+            question = item.get("question", "")
+            for pat in pii_patterns:
+                self.assertIsNone(
+                    pat.search(question),
+                    f"Question {item['id']} may contain personal data: {question!r}",
+                )
+
+    def test_golden_json_ids_are_unique(self):
+        import json
+        with open(self.GOLDEN_Q_PATH, encoding="utf-8") as fh:
+            data = json.load(fh)
+        ids = [item.get("id") for item in data["questions"]]
+        self.assertEqual(len(ids), len(set(ids)), "Duplicate question IDs found")
+
+    def test_golden_json_grounding_status_values_valid(self):
+        import json
+        valid_statuses = {"active_grounded", "candidate_only", "scoped_fallback",
+                          "clarification_needed", "unsupported"}
+        with open(self.GOLDEN_Q_PATH, encoding="utf-8") as fh:
+            data = json.load(fh)
+        for item in data["questions"]:
+            status = item.get("expected_grounding_status")
+            self.assertIn(status, valid_statuses,
+                          f"Question {item['id']} has invalid grounding status: {status!r}")
+
+    def test_golden_json_risk_level_values_valid(self):
+        import json
+        with open(self.GOLDEN_Q_PATH, encoding="utf-8") as fh:
+            data = json.load(fh)
+        for item in data["questions"]:
+            risk = item.get("expected_risk_level")
+            self.assertIn(risk, {"low", "medium", "high"},
+                          f"Question {item['id']} has invalid risk_level: {risk!r}")
+
+    # ---- 2. Runner executes in non-strict mode without error ----
+
+    def test_runner_script_compiles(self):
+        import py_compile
+        self.assertTrue(self.RUNNER_PATH.is_file(), f"Missing: {self.RUNNER_PATH}")
+        py_compile.compile(str(self.RUNNER_PATH), doraise=True)
+
+    def test_runner_executes_non_strict(self):
+        import subprocess
+        result = subprocess.run(
+            [sys.executable, str(self.RUNNER_PATH)],
+            cwd=str(REPO_ROOT),
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0,
+                         f"Runner failed in non-strict mode:\n{result.stdout}\n{result.stderr}")
+        self.assertIn("All regression checks passed", result.stdout)
+
+    def test_runner_json_output_is_valid(self):
+        import subprocess, json
+        result = subprocess.run(
+            [sys.executable, str(self.RUNNER_PATH), "--json"],
+            cwd=str(REPO_ROOT),
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        data = json.loads(result.stdout)
+        self.assertIn("total", data)
+        self.assertIn("passed", data)
+        self.assertIn("failed", data)
+        self.assertEqual(data["failed"], 0)
+        self.assertEqual(data["total"], data["passed"])
+
+    # ---- 3. Known grounded cases pass ----
+
+    def test_d2_extension_grounds(self):
+        _, mod = _client()
+        top, sub = mod._detect_visa_codes("D-2", None, "D-2 체류기간 연장 신청 방법이 궁금합니다.")
+        task = mod._detect_task_type("D-2 체류기간 연장 신청 방법이 궁금합니다.")
+        grounding = mod._select_grounding(top, task, sub)
+        self.assertEqual(top, "D-2")
+        self.assertEqual(task, "extension")
+        self.assertIsNotNone(grounding)
+
+    def test_e7_extension_grounds(self):
+        _, mod = _client()
+        top, sub = mod._detect_visa_codes("E-7", None, "How do I extend my E-7 visa?")
+        task = mod._detect_task_type("How do I extend my E-7 visa?")
+        grounding = mod._select_grounding(top, task, sub)
+        self.assertEqual(top, "E-7")
+        self.assertEqual(task, "extension")
+        self.assertIsNotNone(grounding)
+
+    def test_d4_extension_grounds(self):
+        _, mod = _client()
+        top, sub = mod._detect_visa_codes("D-4", None, "D-4 비자 연장하고 싶어요.")
+        task = mod._detect_task_type("D-4 비자 연장하고 싶어요.")
+        grounding = mod._select_grounding(top, task, sub)
+        self.assertEqual(top, "D-4")
+        self.assertEqual(task, "extension")
+        self.assertIsNotNone(grounding)
+
+    # ---- 4. F-6 divorce stays ungrounded but task/risk detected ----
+
+    def test_f6_divorce_ungrounded_task_detected(self):
+        _, mod = _client()
+        q = "F-6-1 비자인데 이혼 후 체류 자격이 어떻게 되나요?"
+        top, sub = mod._detect_visa_codes("F-6", None, q)
+        task = mod._detect_task_type(q)
+        risk = mod._risk_level_for_task(task)
+        grounding = mod._select_grounding(top, task, sub)
+        self.assertEqual(task, "marriage_divorce_status_change")
+        self.assertEqual(risk, "high")
+        self.assertIsNone(grounding, "F-6 divorce must NOT select any grounding entry")
+
+    def test_f6_divorce_grounding_false_regardless_of_sub_code(self):
+        _, mod = _client()
+        for sub in ("F-6-1", "F-6-3", None):
+            grounding = mod._select_grounding("F-6", "marriage_divorce_status_change", sub)
+            self.assertIsNone(grounding,
+                              f"F-6 divorce (sub={sub}) must not ground — task_type is not extension")
+
+    # ---- 5. D-2 leave of absence does NOT select D-2 extension grounding ----
+
+    def test_d2_leave_of_absence_does_not_select_extension_grounding(self):
+        _, mod = _client()
+        q = "D-2 비자인데 휴학을 하면 어떻게 되나요?"
+        top, sub = mod._detect_visa_codes("D-2", None, q)
+        task = mod._detect_task_type(q)
+        grounding = mod._select_grounding(top, task, sub)
+        self.assertEqual(task, "academic_status_change",
+                         "Leave of absence must detect academic_status_change, not extension")
+        self.assertIsNone(grounding,
+                          "D-2 leave of absence must NOT select the D-2 extension grounding entry")
+
+    def test_d2_gap_semester_does_not_select_extension_grounding(self):
+        _, mod = _client()
+        q = "I have a D-2 visa and am taking a gap semester next semester."
+        top, sub = mod._detect_visa_codes("D-2", None, q)
+        task = mod._detect_task_type(q)
+        grounding = mod._select_grounding(top, task, sub)
+        self.assertEqual(task, "academic_status_change")
+        self.assertIsNone(grounding)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
