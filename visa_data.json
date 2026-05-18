@@ -86,7 +86,10 @@
       "doc_passport",
       "doc_photo"
     ],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "TB-1",
@@ -119,7 +122,10 @@
     "extensionReqDocs": [
       "doc_tb"
     ],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "SCN-1",
@@ -140,7 +146,10 @@
     ],
     "changeReqDocs": [
       "개별 사안별 증빙서류(매뉴얼 해당 항목 및 관할기관 안내 기준)"
-    ]
+    ],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "SCN-2",
@@ -161,7 +170,10 @@
       "doc_crim"
     ],
     "extensionReqDocs": [],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "SCN-3",
@@ -182,7 +194,10 @@
     ],
     "changeReqDocs": [
       "개별 사안별 증빙서류(매뉴얼 해당 항목 및 관할기관 안내 기준)"
-    ]
+    ],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "SCN-4",
@@ -201,7 +216,10 @@
       "doc_app_form"
     ],
     "extensionReqDocs": [],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "SCN-5",
@@ -228,7 +246,10 @@
       "doc_topik",
       "doc_kiip"
     ],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "SCN-6",
@@ -249,7 +270,10 @@
     ],
     "changeReqDocs": [
       "개별 사안별 증빙서류(매뉴얼 해당 항목 및 관할기관 안내 기준)"
-    ]
+    ],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "OVS-1",
@@ -275,7 +299,10 @@
       "doc_finance"
     ],
     "extensionReqDocs": [],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "NHIS-1",
@@ -328,7 +355,10 @@
     ],
     "changeReqDocs": [
       "개별 사안별 증빙서류(매뉴얼 해당 항목 및 관할기관 안내 기준)"
-    ]
+    ],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "FAQ-1",
@@ -366,7 +396,10 @@
     "extensionReqDocs": [
       "doc_address"
     ],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "FAQ-2",
@@ -403,7 +436,10 @@
       "변경 사유 입증서류(활동계획서·초청서·고용계약서 등 해당 자격별)",
       "체류자격별 개별 첨부서류(매뉴얼 해당 자격 항목 참조)",
       "수수료"
-    ]
+    ],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "FAQ-3",
@@ -428,7 +464,10 @@
       "doc_id",
       "doc_flight"
     ],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "FAQ-4",
@@ -449,7 +488,10 @@
     ],
     "changeReqDocs": [
       "개별 사안별 증빙서류(매뉴얼 해당 항목 및 관할기관 안내 기준)"
-    ]
+    ],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "VW-1",
@@ -507,7 +549,10 @@
     ],
     "changeReqDocs": [
       "개별 사안별 증빙서류(매뉴얼 해당 항목 및 관할기관 안내 기준)"
-    ]
+    ],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "COM-1",
@@ -536,7 +581,10 @@
     "extensionReqDocs": [
       "doc_invitation"
     ],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "B-1",
@@ -652,7 +700,15 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "B-2",
@@ -785,7 +841,19 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "왕복항공권",
+        "note": "또는 제3국행 예약증"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "C-3",
@@ -1288,7 +1356,56 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "표준규격사진 1매",
+        "note": "3.5x4.5cm, 최근 6개월"
+      },
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      },
+      {
+        "name": "왕복항공권",
+        "note": "또는 제3국행 예약증"
+      },
+      {
+        "name": "숙소 제공 확인서 및 제공자 신분증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "국내 체류 일정표",
+        "note": "일자별 작성"
+      },
+      {
+        "name": "재정능력 입증서류",
+        "note": "잔고증명, 소득증명 등 총괄"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      }
+    ]
   },
   {
     "code": "C-4",
@@ -1383,7 +1500,31 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "표준규격사진 1매",
+        "note": "3.5x4.5cm, 최근 6개월"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "해당 분야 전문성 입증서류",
+        "note": "국가공인자격증 등"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "D-1",
@@ -1503,7 +1644,48 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "초청장",
+        "note": "초청목적, 귀국보증 등 상세 명시"
+      },
+      {
+        "name": "체류/구직/연수 계획서 또는 사유서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "최종 학위/학력증명서",
+        "note": "아포스티유/영사확인 필수"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "재정능력 입증서류",
+        "note": "잔고증명, 소득증명 등 총괄"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "연수계속 입증서류",
+        "note": "출석부, 진도표 등"
+      }
+    ]
   },
   {
     "code": "D-2",
@@ -2026,7 +2208,72 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "표준입학허가서 또는 재학/수료증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "최종 학위/학력증명서",
+        "note": "아포스티유/영사확인 필수"
+      },
+      {
+        "name": "재정능력 입증서류",
+        "note": "잔고증명, 소득증명 등 총괄"
+      },
+      {
+        "name": "결핵건강진단서",
+        "note": "보건소/지정병원, 고위험 35개국 필수"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "표준입학허가서 또는 재학/수료증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "지도교수 또는 유학담당자 확인서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "성적증명서",
+        "note": "공식 발급본"
+      },
+      {
+        "name": "출석확인서",
+        "note": "출석률 명시"
+      },
+      {
+        "name": "재정능력 입증서류",
+        "note": "잔고증명, 소득증명 등 총괄"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      },
+      {
+        "name": "은행 잔고증명서",
+        "note": "최근 30일 이내 발급본"
+      }
+    ]
   },
   {
     "code": "D-3",
@@ -2169,7 +2416,44 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "초청장",
+        "note": "초청목적, 귀국보증 등 상세 명시"
+      },
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "체류/구직/연수 계획서 또는 사유서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "재정능력 입증서류",
+        "note": "잔고증명, 소득증명 등 총괄"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "연수계속 입증서류",
+        "note": "출석부, 진도표 등"
+      }
+    ]
   },
   {
     "code": "D-4",
@@ -2365,7 +2649,64 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "표준입학허가서 또는 재학/수료증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "최종 학위/학력증명서",
+        "note": "아포스티유/영사확인 필수"
+      },
+      {
+        "name": "재정능력 입증서류",
+        "note": "잔고증명, 소득증명 등 총괄"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "표준규격사진 1매",
+        "note": "3.5x4.5cm, 최근 6개월"
+      },
+      {
+        "name": "표준입학허가서 또는 재학/수료증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "출석확인서",
+        "note": "출석률 명시"
+      },
+      {
+        "name": "은행 잔고증명서",
+        "note": "최근 30일 이내 발급본"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "D-4-2K",
@@ -2496,7 +2837,68 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본",
+        "note": "대조용 필수지참"
+      },
+      {
+        "name": "여권 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "표준규격사진 1매",
+        "note": "3.5x4.5cm, 최근 6개월"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "신규/체류자격 부여 수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "표준입학허가서 또는 재학/수료증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "출석확인서",
+        "note": "출석률 명시"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본",
+        "note": "대조용 필수지참"
+      },
+      {
+        "name": "여권 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "체류기간 연장 수수료",
+        "note": "정부수입인지, 기본 60,000원"
+      },
+      {
+        "name": "출석확인서",
+        "note": "출석률 명시"
+      }
+    ]
   },
   {
     "code": "D-7",
@@ -2662,7 +3064,72 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "파견명령서",
+        "note": "본사 발급, 파견기간 및 직책 명시"
+      },
+      {
+        "name": "법인등기사항전부증명서",
+        "note": "발급 3개월 이내"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "납세증명서",
+        "note": "국세 및 지방세 완납증명"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "표준규격사진 1매",
+        "note": "3.5x4.5cm, 최근 6개월"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "파견명령서",
+        "note": "본사 발급, 파견기간 및 직책 명시"
+      },
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "납세증명서",
+        "note": "국세 및 지방세 완납증명"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "D-8",
@@ -2834,7 +3301,60 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "법인등기사항전부증명서",
+        "note": "발급 3개월 이내"
+      },
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인투자기업등록증 사본 및 투자금 도입 입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "재정능력 입증서류",
+        "note": "잔고증명, 소득증명 등 총괄"
+      },
+      {
+        "name": "체류/구직/연수 계획서 또는 사유서",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "법인등기사항전부증명서",
+        "note": "발급 3개월 이내"
+      },
+      {
+        "name": "외국인투자기업등록증 사본 및 투자금 도입 입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "납세증명서",
+        "note": "국세 및 지방세 완납증명"
+      },
+      {
+        "name": "부가가치세 과세표준증명",
+        "note": "최근 1년"
+      }
+    ]
   },
   {
     "code": "D-9",
@@ -2993,7 +3513,56 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "납세증명서",
+        "note": "국세 및 지방세 완납증명"
+      },
+      {
+        "name": "체류/구직/연수 계획서 또는 사유서",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "납세증명서",
+        "note": "국세 및 지방세 완납증명"
+      },
+      {
+        "name": "부가가치세 과세표준증명",
+        "note": "최근 1년"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "D-10",
@@ -3167,7 +3736,68 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "최종 학위/학력증명서",
+        "note": "아포스티유/영사확인 필수"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "체류/구직/연수 계획서 또는 사유서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "재정능력 입증서류",
+        "note": "잔고증명, 소득증명 등 총괄"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      },
+      {
+        "name": "재정능력 입증서류",
+        "note": "잔고증명, 소득증명 등 총괄"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      },
+      {
+        "name": "구직활동계획서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "점수제 자기평가표 및 증빙서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "결핵건강진단서",
+        "note": "보건소/지정병원, 고위험 35개국 필수"
+      }
+    ]
   },
   {
     "code": "E-1",
@@ -3280,7 +3910,60 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "최종 학위/학력증명서",
+        "note": "아포스티유/영사확인 필수"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "납세증명서",
+        "note": "국세 및 지방세 완납증명"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "E-2",
@@ -3426,7 +4109,68 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "최종 학위/학력증명서",
+        "note": "아포스티유/영사확인 필수"
+      },
+      {
+        "name": "해외 범죄경력증명서",
+        "note": "자국 정부 발급, 아포스티유/영사확인"
+      },
+      {
+        "name": "의료기관 건강진단서",
+        "note": "법무부 지정 마약검사 필수 포함"
+      },
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "납세증명서",
+        "note": "국세 및 지방세 완납증명"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "E-3",
@@ -3542,7 +4286,60 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "최종 학위/학력증명서",
+        "note": "아포스티유/영사확인 필수"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "납세증명서",
+        "note": "국세 및 지방세 완납증명"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "E-4",
@@ -3653,7 +4450,52 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "해당 분야 전문성 입증서류",
+        "note": "국가공인자격증 등"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "E-5",
@@ -3761,7 +4603,48 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "해당 분야 전문성 입증서류",
+        "note": "국가공인자격증 등"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "해당 분야 전문성 입증서류",
+        "note": "국가공인자격증 등"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "E-6",
@@ -3910,7 +4793,56 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "E-7",
@@ -4135,7 +5067,88 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "최종 학위/학력증명서",
+        "note": "아포스티유/영사확인 필수"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "주무부처 고용추천서",
+        "note": "해당 직종 한정"
+      },
+      {
+        "name": "소득금액증명원 등 소득입증서류",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "소득금액증명원 등 소득입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "법인등기사항전부증명서",
+        "note": "발급 3개월 이내"
+      },
+      {
+        "name": "신원보증서",
+        "note": "보증기간 명시"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      },
+      {
+        "name": "납세증명서",
+        "note": "국세 및 지방세 완납증명"
+      },
+      {
+        "name": "신청 사유 입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "국세·지방세 납세증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "고용보험 가입자 명부",
+        "note": "DATA_MISSING"
+      }
+    ]
   },
   {
     "code": "E-8",
@@ -4250,7 +5263,52 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "고용허가서 사본",
+        "note": "고용노동부 발급"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "의료기관 건강진단서",
+        "note": "법무부 지정 마약검사 필수 포함"
+      },
+      {
+        "name": "결핵건강진단서",
+        "note": "보건소/지정병원, 고위험 35개국 필수"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "고용허가서 사본",
+        "note": "고용노동부 발급"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "E-9",
@@ -4462,7 +5520,64 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "의료기관 건강진단서",
+        "note": "법무부 지정 마약검사 필수 포함"
+      },
+      {
+        "name": "표준입학허가서 또는 재학/수료증명서",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "고용허가서 사본",
+        "note": "고용노동부 발급"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "E-10",
@@ -4601,7 +5716,56 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "해당 분야 전문성 입증서류",
+        "note": "국가공인자격증 등"
+      },
+      {
+        "name": "의료기관 건강진단서",
+        "note": "법무부 지정 마약검사 필수 포함"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "표준근로계약서 또는 고용계약서 원본/사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "신원보증서",
+        "note": "보증기간 명시"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "F-1",
@@ -4791,7 +5955,60 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "가족관계증명서",
+        "note": "본국 권한기관 발급 및 공증/확인"
+      },
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "가족관계증명서",
+        "note": "본국 권한기관 발급 및 공증/확인"
+      },
+      {
+        "name": "혼인관계증명서",
+        "note": "상세"
+      },
+      {
+        "name": "기본증명서",
+        "note": "상세"
+      },
+      {
+        "name": "소득금액증명원 등 소득입증서류",
+        "note": "DATA_MISSING"
+      }
+    ]
   },
   {
     "code": "F-2",
@@ -4957,7 +6174,60 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "가족관계증명서",
+        "note": "본국 권한기관 발급 및 공증/확인"
+      },
+      {
+        "name": "재정능력 입증서류",
+        "note": "잔고증명, 소득증명 등 총괄"
+      },
+      {
+        "name": "외국인투자기업등록증 사본 및 투자금 도입 입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "TOPIK 성적표 또는 한국어능력 입증서류",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      },
+      {
+        "name": "점수제 자기평가표 및 증빙서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "국세·지방세 납세증명서",
+        "note": "DATA_MISSING"
+      }
+    ]
   },
   {
     "code": "F-3",
@@ -5091,7 +6361,52 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "가족관계증명서",
+        "note": "본국 권한기관 발급 및 공증/확인"
+      },
+      {
+        "name": "소득금액증명원 등 소득입증서류",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "가족관계증명서",
+        "note": "본국 권한기관 발급 및 공증/확인"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "F-4",
@@ -5320,7 +6635,40 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "TOPIK 성적표 또는 한국어능력 입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "해외 범죄경력증명서",
+        "note": "자국 정부 발급, 아포스티유/영사확인"
+      },
+      {
+        "name": "외국국적동포 입증서류",
+        "note": "공적장부 등"
+      },
+      {
+        "name": "사회통합프로그램(KIIP) 이수증/합격증",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "F-5",
@@ -5491,7 +6839,60 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      },
+      {
+        "name": "해외 범죄경력증명서",
+        "note": "자국 정부 발급, 아포스티유/영사확인"
+      },
+      {
+        "name": "소득금액증명원 등 소득입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "사회통합프로그램(KIIP) 이수증/합격증",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "국세·지방세 납세증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "사회통합프로그램(KIIP) 이수증/합격증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "재산세 과세증명 또는 부동산 보유 입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "재직증명서 또는 근무사실 입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "신원보증서",
+        "note": "보증기간 명시"
+      }
+    ]
   },
   {
     "code": "F-6",
@@ -5924,7 +7325,108 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "기본증명서",
+        "note": "상세"
+      },
+      {
+        "name": "가족관계증명서",
+        "note": "본국 권한기관 발급 및 공증/확인"
+      },
+      {
+        "name": "혼인관계증명서",
+        "note": "상세"
+      },
+      {
+        "name": "소득금액증명원 등 소득입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      },
+      {
+        "name": "초청장",
+        "note": "초청목적, 귀국보증 등 상세 명시"
+      },
+      {
+        "name": "해외 범죄경력증명서",
+        "note": "자국 정부 발급, 아포스티유/영사확인"
+      },
+      {
+        "name": "의료기관 건강진단서",
+        "note": "법무부 지정 마약검사 필수 포함"
+      },
+      {
+        "name": "TOPIK 성적표 또는 한국어능력 입증서류",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "표준규격사진 1매",
+        "note": "3.5x4.5cm, 최근 6개월"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "혼인관계증명서",
+        "note": "상세"
+      },
+      {
+        "name": "기본증명서",
+        "note": "상세"
+      },
+      {
+        "name": "가족관계증명서",
+        "note": "본국 권한기관 발급 및 공증/확인"
+      },
+      {
+        "name": "소득금액증명원 등 소득입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      },
+      {
+        "name": "신원보증서",
+        "note": "보증기간 명시"
+      },
+      {
+        "name": "외국인 취업정보 온라인 신고 내역",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "신용정보조회서 또는 신용상태 입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "소득세 납세사실증명서 또는 소득세 신고내역",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "주민등록등본",
+        "note": "해당 시"
+      }
+    ]
   },
   {
     "code": "G-1",
@@ -6100,7 +7602,48 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "난민인정신청서 원본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "의료기관 진단서",
+        "note": "상병명, 요양기간 명시"
+      },
+      {
+        "name": "체류/구직/연수 계획서 또는 사유서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "재정능력 입증서류",
+        "note": "잔고증명, 소득증명 등 총괄"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      }
+    ]
   },
   {
     "code": "RF-1",
@@ -6170,7 +7713,10 @@
       "doc_app_form",
       "doc_address"
     ],
-    "changeReqDocs": []
+    "changeReqDocs": [],
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "H-1",
@@ -6276,7 +7822,48 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "왕복항공권",
+        "note": "또는 제3국행 예약증"
+      },
+      {
+        "name": "은행 잔고증명서",
+        "note": "최근 30일 이내 발급본"
+      },
+      {
+        "name": "의료기관 건강진단서",
+        "note": "법무부 지정 마약검사 필수 포함"
+      },
+      {
+        "name": "체류/구직/연수 계획서 또는 사유서",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "H-2",
@@ -6389,7 +7976,43 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "표준규격사진 1매",
+        "note": "3.5x4.5cm, 최근 6개월"
+      },
+      {
+        "name": "외국국적동포 입증서류",
+        "note": "공적장부 등"
+      },
+      {
+        "name": "TOPIK 성적표 또는 한국어능력 입증서류",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      },
+      {
+        "name": "사회통합프로그램(KIIP) 이수증/합격증",
+        "note": "DATA_MISSING"
+      }
+    ]
   },
   {
     "code": "A-1",
@@ -6479,7 +8102,19 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "파견명령서",
+        "note": "본사 발급, 파견기간 및 직책 명시"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "A-2",
@@ -6568,7 +8203,19 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "파견명령서",
+        "note": "본사 발급, 파견기간 및 직책 명시"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "A-3",
@@ -6659,7 +8306,19 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "파견명령서",
+        "note": "본사 발급, 파견기간 및 직책 명시"
+      },
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "C-1",
@@ -6751,7 +8410,23 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "체류/구직/연수 계획서 또는 사유서",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   },
   {
     "code": "D-5",
@@ -6858,7 +8533,48 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "파견명령서",
+        "note": "본사 발급, 파견기간 및 직책 명시"
+      },
+      {
+        "name": "체류/구직/연수 계획서 또는 사유서",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "D-6",
@@ -6965,7 +8681,48 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "사업자등록증 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "파견명령서",
+        "note": "본사 발급, 파견기간 및 직책 명시"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "통합신청서",
+        "note": "별지 제34호 서식"
+      },
+      {
+        "name": "여권 원본 및 인적사항면 사본",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "외국인등록증(또는 거소증) 원본 및 사본",
+        "note": "기존 등록자에 한함"
+      },
+      {
+        "name": "수수료",
+        "note": "정부수입인지, 절차별 금액은 수수료 안내 확인"
+      },
+      {
+        "name": "해외 및 국내 경력증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "체류지 입증서류",
+        "note": "임대차계약서, 숙소제공확인서, 공공요금 영수증 등"
+      }
+    ]
   },
   {
     "code": "D-4-2K",
@@ -7080,7 +8837,36 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "인턴십(연수) 계획서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "재직증명서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "초청장",
+        "note": "초청목적, 귀국보증 등 상세 명시"
+      },
+      {
+        "name": "사증발급인정서",
+        "note": "Certificate for Visa Issuance"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "인턴십(연수) 계획서",
+        "note": "DATA_MISSING"
+      },
+      {
+        "name": "재직증명서",
+        "note": "DATA_MISSING"
+      }
+    ]
   },
   {
     "code": "K-STAR",
@@ -7347,7 +9133,28 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": [
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      },
+      {
+        "name": "주무부처 고용추천서",
+        "note": "해당 직종 한정"
+      }
+    ],
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": [
+      {
+        "name": "기타 체류목적 입증서류",
+        "note": "별도 소명자료"
+      },
+      {
+        "name": "소득금액증명원 등 소득입증서류",
+        "note": "DATA_MISSING"
+      }
+    ]
   },
   {
     "code": "REGION-S",
@@ -7447,6 +9254,9 @@
       "method": "pdf_text_conservative_auto_extract",
       "needsManualReview": true,
       "updatedAt": "2026-05-07"
-    }
+    },
+    "documents_initial": "DATA_MISSING",
+    "documents_registration": "DATA_MISSING",
+    "documents_extension": "DATA_MISSING"
   }
 ]

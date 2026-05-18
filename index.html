@@ -1146,6 +1146,47 @@ body.searched .section-divider { display: none; }
 .sep-badge.unverified { background: var(--bg2); border-color: var(--bd2); color: var(--t3); }
 .sep-note { font-size: 0.74rem; color: var(--t3); line-height: 1.55; margin: 0; word-break: keep-all; overflow-wrap: anywhere; }
 .procedure-doc-count { margin: 0.12rem 0 0.6rem; font-size: 0.74rem; color: var(--t3); }
+
+/* === Required-documents three-tab section (documents_initial / _registration / _extension) === */
+.docs-section { display: flex; flex-direction: column; gap: 0.65rem; }
+.docs-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; border-bottom: 1px solid var(--bd2); padding-bottom: 0.45rem; }
+.docs-tab { display: inline-flex; align-items: center; gap: 0.4rem; flex: 0 0 auto; min-height: 38px; border: 1px solid transparent; background: transparent; color: var(--t2); border-radius: 8px 8px 0 0; padding: 0.35rem 0.8rem; font: inherit; font-size: 0.82rem; font-weight: 800; cursor: pointer; transition: var(--btn-tr); position: relative; }
+.docs-tab:hover:not(:disabled) { color: var(--ac); background: var(--acL); }
+.docs-tab:focus-visible { outline: 2px solid color-mix(in srgb, var(--ac) 58%, white); outline-offset: 1px; }
+.docs-tab.active { color: var(--ac); }
+.docs-tab.active::after { content: ""; position: absolute; left: 0.5rem; right: 0.5rem; bottom: -0.46rem; height: 3px; background: var(--ac); border-radius: 3px 3px 0 0; }
+.docs-tab-icon { font-size: 0.95rem; line-height: 1; }
+.docs-panels { display: block; }
+.docs-panel { display: none; padding: 0.2rem 0.1rem 0; }
+.docs-panel.active { display: block; animation: docsPanelIn 0.18s ease; }
+@keyframes docsPanelIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: none; } }
+.docs-list { list-style: none; counter-reset: docrow; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.docs-list-row { counter-increment: docrow; display: grid; grid-template-columns: 1.8rem 1fr; column-gap: 0.7rem; row-gap: 0.18rem; align-items: baseline; padding: 0.55rem 0.7rem; background: var(--bg0); border: 1px solid var(--bd2); border-radius: 8px; line-height: 1.55; }
+.docs-list-row::before { content: counter(docrow) "."; grid-column: 1; color: var(--ac); font-weight: 900; font-size: 0.92rem; text-align: right; }
+.docs-list-name { grid-column: 2; color: var(--t1); font-weight: 800; font-size: 0.88rem; word-break: keep-all; overflow-wrap: anywhere; }
+.docs-list-note { grid-column: 2; color: var(--t3); font-size: 0.78rem; word-break: keep-all; overflow-wrap: anywhere; }
+.docs-list-missing { color: var(--t3); font-style: italic; }
+.docs-missing-notice { border: 1px solid color-mix(in srgb, var(--color-warning) 38%, var(--bd)); background: color-mix(in srgb, var(--color-warning) 10%, var(--bg1)); color: var(--t1); border-radius: 8px; padding: 0.85rem 0.95rem; font-size: 0.84rem; line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere; }
+@media (max-width: 768px) {
+    /* Mobile: collapse three tabs into a vertical accordion.
+       The .docs-tabs and .docs-panels wrappers become display:contents so each
+       individual .docs-tab and .docs-panel becomes a direct child of
+       .docs-section; we then interleave tab+panel pairs with `order`. */
+    .docs-section { display: flex; flex-direction: column; gap: 0.4rem; }
+    .docs-section .docs-tabs,
+    .docs-section .docs-panels { display: contents; }
+    .docs-tab { width: 100%; justify-content: flex-start; border: 1px solid var(--bd2); border-radius: 8px; padding: 0.65rem 0.85rem; background: var(--bg0); }
+    .docs-tab.active { background: var(--acL); border-color: var(--ac); color: var(--ac); }
+    .docs-tab.active::after { display: none; }
+    .docs-panel { padding: 0.1rem 0.2rem 0.4rem; }
+    .docs-tab[data-docs-tab="initial"]       { order: 1; }
+    .docs-panel[data-docs-panel="initial"]    { order: 2; }
+    .docs-tab[data-docs-tab="registration"]  { order: 3; }
+    .docs-panel[data-docs-panel="registration"] { order: 4; }
+    .docs-tab[data-docs-tab="extension"]     { order: 5; }
+    .docs-panel[data-docs-panel="extension"]  { order: 6; }
+    .docs-list-row { padding: 0.5rem 0.65rem; }
+}
 @media (max-width: 480px) {
     .vc-summary { padding: 0.55rem 0.7rem; }
     .sep-body { padding: 0.55rem 0.7rem; }
@@ -7578,6 +7619,57 @@ function renderCautionBlock() {
     return `<div class="vc-caution">${escapeHtml(tx('cautionText'))}</div>`;
 }
 
+const DOCUMENT_TAB_CONFIG = [
+    { key: 'initial', icon: '📋', label: '최초 신청 (입국 전)', field: 'documents_initial' },
+    { key: 'registration', icon: '🪪', label: '외국인등록증 신청', field: 'documents_registration' },
+    { key: 'extension', icon: '🔄', label: '체류기간 연장', field: 'documents_extension' }
+];
+
+const DOCUMENT_DATA_MISSING_NOTICE = '해당 비자 코드의 구비서류 정보가 아직 등록되지 않았습니다. 출입국·외국인청에 직접 문의하세요.';
+
+function isDocFieldMissing(field) {
+    if (field === 'DATA_MISSING' || field == null) return true;
+    if (Array.isArray(field) && field.length === 0) return true;
+    return false;
+}
+
+function renderDocumentTabPanel(field, panelKey, isActive) {
+    const missing = isDocFieldMissing(field);
+    const bodyHtml = missing
+        ? `<div class="docs-missing-notice" role="note">${escapeHtml(DOCUMENT_DATA_MISSING_NOTICE)}</div>`
+        : `<ol class="docs-list">${field.map(item => {
+            const name = (item && item.name) || 'DATA_MISSING';
+            const note = (item && item.note) || '';
+            const nameIsMissing = name === 'DATA_MISSING';
+            const noteIsMissing = !note || note === 'DATA_MISSING';
+            const nameHtml = nameIsMissing
+                ? `<span class="docs-list-name docs-list-missing">${escapeHtml('문서명 미상')}</span>`
+                : `<span class="docs-list-name">${escapeHtml(name)}</span>`;
+            const noteHtml = noteIsMissing
+                ? `<span class="docs-list-note docs-list-missing">${escapeHtml('비고 정보 없음')}</span>`
+                : `<span class="docs-list-note">${escapeHtml(note)}</span>`;
+            return `<li class="docs-list-row">${nameHtml}${noteHtml}</li>`;
+        }).join('')}</ol>`;
+    return `<div class="docs-panel${isActive ? ' active' : ''}" data-docs-panel="${panelKey}" role="tabpanel">${bodyHtml}</div>`;
+}
+
+function renderDocumentTabs(v) {
+    if (['faq', 'scn', 'nhis'].includes(v.cat)) return '';
+    const hasAnyField = DOCUMENT_TAB_CONFIG.some(cfg => v[cfg.field] !== undefined);
+    if (!hasAnyField) return '';
+    const firstKey = DOCUMENT_TAB_CONFIG[0].key;
+    const tabsHtml = DOCUMENT_TAB_CONFIG.map(cfg => {
+        const isActive = cfg.key === firstKey;
+        return `<button type="button" class="docs-tab${isActive ? ' active' : ''}" data-action="select-docs-tab" data-docs-tab="${cfg.key}" role="tab" aria-selected="${isActive ? 'true' : 'false'}"><span class="docs-tab-icon" aria-hidden="true">${cfg.icon}</span><span class="docs-tab-label">${escapeHtml(cfg.label)}</span></button>`;
+    }).join('');
+    const panelsHtml = DOCUMENT_TAB_CONFIG.map(cfg => renderDocumentTabPanel(v[cfg.field], cfg.key, cfg.key === firstKey)).join('');
+    return `<section class="manual-section docs-section" aria-label="구비서류">
+        <h4 class="manual-section-title">구비서류</h4>
+        <div class="docs-tabs" role="tablist">${tabsHtml}</div>
+        <div class="docs-panels">${panelsHtml}</div>
+    </section>`;
+}
+
 function renderSourceEvidencePanel(v) {
     if (['faq', 'scn', 'nhis'].includes(v.cat)) return '';
     const status = v.sourceManualStatus || {};
@@ -7834,6 +7926,7 @@ function renderResults(query){
                     ${renderCardSummary(v, kw)}
                     ${renderSubcodes(v, kw, ms)}
                     ${renderProcedures(v, kw)}
+                    ${renderDocumentTabs(v)}
                     ${renderCautionBlock()}
                     ${renderSourceEvidencePanel(v)}
                     ${renderManualActions(v, isVisaCode)}
@@ -8881,6 +8974,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!card || actionBtn.disabled) return;
                     card.querySelectorAll('.procedure-tab').forEach(btn => btn.classList.toggle('active', btn === actionBtn));
                     card.querySelectorAll('.procedure-panel').forEach(panel => panel.classList.toggle('active', panel.dataset.procedurePanel === actionBtn.dataset.procedure));
+                },
+                'select-docs-tab': () => {
+                    const section = actionBtn.closest('.docs-section');
+                    if (!section || actionBtn.disabled) return;
+                    const target = actionBtn.dataset.docsTab;
+                    section.querySelectorAll('.docs-tab').forEach(btn => {
+                        const active = btn === actionBtn;
+                        btn.classList.toggle('active', active);
+                        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+                    });
+                    section.querySelectorAll('.docs-panel').forEach(panel => panel.classList.toggle('active', panel.dataset.docsPanel === target));
                 },
                 'search-hint': () => { document.getElementById('q').value = actionBtn.dataset.query; executeSearch(); },
                 'quick-filter': () => { document.getElementById('q').value = actionBtn.dataset.query; document.getElementById('xb').classList.add('v'); renderResults(actionBtn.dataset.query); },

@@ -27,6 +27,9 @@ RENDERER_DOC_FIELDS: Set[str] = {
     "extensionReqDocs", "extReqDocs", "extReq",
     "cviReqDocs", "statusGrantReqDocs", "registrationReqDocs",
     "activitiesOutsideStatusReqDocs", "workplaceChangeReqDocs", "reentryReqDocs",
+    # Structured 2026-05 manual-grounded document fields (rendered by
+    # renderDocumentTabs in index.html).
+    "documents_initial", "documents_registration", "documents_extension",
 }
 
 PROCEDURE_KEYS = {
