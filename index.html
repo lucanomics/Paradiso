@@ -4958,7 +4958,7 @@ body:not(.searched) .visa-track-card:hover {
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </button>
             </div>
-            <div class="auto-list" id="auto-list"></div>
+            <div class="auto-list" id="auto-list" role="listbox" aria-label="검색 제안"></div>
             <div class="smeta"><span id="rc">데이터 로딩 중…</span><span id="rh"></span></div>
         </form>
         <p class="reference-disclaimer">본 서비스는 공개 법령·매뉴얼 기반 참고용 정보 제공 도구이며, 법적 상담이나 민원 대행이 아닙니다. 최종 판단은 출입국·외국인청, 하이코리아, 또는 자격 있는 전문가에게 확인하세요.</p>
@@ -5278,7 +5278,7 @@ body:not(.searched) .visa-track-card:hover {
         <p class="p-agent-finder__count" id="agentFinderCount" aria-live="polite"></p>
         <ul class="p-agent-finder__list" id="agentFinderList" aria-label="등록 대행기관 목록"></ul>
         <p class="p-agent-finder__empty" id="agentFinderEmpty" hidden>검색 결과가 없습니다. 지역 필터를 "전체 지역"으로 바꾸거나 키워드를 줄여 다시 확인해 주세요.</p>
-        <p class="p-agent-finder__error" id="agentFinderError" role="alert" hidden>데이터를 불러오지 못했습니다. 잠시 후 다시 시도하거나 하이코리아 공식 조회를 이용하세요.</p>
+        <div class="p-agent-finder__error" id="agentFinderError" role="alert" hidden><span id="agentFinderErrorText">데이터를 불러오지 못했습니다. 잠시 후 다시 시도하거나 하이코리아 공식 조회를 이용하세요.</span> <button type="button" class="cb" id="agentFinderRetry" style="margin-left:0.5rem; padding:0.25rem 0.6rem;">다시 시도</button></div>
         <div class="p-agent-finder__more" id="agentFinderMore" hidden>
             <button type="button" id="agentFinderShowMore" class="p-agent-finder__show-more">더 보기</button>
         </div>
@@ -6133,12 +6133,29 @@ function getLabels(v){return v.labels||CL[v.cat]||['개요','상세','FAQ'];}
 
 // --- Modals Core Logic ---
 let lastFocusedElement = null;
+let activeModal = null;
+function trapModalFocus(e) {
+    if (e.key !== 'Tab' || !activeModal) return;
+    const focusables = activeModal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (!focusables.length) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+    }
+}
 function openModal(id) {
     lastFocusedElement = document.activeElement;
     const modal = document.getElementById(id);
     if(modal) {
         modal.classList.add('active');
         modal.setAttribute('aria-hidden', 'false');
+        activeModal = modal;
+        document.addEventListener('keydown', trapModalFocus);
         const focusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
         if(focusable) focusable.focus();
     }
@@ -6148,6 +6165,10 @@ function closeModal(id) {
     if(modal) {
         modal.classList.remove('active');
         modal.setAttribute('aria-hidden', 'true');
+    }
+    if (activeModal && modal === activeModal) {
+        activeModal = null;
+        document.removeEventListener('keydown', trapModalFocus);
     }
     if(lastFocusedElement) {
         lastFocusedElement.focus();
@@ -7244,6 +7265,7 @@ function copyVisaResult(btnEl, code) {
     const done = () => {
         const span = btnEl.querySelector('span');
         if (span) { const orig = span.textContent; span.textContent = '✓'; setTimeout(() => { span.textContent = orig; }, 1500); }
+        showToast(tx('copySuccess') || '복사되었습니다.', 'success');
     };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done).catch(() => { fallbackCopy(text); done(); });
     else { fallbackCopy(text); done(); }
@@ -7340,10 +7362,11 @@ function showSuggestions(val) {
     });
     if(matches.length > 0) {
         matches.slice(0, 7).forEach(m => {
-            const div = document.createElement('div'); div.className = 'auto-item';
-            div.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg> <span>${hl(m, [val])}</span>`;
-            div.setAttribute('data-action', 'search-hint'); div.setAttribute('data-query', m);
-            list.appendChild(div);
+            const item = document.createElement('button'); item.className = 'auto-item'; item.type = 'button';
+            item.setAttribute('role', 'option');
+            item.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg> <span>${hl(m, [val])}</span>`;
+            item.setAttribute('data-action', 'search-hint'); item.setAttribute('data-query', m);
+            list.appendChild(item);
         });
         list.classList.add('active');
     } else list.classList.remove('active');
@@ -7433,7 +7456,7 @@ function renderResults(query){
     let scored=VISA_DATA.map(v=>({...v,_score:calculateScore(v,kwL)})), filtered=scored.filter(v=>v._score>0).sort((a,b)=>b._score-a._score);
     let st=0; filtered.forEach(v=>{st += getVisaSubcodes(v).length;});
     if(!filtered.length){
-        box.innerHTML=`<div class="es"><div class="es-t">${escapeHtml(tx('resultEmptyTitle'))}</div><div class="es-d">${tx('resultEmptyDesc', { query: escapeHtml(query) })}</div></div>`;
+        box.innerHTML=`<div class="es"><div class="es-t">${escapeHtml(tx('resultEmptyTitle'))}</div><div class="es-d">${tx('resultEmptyDesc', { query: escapeHtml(query) })}</div><button type="button" class="cb" style="margin-top:1rem;" data-action="reset-to-landing">← 처음으로 돌아가기</button></div>`;
         rc.textContent=tx('resultCount', { count: 0 }); return;
     }
     const fg=document.createDocumentFragment();
@@ -7490,6 +7513,21 @@ let dt;
 function handleInput(){
     const v=qEl.value; document.getElementById('xb').classList.toggle('v',v.length>0); showSuggestions(v);
     if(document.body.classList.contains('searched') && dataReady){ clearTimeout(dt); dt=setTimeout(()=>renderResults(v),150); }
+}
+function handleAutocompleteKeydown(e){
+    const list = document.getElementById('auto-list');
+    if (!list || !list.classList.contains('active')) return;
+    const items = [...list.querySelectorAll('.auto-item')];
+    if (!items.length) return;
+    const idx = items.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        items[Math.min(idx + 1, items.length - 1)].focus();
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (idx <= 0) qEl.focus();
+        else items[idx - 1].focus();
+    }
 }
 function clearSearch(){
     debugSearchState('clearSearch:start');
@@ -8283,7 +8321,7 @@ function applyLanguage(code, options = {}) {
     setText('#agentFinderPrompt', tx('agentPrompt'));
     setText('#agentFinderLoading', tx('agentLoading'));
     setText('#agentFinderEmpty', tx('agentEmpty'));
-    setText('#agentFinderError', tx('agentError'));
+    setText('#agentFinderErrorText', tx('agentError'));
     setText('#agentFinderShowMore', tx('agentShowMore'));
     setText('#pReminderTitle', tx('reminderTitle'));
     setText('.p-reminder-section .p-section-copy', tx('reminderCopy'));
@@ -8417,7 +8455,10 @@ document.addEventListener('DOMContentLoaded', () => {
     renderLanguageMenu();
     applyLanguage(getInitialLanguage(), { silent: true });
     loadVisaData();
-    if(qEl) qEl.addEventListener('input', handleInput);
+    if(qEl) {
+        qEl.addEventListener('input', handleInput);
+        qEl.addEventListener('keydown', handleAutocompleteKeydown);
+    }
 
     const searchForm = document.getElementById('searchForm');
     searchForm?.addEventListener('submit', (e) => {
@@ -8482,7 +8523,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 'copy-jobcode': () => copyJobcode(actionBtn, actionBtn.dataset.code),
                 'copy-visa-result': () => copyVisaResult(actionBtn, actionBtn.dataset.vcode),
                 'verify-faq': () => verifyFaqWithAi(actionBtn.dataset.vcode, actionBtn.dataset.q),
-                'reset-to-landing': () => { if(document.body.classList.contains('searched')) resetToLanding(); },
+                'reset-to-landing': () => {
+                    const q = document.getElementById('q');
+                    if (q) q.value = '';
+                    document.getElementById('rlist').innerHTML = '';
+                    document.getElementById('auto-list').classList.remove('active');
+                    closeDirectSearchMode();
+                    document.getElementById('landingHints')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                },
                 'toggle-city': () => toggleCityMenu(),
                 'apply-city': () => { applyCity(JSON.parse(actionBtn.dataset.city)); toggleCityMenu(false); },
                 'toggle-language-menu': () => toggleLanguageMenu(),
@@ -8940,7 +8988,7 @@ function getCurrentInKoreaAction() { return _currentInKoreaAction; }
 function filterInKoreaVisaList(query) {
   const listEl = document.getElementById('inKoreaVisaList');
   if (!listEl) return;
-  if (!query || !query.trim()) { listEl.innerHTML = ''; return; }
+  if (!query || !query.trim()) { listEl.innerHTML = '<p style="font-size:0.85rem;color:var(--t3);padding:0.5rem 0;">코드 또는 이름을 입력하면 목록이 표시됩니다.</p>'; return; }
 
   const q      = query.toLowerCase().trim();
   const SKIP   = ['faq', 'scn', 'nhis'];
@@ -8985,6 +9033,7 @@ function showVisaDocForAction(visaCode) {
   const listEl = document.getElementById('agentFinderList');
   const emptyEl = document.getElementById('agentFinderEmpty');
   const errorEl = document.getElementById('agentFinderError');
+  const retryBtn = document.getElementById('agentFinderRetry');
   const promptEl = document.getElementById('agentFinderPrompt');
   const loadingEl = document.getElementById('agentFinderLoading');
   const moreEl = document.getElementById('agentFinderMore');
@@ -9073,7 +9122,7 @@ function showVisaDocForAction(visaCode) {
     if (!hasSearch) {
       promptEl.hidden = false;
       listEl.innerHTML = '';
-      countEl.textContent = '';
+      countEl.textContent = tx('agentTotalCount', { count: dataset.agencies.length }) || `총 ${dataset.agencies.length}개 기관`;
       emptyEl.hidden = true;
       moreEl.hidden = true;
       return;
@@ -9131,26 +9180,31 @@ function showVisaDocForAction(visaCode) {
   keywordIn.addEventListener('input', applyFilter);
   window.addEventListener('paradiso-language-applied', applyFilter);
 
-  loadingEl.hidden = false;
-  promptEl.hidden = true;
-  fetch('data/agent_registry_2026-04-30.json', { cache: 'no-cache' })
-    .then(function (res) {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    })
-    .then(function (json) {
-      loadingEl.hidden = true;
-      dataset.meta = json && json._meta ? json._meta : {};
-      dataset.regions = Array.isArray(json && json.regions) ? json.regions : [];
-      dataset.agencies = Array.isArray(json && json.agencies) ? json.agencies : [];
-      populateRegions(dataset.regions);
-      window.updateAgentFinderLanguage();
-      applyFilter();
-    })
-    .catch(function () {
-      loadingEl.hidden = true;
-      showError();
-    });
+  function loadDataset() {
+    loadingEl.hidden = false;
+    promptEl.hidden = true;
+    errorEl.hidden = true;
+    fetch('data/agent_registry_2026-04-30.json', { cache: 'no-cache' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function (json) {
+        loadingEl.hidden = true;
+        dataset.meta = json && json._meta ? json._meta : {};
+        dataset.regions = Array.isArray(json && json.regions) ? json.regions : [];
+        dataset.agencies = Array.isArray(json && json.agencies) ? json.agencies : [];
+        populateRegions(dataset.regions);
+        window.updateAgentFinderLanguage();
+        applyFilter();
+      })
+      .catch(function () {
+        loadingEl.hidden = true;
+        showError();
+      });
+  }
+  if (retryBtn) retryBtn.addEventListener('click', loadDataset);
+  loadDataset();
 })();
 </script>
 </body>
